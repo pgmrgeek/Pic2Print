@@ -27,4 +27,20 @@ To Run this program -
 Pull the PhotoboothMGR repository from github.  Once you pull it, copy/move the contents to the "c:\OnSite" folder.
 Follow the instructions in the README.MD
 
+All systems Go! Please use GitHub Issues list on this repository to address problems and bugs.
+
+Doug Cody
+Bay Area Event Photography
+www.bayareaeventphotography.com
+
+References -
+
+The mail program is a github project - https://github.com/muquit/mailsend. Please send kudos and cash..
+
+Microsoft .NET framework 4.5 download page - http://www.microsoft.com/en-us/download/details.aspx?id=30653
+
+Inspiration -
+
+My daughter, Michelle Palmer, who needed this program to get started in the business.
+
 
