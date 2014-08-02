@@ -1296,9 +1296,9 @@ Public Class Pic2Print
                                 " -t " & recip & _
                                 " -sub """ & Globals.EmailToCaption(Globals.EmailFifoOut) & """" & _
                                 " -auth-plain" & _
-                                " -attach " & fname
+                                " -attach " & fname & _
+                                " -v -log " & "c:\onsite\software\email.log"
 
-                        '" -logfile " & Globals.tmpPrint_Folder_1 & "software\email.log"
                         '" -message ""Your Picture from the event"" " & _
 
                         ' execute the mailer with this commandline we just built
