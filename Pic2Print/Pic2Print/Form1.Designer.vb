@@ -779,11 +779,11 @@ Partial Class Pic2Print
         '
         'btClearList
         '
-        Me.btClearList.Location = New System.Drawing.Point(35, 73)
+        Me.btClearList.Location = New System.Drawing.Point(7, 73)
         Me.btClearList.Name = "btClearList"
-        Me.btClearList.Size = New System.Drawing.Size(55, 23)
+        Me.btClearList.Size = New System.Drawing.Size(109, 23)
         Me.btClearList.TabIndex = 1
-        Me.btClearList.Text = "clear list"
+        Me.btClearList.Text = "Reset List && Kiosk"
         Me.btClearList.UseVisualStyleBackColor = True
         '
         'tbFilesToLoad

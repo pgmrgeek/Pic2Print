@@ -544,6 +544,7 @@ Public Class Pic2Print
     Private Sub btClearList_Click(sender As System.Object, e As System.EventArgs) Handles btClearList.Click
         ' flush the list
         Call resetlayercounter()
+        Call flushAppDocsInPhotoshop()
     End Sub
 
     Public Sub resetlayercounter()
@@ -1071,6 +1072,13 @@ Public Class Pic2Print
         Dim outTxt As String
         Dim inTxt As String
 
+        ' overload - if null string, reset the internal counter
+
+        If inNam = "" Then
+            prtCount = 0
+            Return
+        End If
+
         outNam = inNam  ' just in case we don't need to do anything..
 
         ' bail if the name is decorated..
@@ -1124,6 +1132,26 @@ Public Class Pic2Print
         End If
     End Sub
 
+    Private Sub flushAppDocsInPhotoshop()
+
+        Dim pgm As String = "c:\onsite\software\psclose.exe"
+
+        Globals.fDebug.txtPrintLn("closing all files opened in PS")
+
+        Dim compiler As New Process()
+        compiler.StartInfo.FileName = pgm
+        compiler.StartInfo.Arguments = "c:\onsite\software\psclose.jpg"
+        compiler.StartInfo.UseShellExecute = False
+        compiler.StartInfo.RedirectStandardOutput = True
+        compiler.Start()
+        compiler.WaitForExit()
+
+        ' overloaded call to reset the internal counters
+        Call ppDecorateName("", "")
+
+        Globals.fDebug.txtPrintLn("Close Complete")
+
+    End Sub
 
     Private Sub ppProcessFiles(ByRef fName As String)
         Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jpg", CompareMethod.Text) - 1) & ".txt"
@@ -2899,7 +2927,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 7.02"    ' Version string
+    Public Shared Version As String = "Version 7.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

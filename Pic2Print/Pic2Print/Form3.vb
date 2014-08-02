@@ -364,7 +364,18 @@ Public Class Form3
 
                 ' ------------- #6/#7/#8 background/foreground/no print flag --------
 
-                ' already calculated
+                bk = 0
+                If GreenScreen.Checked Then
+                    bk = 1
+                End If
+                fg = 0
+                If PaperForeground.Checked Then
+                    fg = 1
+                End If
+                noprt = 0
+                If NoPrint.Checked Then
+                    noprt = 1
+                End If
 
                 ' ------------ #9 profile --------------------------------------------
 
@@ -375,19 +386,41 @@ Public Class Form3
 
                 ' ------------ #10 count of backgrounds -------------------------------
 
-                ' already calculated
+                bkCnt = 1
+                If ((bk + fg) > 0 Or (MultipleBackgrounds.Checked = True)) Then
+                    If (MultipleBackgrounds.Checked = True) Then
+                        bkCnt = 0
+                        If Globals.BackgroundLoaded And 1 Then
+                            bkCnt += 1
+                        End If
+                        If Globals.BackgroundLoaded And 2 Then
+                            bkCnt += 1
+                        End If
+                        If Globals.BackgroundLoaded And 4 Then
+                            bkCnt += 1
+                        End If
+                        If Globals.BackgroundLoaded And 8 Then
+                            bkCnt += 1
+                        End If
+                    End If
+                End If
 
                 ' ------------ #11 each bk/fg Ratio ---------------
 
-                ' already calculated
+                bkRatio = Globals.BkFgRatio(tbBKFG.Text)
 
                 ' ----------- #12 bkfg action set that the custom action is located in  -----------
 
-                ' already calculated
+                ' pass the bk/fg action set name in the config file
+                actionset = Globals.BkFgSetName(tbBKFG.Text)
 
                 ' ----------- #13 save layered psd -----------------------------
 
-                ' already calculated
+                If ckSavePSD.Checked Then
+                    savepsd = "1"
+                Else
+                    savepsd = "0"
+                End If
 
                 ' -------- write lines of text out to the file ------------
                 Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd)

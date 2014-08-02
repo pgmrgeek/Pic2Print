@@ -171,7 +171,7 @@ Partial Class Form3
         Me.Label8.Size = New System.Drawing.Size(922, 13)
         Me.Label8.TabIndex = 32
         Me.Label8.Text = "                                                                                 " & _
-    "                                                     "
+            "                                                     "
         '
         'Label9
         '
@@ -181,7 +181,7 @@ Partial Class Form3
         Me.Label9.Size = New System.Drawing.Size(922, 13)
         Me.Label9.TabIndex = 33
         Me.Label9.Text = "                                                                                 " & _
-    "                                                     "
+            "                                                     "
         '
         'Label10
         '
@@ -193,8 +193,8 @@ Partial Class Form3
         Me.Label10.Size = New System.Drawing.Size(922, 13)
         Me.Label10.TabIndex = 34
         Me.Label10.Text = "            Bay Area Event Photography Onsite Printing                           " & _
-    "                                                                                " & _
-    "        "
+            "                                                                                " & _
+            "        "
         '
         'Label11
         '
@@ -656,9 +656,9 @@ Partial Class Form3
         Me.lblEnable4bkgnds.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblEnable4bkgnds.Location = New System.Drawing.Point(684, 215)
         Me.lblEnable4bkgnds.Name = "lblEnable4bkgnds"
-        Me.lblEnable4bkgnds.Size = New System.Drawing.Size(147, 13)
+        Me.lblEnable4bkgnds.Size = New System.Drawing.Size(161, 13)
         Me.lblEnable4bkgnds.TabIndex = 88
-        Me.lblEnable4bkgnds.Text = "Check this for Multiple layouts"
+        Me.lblEnable4bkgnds.Text = "Check this to see multiple bk/fgs"
         '
         'txtLayersPerGIF
         '
@@ -794,9 +794,9 @@ Partial Class Form3
         Me.chkBkFgsAnimated.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "resBkFgAnimated", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.chkBkFgsAnimated.Location = New System.Drawing.Point(684, 267)
         Me.chkBkFgsAnimated.Name = "chkBkFgsAnimated"
-        Me.chkBkFgsAnimated.Size = New System.Drawing.Size(154, 17)
+        Me.chkBkFgsAnimated.Size = New System.Drawing.Size(210, 17)
         Me.chkBkFgsAnimated.TabIndex = 102
-        Me.chkBkFgsAnimated.Text = "Backgrounds are Animated"
+        Me.chkBkFgsAnimated.Text = "Background/foregrounds are Animated"
         Me.chkBkFgsAnimated.UseVisualStyleBackColor = True
         '
         'lblBkFgAnimated
@@ -805,9 +805,9 @@ Partial Class Form3
         Me.lblBkFgAnimated.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblBkFgAnimated.Location = New System.Drawing.Point(686, 251)
         Me.lblBkFgAnimated.Name = "lblBkFgAnimated"
-        Me.lblBkFgAnimated.Size = New System.Drawing.Size(192, 13)
+        Me.lblBkFgAnimated.Size = New System.Drawing.Size(231, 13)
         Me.lblBkFgAnimated.TabIndex = 103
-        Me.lblBkFgAnimated.Text = "Check this if using 3 layers of animation"
+        Me.lblBkFgAnimated.Text = "Check this if using bk/fgs as layers of animation"
         '
         'ckSavePSD
         '
