@@ -325,22 +325,19 @@ Public Class Pic2Print
     ' read in the .CVS file listing all the standard & custom backgrounds/foregrounds
     '
     Public Sub ReadBKFGFile()
-
+        Dim n As Integer
         ' reset the list and attempt to read in 5 files of bk/fg combos
 
         Globals.BkFgMax = 0
         Globals.fForm3.ComboBoxBKFG.Items.Clear()
 
         Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.000.csv", True)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.100.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.200.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.300.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.400.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.500.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.600.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.700.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.800.csv", False)
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.900.csv", False)
+
+        ' scan for some 40 additional user defined bkfg files
+
+        For n = 100 To 500 Step 10
+            Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts." & n & ".csv", False)
+        Next
 
     End Sub
 
