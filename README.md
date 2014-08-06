@@ -1,7 +1,7 @@
-Pic2Print
+Pic2Print -----------------------------  [![PayPayl donate button](http://img.shields.io/paypal/donate.png?color=yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7JRTAVG63XHUL  "Donate once-off to this project using Paypal")
 =========
 
-BETA Release 7.02 (A work in progress) 
+BETA Release 7.03 (A work in progress) 
 
 "Pic2Print.exe" is a Microsoft Visual Studio 2010 Visual Basic .NET program that provides a user interface to an incoming stream of images.  It operates on a set of folders for the entire workflow. See the folder heirarchy below for more information. The toplevel folder must be named "OnSite" and must be located in the root of Drive C.  Sorry, but its hardcoded for now.  
 
