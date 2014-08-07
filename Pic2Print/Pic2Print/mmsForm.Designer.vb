@@ -31,12 +31,16 @@ Partial Class mmsForm
         Me.email2label = New System.Windows.Forms.Label()
         Me.usrEmail1 = New System.Windows.Forms.TextBox()
         Me.lblOrOther = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtMessage = New System.Windows.Forms.TextBox()
+        Me.useButton = New System.Windows.Forms.Button()
+        Me.lblLastEmail = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblEnterPhoneNum
         '
         Me.lblEnterPhoneNum.AutoSize = True
-        Me.lblEnterPhoneNum.Location = New System.Drawing.Point(12, 83)
+        Me.lblEnterPhoneNum.Location = New System.Drawing.Point(14, 228)
         Me.lblEnterPhoneNum.Name = "lblEnterPhoneNum"
         Me.lblEnterPhoneNum.Size = New System.Drawing.Size(166, 13)
         Me.lblEnterPhoneNum.TabIndex = 0
@@ -44,14 +48,14 @@ Partial Class mmsForm
         '
         'txtPhoneNum
         '
-        Me.txtPhoneNum.Location = New System.Drawing.Point(15, 99)
+        Me.txtPhoneNum.Location = New System.Drawing.Point(17, 244)
         Me.txtPhoneNum.Name = "txtPhoneNum"
         Me.txtPhoneNum.Size = New System.Drawing.Size(216, 20)
         Me.txtPhoneNum.TabIndex = 1
         '
         'mmsSend
         '
-        Me.mmsSend.Location = New System.Drawing.Point(15, 170)
+        Me.mmsSend.Location = New System.Drawing.Point(17, 315)
         Me.mmsSend.Name = "mmsSend"
         Me.mmsSend.Size = New System.Drawing.Size(75, 23)
         Me.mmsSend.TabIndex = 2
@@ -60,7 +64,7 @@ Partial Class mmsForm
         '
         'mmsCancel
         '
-        Me.mmsCancel.Location = New System.Drawing.Point(156, 170)
+        Me.mmsCancel.Location = New System.Drawing.Point(158, 315)
         Me.mmsCancel.Name = "mmsCancel"
         Me.mmsCancel.Size = New System.Drawing.Size(75, 23)
         Me.mmsCancel.TabIndex = 3
@@ -70,7 +74,7 @@ Partial Class mmsForm
         'CarrierLB
         '
         Me.CarrierLB.FormattingEnabled = True
-        Me.CarrierLB.Location = New System.Drawing.Point(15, 138)
+        Me.CarrierLB.Location = New System.Drawing.Point(17, 283)
         Me.CarrierLB.Name = "CarrierLB"
         Me.CarrierLB.Size = New System.Drawing.Size(216, 21)
         Me.CarrierLB.TabIndex = 4
@@ -78,7 +82,7 @@ Partial Class mmsForm
         'mmsSelCarrier
         '
         Me.mmsSelCarrier.AutoSize = True
-        Me.mmsSelCarrier.Location = New System.Drawing.Point(12, 122)
+        Me.mmsSelCarrier.Location = New System.Drawing.Point(14, 267)
         Me.mmsSelCarrier.Name = "mmsSelCarrier"
         Me.mmsSelCarrier.Size = New System.Drawing.Size(95, 13)
         Me.mmsSelCarrier.TabIndex = 6
@@ -87,7 +91,7 @@ Partial Class mmsForm
         'email2label
         '
         Me.email2label.AutoSize = True
-        Me.email2label.Location = New System.Drawing.Point(12, 9)
+        Me.email2label.Location = New System.Drawing.Point(12, 115)
         Me.email2label.Name = "email2label"
         Me.email2label.Size = New System.Drawing.Size(129, 13)
         Me.email2label.TabIndex = 8
@@ -95,7 +99,7 @@ Partial Class mmsForm
         '
         'usrEmail1
         '
-        Me.usrEmail1.Location = New System.Drawing.Point(15, 25)
+        Me.usrEmail1.Location = New System.Drawing.Point(15, 136)
         Me.usrEmail1.Name = "usrEmail1"
         Me.usrEmail1.Size = New System.Drawing.Size(216, 20)
         Me.usrEmail1.TabIndex = 9
@@ -103,17 +107,54 @@ Partial Class mmsForm
         'lblOrOther
         '
         Me.lblOrOther.AutoSize = True
-        Me.lblOrOther.Location = New System.Drawing.Point(62, 57)
+        Me.lblOrOther.Location = New System.Drawing.Point(64, 202)
         Me.lblOrOther.Name = "lblOrOther"
-        Me.lblOrOther.Size = New System.Drawing.Size(116, 13)
+        Me.lblOrOther.Size = New System.Drawing.Size(122, 13)
         Me.lblOrOther.TabIndex = 10
-        Me.lblOrOther.Text = "--------------- OR  -------------"
+        Me.lblOrOther.Text = "--------------- OR  ---------------"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(13, 13)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(97, 13)
+        Me.Label1.TabIndex = 11
+        Me.Label1.Text = "Add Your Message"
+        '
+        'txtMessage
+        '
+        Me.txtMessage.Location = New System.Drawing.Point(16, 34)
+        Me.txtMessage.Name = "txtMessage"
+        Me.txtMessage.Size = New System.Drawing.Size(216, 20)
+        Me.txtMessage.TabIndex = 12
+        '
+        'useButton
+        '
+        Me.useButton.Location = New System.Drawing.Point(172, 110)
+        Me.useButton.Name = "useButton"
+        Me.useButton.Size = New System.Drawing.Size(59, 23)
+        Me.useButton.TabIndex = 13
+        Me.useButton.Text = "Use Last"
+        Me.useButton.UseVisualStyleBackColor = True
+        '
+        'lblLastEmail
+        '
+        Me.lblLastEmail.Location = New System.Drawing.Point(14, 159)
+        Me.lblLastEmail.Name = "lblLastEmail"
+        Me.lblLastEmail.Size = New System.Drawing.Size(215, 18)
+        Me.lblLastEmail.TabIndex = 14
+        Me.lblLastEmail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'mmsForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(255, 205)
+        Me.ClientSize = New System.Drawing.Size(257, 365)
+        Me.Controls.Add(Me.lblLastEmail)
+        Me.Controls.Add(Me.useButton)
+        Me.Controls.Add(Me.txtMessage)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.lblOrOther)
         Me.Controls.Add(Me.email2label)
         Me.Controls.Add(Me.usrEmail1)
@@ -138,4 +179,8 @@ Partial Class mmsForm
     Friend WithEvents email2label As System.Windows.Forms.Label
     Friend WithEvents usrEmail1 As System.Windows.Forms.TextBox
     Friend WithEvents lblOrOther As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents txtMessage As System.Windows.Forms.TextBox
+    Friend WithEvents useButton As System.Windows.Forms.Button
+    Friend WithEvents lblLastEmail As System.Windows.Forms.Label
 End Class

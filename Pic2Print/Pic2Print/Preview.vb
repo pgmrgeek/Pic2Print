@@ -102,6 +102,7 @@ Public Class Preview
         Globals.fmmsForm.usrEmail1.Text = Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected)
         Globals.fmmsForm.txtPhoneNum.Text = Globals.FileNamePhone(Globals.ScreenBase + Globals.PictureBoxSelected)
         Globals.fmmsForm.CarrierLB.SelectedIndex = Globals.FileNamePhoneSel(Globals.ScreenBase + Globals.PictureBoxSelected)
+        Globals.fmmsForm.txtMessage.Text = Globals.FileNameMessage(Globals.ScreenBase + Globals.PictureBoxSelected)
         Globals.fmmsForm.ShowDialog()
 
     End Sub

@@ -10,6 +10,9 @@
 Public Class mmsForm
     Private Sub mmsSend_Click(sender As System.Object, e As System.EventArgs) Handles mmsSend.Click
 
+        ' use this email as a default for the next time 
+        lblLastEmail.Text = usrEmail1.Text
+
         ' save the text for later..
         Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail1.Text
         'Globals.fPic2Print.SaveFileNameData(Globals.ScreenBase + Globals.PictureBoxSelected)
@@ -17,17 +20,22 @@ Public Class mmsForm
         ' save the phone #, carrier info..
         Globals.FileNamePhone(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPhoneNum.Text
         Globals.FileNamePhoneSel(Globals.FileIndexSelected) = CarrierLB.SelectedIndex
-        Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
+        'Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
+        Globals.FileNameMessage(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
         Globals.fPic2Print.SaveFileNameData(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         Me.Hide()
+
     End Sub
 
     Private Sub mmsCancel_Click(sender As System.Object, e As System.EventArgs) Handles mmsCancel.Click
         Me.Hide()
     End Sub
 
-    Private Sub mmsForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles useButton.Click
+        usrEmail1.Text = lblLastEmail.Text
     End Sub
+
+    'Dim lastUserEmail As String
+
 End Class

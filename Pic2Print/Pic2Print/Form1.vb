@@ -592,6 +592,7 @@ Public Class Pic2Print
 
     Private Function Validate_and_PrintThisCount(ByRef count As Int16, ByVal mode As Integer) As Boolean
         Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
+        Dim b As Boolean
 
         ' validate a bunch of conditions so we dont print until ready
 
@@ -630,9 +631,12 @@ Public Class Pic2Print
         If count = 0 Then Return True
 
         ' print this many sheets of paper
-        Return PrintThisCount(idx, count, mode)
+        b = PrintThisCount(idx, count, mode)
+
         Globals.FileLoadCounter = 0
         tbFilesToLoad.Clear()
+
+        Return b
 
     End Function
 
@@ -1977,6 +1981,7 @@ Public Class Pic2Print
         Dim emailaddr As String
         Dim sel As Integer
         Dim phone As String
+        Dim sMessage As String
 
         'debug.TextBox1_println("AddFilesToArray")
 
@@ -2019,11 +2024,16 @@ Public Class Pic2Print
                     phone = fileReader.ReadLine()           ' read the phone #
                     sel = CInt(fileReader.ReadLine())       ' read the carrier selector
                 End If
+                If Not fileReader.EndOfStream Then
+                    ' read the user text message
+                    sMessage = fileReader.ReadLine()    ' read the message string
+                End If
 
                 Globals.FileNamesPrinted(Globals.FileNamesMax) = cnt
                 Globals.FileNameEmails(Globals.FileNamesMax) = emailaddr
                 Globals.FileNamePhone(Globals.FileNamesMax) = phone
                 Globals.FileNamePhoneSel(Globals.FileNamesMax) = sel
+                Globals.FileNameMessage(Globals.FileNamesMax) = sMessage
                 Globals.FileNamesHighPrint = Globals.FileNamesMax
                 Globals.TotalPrinted += cnt
 
@@ -2924,7 +2934,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 7.03"    ' Version string
+    Public Shared Version As String = "Version 7.04"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
