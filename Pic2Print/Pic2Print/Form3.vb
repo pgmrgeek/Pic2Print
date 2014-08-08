@@ -257,6 +257,10 @@ Public Class Form3
         Dim bkRatio As Int16 = 63
         Dim actionset As String
         Dim savepsd As String
+        Dim rgb As Integer
+        Dim colorR As Integer
+        Dim colorG As Integer
+        Dim colorB As Integer
 
         ' ====================== the first target config file ============================
 
@@ -335,9 +339,17 @@ Public Class Form3
                 savepsd = "0"
             End If
 
+            ' ------------- #14 RBG values for the text layer
+
+            ' !!!! Qualify this data before converting; it might cause an exception on bad data
+            rgb = txtRGBString.Text
+            colorR = (rgb >> 16) And 255
+            colorG = (rgb >> 8) And 255
+            colorB = rgb And 255
+
             ' -------- write  lines of text out to the file ------------
 
-            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd)
+            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB)
 
         End If
 
@@ -423,7 +435,7 @@ Public Class Form3
                 End If
 
                 ' -------- write lines of text out to the file ------------
-                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd)
+                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB)
 
             End If
 
@@ -445,7 +457,10 @@ Public Class Form3
         ByVal bkCnt As Int16, _
         ByVal bkRatio As Int16, _
         ByRef actionset As String, _
-        ByRef savepsd As String)
+        ByRef savepsd As String, _
+        ByVal colorR As Integer, _
+        ByVal colorG As Integer, _
+        ByVal colorB As Integer)
 
         Dim s As String
 
@@ -488,6 +503,13 @@ Public Class Form3
         My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
         s = savepsd & " ' #13 Save layered .PSD" & vbCrLf
+        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+
+        s = colorR & " ' #14 text layer RGB values" & vbCrLf
+        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s = colorG & vbCrLf
+        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s = colorB & vbCrLf
         My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
     End Sub

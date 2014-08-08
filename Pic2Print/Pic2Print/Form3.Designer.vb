@@ -94,6 +94,8 @@ Partial Class Form3
         Me.lblBkFgAnimated = New System.Windows.Forms.Label()
         Me.ckSavePSD = New System.Windows.Forms.CheckBox()
         Me.lblSavePSD = New System.Windows.Forms.Label()
+        Me.txtRGBString = New System.Windows.Forms.TextBox()
+        Me.lblRGBvalue = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -832,12 +834,32 @@ Partial Class Form3
         Me.lblSavePSD.TabIndex = 105
         Me.lblSavePSD.Text = "Save a .PSD version of the final image"
         '
+        'txtRGBString
+        '
+        Me.txtRGBString.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtRGBValue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtRGBString.Location = New System.Drawing.Point(687, 442)
+        Me.txtRGBString.Name = "txtRGBString"
+        Me.txtRGBString.Size = New System.Drawing.Size(100, 20)
+        Me.txtRGBString.TabIndex = 106
+        Me.txtRGBString.Text = Global.WindowsApplication1.My.MySettings.Default.txtRGBValue
+        '
+        'lblRGBvalue
+        '
+        Me.lblRGBvalue.AutoSize = True
+        Me.lblRGBvalue.Location = New System.Drawing.Point(684, 426)
+        Me.lblRGBvalue.Name = "lblRGBvalue"
+        Me.lblRGBvalue.Size = New System.Drawing.Size(183, 13)
+        Me.lblRGBvalue.TabIndex = 107
+        Me.lblRGBvalue.Text = "Hexadecimal RGB value for text layer"
+        '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(923, 509)
         Me.ControlBox = False
+        Me.Controls.Add(Me.lblRGBvalue)
+        Me.Controls.Add(Me.txtRGBString)
         Me.Controls.Add(Me.lblSavePSD)
         Me.Controls.Add(Me.ckSavePSD)
         Me.Controls.Add(Me.lblBkFgAnimated)
@@ -987,4 +1009,6 @@ Partial Class Form3
     Friend WithEvents lblBkFgAnimated As System.Windows.Forms.Label
     Friend WithEvents ckSavePSD As System.Windows.Forms.CheckBox
     Friend WithEvents lblSavePSD As System.Windows.Forms.Label
+    Friend WithEvents txtRGBString As System.Windows.Forms.TextBox
+    Friend WithEvents lblRGBvalue As System.Windows.Forms.Label
 End Class

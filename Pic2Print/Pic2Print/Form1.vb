@@ -8,7 +8,7 @@ Imports System.Threading
 '
 ' Copyright (c) 2014. Bay Area Event Photography. All Rights Reserved.
 '
-'BETA Release 7.02 (A work in progress)
+' BETA Release 7.04 (A work in progress)
 '
 '"Pic2Print.exe" is a Microsoft Visual Studio 2010 Visual Basic .NET
 'program that provides a user interface to an incoming stream of images.
@@ -182,14 +182,14 @@ Public Class Pic2Print
         End If
         Call ReadBKFGFile()
 
-        ' load the background images just in case they're called upon
-        Call LoadBackgrounds()
-
         ' if the source path is valid, load the file names/counts only. Images come later..
         If Globals.PathsValidated And 1 Then
             Call ResetFilesArray()
             Call AddFilesToArray()
         End If
+
+        ' load the background images just in case they're called upon
+        Call LoadBackgrounds()
 
         ShowBusy(False)
 
@@ -2019,6 +2019,7 @@ Public Class Pic2Print
                 p2cnt = CInt(fileReader.ReadLine())         ' read  printer #2 
                 emailaddr = fileReader.ReadLine()           ' read in the email address
                 phone = ""
+                sMessage = ""
                 sel = 0
                 If Not fileReader.EndOfStream Then
                     phone = fileReader.ReadLine()           ' read the phone #
@@ -2066,6 +2067,9 @@ Public Class Pic2Print
         Globals.FileIndexSelected = Globals.ScreenBase + idx
 
         UpdateScreenPictureBoxFocus(pb, idx)
+
+        ' maybe change the orientation of the layout thumbnails
+        Call LoadBackgrounds()
 
     End Sub
 
@@ -2632,20 +2636,41 @@ Public Class Pic2Print
     End Function
 
     Public Sub LoadBackgrounds()
+        Dim img As Image
+        Dim orient = 1  ' horizontal
 
         ' if the source path is valid, we know where the backgrounds are located
         If Globals.PathsValidated And 1 Then
 
-            Call _loadthisbackground(Background1PB, "background1.horz.jpg", 1)
-            Call _loadthisbackground(Background2PB, "background2.horz.jpg", 2)
-            Call _loadthisbackground(Background3PB, "background3.horz.jpg", 4)
-            Call _loadthisbackground(Background4PB, "background4.horz.jpg", 8)
+            ' check the selected image dimentions to load the appropriate thumbs.
+
+            img = ImageCacheFetchPicture(Globals.FileNames(Globals.PictureBoxSelected + Globals.ScreenBase))
+            If img.Height >= img.Width Then
+                orient = 2
+            End If
+
+            If orient = 1 Then
+
+                Call _loadthisbackground(Background1PB, "background1.horz.jpg", 1)
+                Call _loadthisbackground(Background2PB, "background2.horz.jpg", 2)
+                Call _loadthisbackground(Background3PB, "background3.horz.jpg", 4)
+                Call _loadthisbackground(Background4PB, "background4.horz.jpg", 8)
+
+            Else
+
+                Call _loadthisbackground(Background1PB, "background1.vert.jpg", 1)
+                Call _loadthisbackground(Background2PB, "background2.vert.jpg", 2)
+                Call _loadthisbackground(Background3PB, "background3.vert.jpg", 4)
+                Call _loadthisbackground(Background4PB, "background4.vert.jpg", 8)
+
+            End If
 
             Call BackgroundHighlight(Background1PB, 1)
 
         End If
 
     End Sub
+
 
     Private Sub _loadthisbackground(ByRef pb As PictureBox, ByRef fn As String, ByVal bit As Int16)
         Dim fname As String
@@ -3081,7 +3106,6 @@ Public Class Globals
     ' 00100000 00000000 - horizontal Bg/Fg are unique, and need custom actions
     ' 01000000 00000000 - horizontal Print sizes and need custom actions
     '
-
     ' this is ugly but to avoid delegates, we copy data out of controls to global variables for read-only access..
     Public Shared tmpIncoming_Folder As String
     Public Shared tmpPrint1_Folder As String
@@ -3097,7 +3121,6 @@ Public Class Globals
     Public Shared tmpBuildPostViews As Int16 = 0        ' 0 = idle, 1 = done, 2 = do build
     Public Shared tmpAutoPrints As Integer = 1          ' # of prints for the automatic processing
     Public Shared tmpSortByDate As Boolean             ' sort by date(true) or name(false)
-
 
 End Class
 

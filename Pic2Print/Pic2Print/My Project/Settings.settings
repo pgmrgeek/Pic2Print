@@ -173,5 +173,8 @@
     <Setting Name="ckSavePSDFile" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="txtRGBValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">&amp;HFFFFFF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
