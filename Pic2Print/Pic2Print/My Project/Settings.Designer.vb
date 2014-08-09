@@ -749,6 +749,18 @@ Namespace My
                 Me("txtRGBValue") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property txtFontIndex() As String
+            Get
+                Return CType(Me("txtFontIndex"),String)
+            End Get
+            Set
+                Me("txtFontIndex") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

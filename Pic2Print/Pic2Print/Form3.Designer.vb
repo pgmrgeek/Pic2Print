@@ -95,7 +95,12 @@ Partial Class Form3
         Me.ckSavePSD = New System.Windows.Forms.CheckBox()
         Me.lblSavePSD = New System.Windows.Forms.Label()
         Me.txtRGBString = New System.Windows.Forms.TextBox()
-        Me.lblRGBvalue = New System.Windows.Forms.Label()
+        Me.gbFonts = New System.Windows.Forms.GroupBox()
+        Me.txtFontListIndex = New System.Windows.Forms.TextBox()
+        Me.cbFontList = New System.Windows.Forms.ComboBox()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.lblTestFont = New System.Windows.Forms.Label()
+        Me.pbHueWheel = New System.Windows.Forms.PictureBox()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -103,6 +108,8 @@ Partial Class Form3
         Me.Printer1Info.SuspendLayout()
         Me.Printer2Info.SuspendLayout()
         Me.GroupBoxBKFG.SuspendLayout()
+        Me.gbFonts.SuspendLayout()
+        CType(Me.pbHueWheel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -159,7 +166,7 @@ Partial Class Form3
         '
         Me.Label7.AutoSize = True
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Label7.Location = New System.Drawing.Point(28, 357)
+        Me.Label7.Location = New System.Drawing.Point(20, 56)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(194, 13)
         Me.Label7.TabIndex = 31
@@ -202,7 +209,7 @@ Partial Class Form3
         '
         Me.Label11.AutoSize = True
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label11.Location = New System.Drawing.Point(12, 485)
+        Me.Label11.Location = New System.Drawing.Point(13, 512)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(317, 13)
         Me.Label11.TabIndex = 35
@@ -210,7 +217,7 @@ Partial Class Form3
         '
         'OKay
         '
-        Me.OKay.Location = New System.Drawing.Point(463, 480)
+        Me.OKay.Location = New System.Drawing.Point(819, 502)
         Me.OKay.Name = "OKay"
         Me.OKay.Size = New System.Drawing.Size(75, 23)
         Me.OKay.TabIndex = 27
@@ -220,7 +227,7 @@ Partial Class Form3
         'Print_Folder_2
         '
         Me.Print_Folder_2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "DestinationPath2", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Print_Folder_2.Location = New System.Drawing.Point(13, 334)
+        Me.Print_Folder_2.Location = New System.Drawing.Point(6, 31)
         Me.Print_Folder_2.Name = "Print_Folder_2"
         Me.Print_Folder_2.Size = New System.Drawing.Size(291, 20)
         Me.Print_Folder_2.TabIndex = 7
@@ -248,7 +255,7 @@ Partial Class Form3
         'VersionBox
         '
         Me.VersionBox.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.VersionBox.Location = New System.Drawing.Point(335, 482)
+        Me.VersionBox.Location = New System.Drawing.Point(336, 508)
         Me.VersionBox.Name = "VersionBox"
         Me.VersionBox.Size = New System.Drawing.Size(68, 18)
         Me.VersionBox.TabIndex = 38
@@ -327,7 +334,7 @@ Partial Class Form3
         '
         Me.Printer1PrintTimeLabel.AutoSize = True
         Me.Printer1PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer1PrintTimeLabel.Location = New System.Drawing.Point(92, 268)
+        Me.Printer1PrintTimeLabel.Location = New System.Drawing.Point(92, 265)
         Me.Printer1PrintTimeLabel.Name = "Printer1PrintTimeLabel"
         Me.Printer1PrintTimeLabel.Size = New System.Drawing.Size(239, 13)
         Me.Printer1PrintTimeLabel.TabIndex = 59
@@ -337,7 +344,7 @@ Partial Class Form3
         '
         Me.Printer2PrintTimeLabel.AutoSize = True
         Me.Printer2PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer2PrintTimeLabel.Location = New System.Drawing.Point(90, 379)
+        Me.Printer2PrintTimeLabel.Location = New System.Drawing.Point(82, 79)
         Me.Printer2PrintTimeLabel.Name = "Printer2PrintTimeLabel"
         Me.Printer2PrintTimeLabel.Size = New System.Drawing.Size(242, 13)
         Me.Printer2PrintTimeLabel.TabIndex = 61
@@ -346,7 +353,7 @@ Partial Class Form3
         'Printer2PrintTimeSeconds
         '
         Me.Printer2PrintTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer2PrintTimeSeconds.Location = New System.Drawing.Point(31, 373)
+        Me.Printer2PrintTimeSeconds.Location = New System.Drawing.Point(21, 75)
         Me.Printer2PrintTimeSeconds.Name = "Printer2PrintTimeSeconds"
         Me.Printer2PrintTimeSeconds.Size = New System.Drawing.Size(52, 20)
         Me.Printer2PrintTimeSeconds.TabIndex = 8
@@ -356,7 +363,7 @@ Partial Class Form3
         '
         Me.Printer1PaperCountLabel.AutoSize = True
         Me.Printer1PaperCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer1PaperCountLabel.Location = New System.Drawing.Point(92, 290)
+        Me.Printer1PaperCountLabel.Location = New System.Drawing.Point(92, 287)
         Me.Printer1PaperCountLabel.Name = "Printer1PaperCountLabel"
         Me.Printer1PaperCountLabel.Size = New System.Drawing.Size(198, 13)
         Me.Printer1PaperCountLabel.TabIndex = 63
@@ -375,7 +382,7 @@ Partial Class Form3
         '
         Me.Printer2PaperCountLabel.AutoSize = True
         Me.Printer2PaperCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer2PaperCountLabel.Location = New System.Drawing.Point(90, 402)
+        Me.Printer2PaperCountLabel.Location = New System.Drawing.Point(82, 102)
         Me.Printer2PaperCountLabel.Name = "Printer2PaperCountLabel"
         Me.Printer2PaperCountLabel.Size = New System.Drawing.Size(198, 13)
         Me.Printer2PaperCountLabel.TabIndex = 65
@@ -384,7 +391,7 @@ Partial Class Form3
         'Printer2PaperCount
         '
         Me.Printer2PaperCount.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2Sheets", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer2PaperCount.Location = New System.Drawing.Point(31, 395)
+        Me.Printer2PaperCount.Location = New System.Drawing.Point(21, 99)
         Me.Printer2PaperCount.Name = "Printer2PaperCount"
         Me.Printer2PaperCount.Size = New System.Drawing.Size(52, 20)
         Me.Printer2PaperCount.TabIndex = 9
@@ -395,7 +402,7 @@ Partial Class Form3
         Me.Print1GroupBox.Controls.Add(Me.btnFolderDialog2)
         Me.Print1GroupBox.Location = New System.Drawing.Point(10, 198)
         Me.Print1GroupBox.Name = "Print1GroupBox"
-        Me.Print1GroupBox.Size = New System.Drawing.Size(345, 113)
+        Me.Print1GroupBox.Size = New System.Drawing.Size(345, 138)
         Me.Print1GroupBox.TabIndex = 66
         Me.Print1GroupBox.TabStop = False
         '
@@ -414,7 +421,13 @@ Partial Class Form3
         Me.GroupBox2.Controls.Add(Me.btnFolderDialog3)
         Me.GroupBox2.Controls.Add(Me.Print2Enabled)
         Me.GroupBox2.Controls.Add(Me.LoadBalancing)
-        Me.GroupBox2.Location = New System.Drawing.Point(10, 309)
+        Me.GroupBox2.Controls.Add(Me.Printer2PaperCount)
+        Me.GroupBox2.Controls.Add(Me.Printer2PrintTimeSeconds)
+        Me.GroupBox2.Controls.Add(Me.Printer2PaperCountLabel)
+        Me.GroupBox2.Controls.Add(Me.Printer2PrintTimeLabel)
+        Me.GroupBox2.Controls.Add(Me.Print_Folder_2)
+        Me.GroupBox2.Controls.Add(Me.Label7)
+        Me.GroupBox2.Location = New System.Drawing.Point(10, 334)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(345, 157)
         Me.GroupBox2.TabIndex = 67
@@ -422,7 +435,7 @@ Partial Class Form3
         '
         'btnFolderDialog3
         '
-        Me.btnFolderDialog3.Location = New System.Drawing.Point(300, 25)
+        Me.btnFolderDialog3.Location = New System.Drawing.Point(300, 31)
         Me.btnFolderDialog3.Name = "btnFolderDialog3"
         Me.btnFolderDialog3.Size = New System.Drawing.Size(33, 20)
         Me.btnFolderDialog3.TabIndex = 26
@@ -434,7 +447,7 @@ Partial Class Form3
         Me.Print2Enabled.AutoSize = True
         Me.Print2Enabled.Checked = Global.WindowsApplication1.My.MySettings.Default.Print2EnabledBool
         Me.Print2Enabled.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "Print2EnabledBool", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Print2Enabled.Location = New System.Drawing.Point(2, 8)
+        Me.Print2Enabled.Location = New System.Drawing.Point(6, 8)
         Me.Print2Enabled.Name = "Print2Enabled"
         Me.Print2Enabled.Size = New System.Drawing.Size(160, 17)
         Me.Print2Enabled.TabIndex = 12
@@ -447,7 +460,7 @@ Partial Class Form3
         Me.LoadBalancing.Checked = Global.WindowsApplication1.My.MySettings.Default.EnaLoadBalancing
         Me.LoadBalancing.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "EnaLoadBalancing", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.LoadBalancing.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.LoadBalancing.Location = New System.Drawing.Point(20, 113)
+        Me.LoadBalancing.Location = New System.Drawing.Point(20, 134)
         Me.LoadBalancing.Name = "LoadBalancing"
         Me.LoadBalancing.Size = New System.Drawing.Size(136, 17)
         Me.LoadBalancing.TabIndex = 10
@@ -837,28 +850,79 @@ Partial Class Form3
         'txtRGBString
         '
         Me.txtRGBString.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtRGBValue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtRGBString.Location = New System.Drawing.Point(687, 442)
+        Me.txtRGBString.Location = New System.Drawing.Point(547, 456)
         Me.txtRGBString.Name = "txtRGBString"
-        Me.txtRGBString.Size = New System.Drawing.Size(100, 20)
+        Me.txtRGBString.Size = New System.Drawing.Size(82, 20)
         Me.txtRGBString.TabIndex = 106
         Me.txtRGBString.Text = Global.WindowsApplication1.My.MySettings.Default.txtRGBValue
         '
-        'lblRGBvalue
+        'gbFonts
         '
-        Me.lblRGBvalue.AutoSize = True
-        Me.lblRGBvalue.Location = New System.Drawing.Point(684, 426)
-        Me.lblRGBvalue.Name = "lblRGBvalue"
-        Me.lblRGBvalue.Size = New System.Drawing.Size(183, 13)
-        Me.lblRGBvalue.TabIndex = 107
-        Me.lblRGBvalue.Text = "Hexadecimal RGB value for text layer"
+        Me.gbFonts.Controls.Add(Me.txtFontListIndex)
+        Me.gbFonts.Controls.Add(Me.cbFontList)
+        Me.gbFonts.Location = New System.Drawing.Point(382, 365)
+        Me.gbFonts.Name = "gbFonts"
+        Me.gbFonts.Size = New System.Drawing.Size(254, 47)
+        Me.gbFonts.TabIndex = 109
+        Me.gbFonts.TabStop = False
+        Me.gbFonts.Text = "Fonts for Text Layer"
+        '
+        'txtFontListIndex
+        '
+        Me.txtFontListIndex.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtFontIndex", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtFontListIndex.Location = New System.Drawing.Point(212, 15)
+        Me.txtFontListIndex.Name = "txtFontListIndex"
+        Me.txtFontListIndex.Size = New System.Drawing.Size(35, 20)
+        Me.txtFontListIndex.TabIndex = 1
+        Me.txtFontListIndex.Text = Global.WindowsApplication1.My.MySettings.Default.txtFontIndex
+        '
+        'cbFontList
+        '
+        Me.cbFontList.FormattingEnabled = True
+        Me.cbFontList.Location = New System.Drawing.Point(7, 15)
+        Me.cbFontList.Name = "cbFontList"
+        Me.cbFontList.Size = New System.Drawing.Size(199, 21)
+        Me.cbFontList.TabIndex = 0
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Location = New System.Drawing.Point(466, 459)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(75, 13)
+        Me.Label16.TabIndex = 110
+        Me.Label16.Text = "Click for Color "
+        '
+        'lblTestFont
+        '
+        Me.lblTestFont.BackColor = System.Drawing.Color.White
+        Me.lblTestFont.Location = New System.Drawing.Point(470, 421)
+        Me.lblTestFont.Name = "lblTestFont"
+        Me.lblTestFont.Size = New System.Drawing.Size(166, 21)
+        Me.lblTestFont.TabIndex = 111
+        Me.lblTestFont.Text = "abcdef ABCDEF"
+        Me.lblTestFont.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'pbHueWheel
+        '
+        Me.pbHueWheel.Image = Global.WindowsApplication1.My.Resources.Resources.Hue2
+        Me.pbHueWheel.Location = New System.Drawing.Point(389, 419)
+        Me.pbHueWheel.Name = "pbHueWheel"
+        Me.pbHueWheel.Size = New System.Drawing.Size(72, 72)
+        Me.pbHueWheel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.pbHueWheel.TabIndex = 108
+        Me.pbHueWheel.TabStop = False
         '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(923, 509)
+        Me.ClientSize = New System.Drawing.Size(923, 534)
         Me.ControlBox = False
-        Me.Controls.Add(Me.lblRGBvalue)
+        Me.Controls.Add(Me.lblTestFont)
+        Me.Controls.Add(Me.Label16)
+        Me.Controls.Add(Me.gbFonts)
+        Me.Controls.Add(Me.pbHueWheel)
         Me.Controls.Add(Me.txtRGBString)
         Me.Controls.Add(Me.lblSavePSD)
         Me.Controls.Add(Me.ckSavePSD)
@@ -889,12 +953,8 @@ Partial Class Form3
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Printer2Info)
         Me.Controls.Add(Me.Printer1Info)
-        Me.Controls.Add(Me.Printer2PaperCountLabel)
-        Me.Controls.Add(Me.Printer2PaperCount)
         Me.Controls.Add(Me.Printer1PaperCountLabel)
         Me.Controls.Add(Me.Printer1PaperCount)
-        Me.Controls.Add(Me.Printer2PrintTimeLabel)
-        Me.Controls.Add(Me.Printer2PrintTimeSeconds)
         Me.Controls.Add(Me.Printer1PrintTimeLabel)
         Me.Controls.Add(Me.Printer1PrintTimeSeconds)
         Me.Controls.Add(Me.GroupBox1)
@@ -904,10 +964,8 @@ Partial Class Form3
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.Print_Folder_2)
         Me.Controls.Add(Me.Print_Folder_1)
         Me.Controls.Add(Me.Print1DestLabel)
         Me.Controls.Add(Me.Label1)
@@ -933,6 +991,9 @@ Partial Class Form3
         Me.Printer2Info.PerformLayout()
         Me.GroupBoxBKFG.ResumeLayout(False)
         Me.GroupBoxBKFG.PerformLayout()
+        Me.gbFonts.ResumeLayout(False)
+        Me.gbFonts.PerformLayout()
+        CType(Me.pbHueWheel, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1010,5 +1071,10 @@ Partial Class Form3
     Friend WithEvents ckSavePSD As System.Windows.Forms.CheckBox
     Friend WithEvents lblSavePSD As System.Windows.Forms.Label
     Friend WithEvents txtRGBString As System.Windows.Forms.TextBox
-    Friend WithEvents lblRGBvalue As System.Windows.Forms.Label
+    Friend WithEvents pbHueWheel As System.Windows.Forms.PictureBox
+    Friend WithEvents gbFonts As System.Windows.Forms.GroupBox
+    Friend WithEvents txtFontListIndex As System.Windows.Forms.TextBox
+    Friend WithEvents cbFontList As System.Windows.Forms.ComboBox
+    Friend WithEvents Label16 As System.Windows.Forms.Label
+    Friend WithEvents lblTestFont As System.Windows.Forms.Label
 End Class

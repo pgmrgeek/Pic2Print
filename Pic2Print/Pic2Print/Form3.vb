@@ -1,4 +1,5 @@
-﻿'
+﻿
+'
 '================================================================================================
 '
 '  Pic2Print - Photobooth Image Stream Manager.
@@ -36,7 +37,36 @@ Public Class Form3
         Printer1LB.SelectedIndex = prtrSelect1.Text
         Printer2LB.SelectedIndex = prtrSelect2.Text
 
+        ' Load up all the photos in the list box
+
+        Call CreateFamilyFontList()
+        cbFontList.SelectedIndex = txtFontListIndex.Text
+
     End Sub
+
+
+    Private Sub CreateFamilyFontList()
+
+        Dim fontFamily As New FontFamily("Arial")
+        Dim font As New Font( _
+           fontFamily, _
+           8, _
+           FontStyle.Regular, _
+           GraphicsUnit.Point)
+
+        'Dim familyName As String
+        'Dim familyList As String = ""
+        'Dim fontFamilies() As FontFamily
+
+        Dim TheFontFamily As FontFamily
+
+        cbFontList.Items.Clear()
+        For Each TheFontFamily In fontFamily.Families
+            cbFontList.Items.Add(TheFontFamily.Name)
+        Next
+
+    End Sub
+
 
     Private Sub Form3_Closing(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.FormClosing
         Call form3IsClosing()
@@ -512,6 +542,9 @@ Public Class Form3
         s = colorB & vbCrLf
         My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
+        s = """" & cbFontList.SelectedItem & """" & " ' #15 Font selected"
+        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+
     End Sub
 
     '
@@ -608,7 +641,7 @@ Public Class Form3
     Private Sub Printer2LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer2LB.SelectedIndexChanged
         prtrSelect2.Text = Printer2LB.SelectedIndex
     End Sub
-    Private Sub ComboBoxBKFG_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ComboBoxBKFG.SelectedIndexChanged
+    Private Sub ComboBoxBKFG_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxBKFG.SelectedIndexChanged
 
         tbBKFG.Text = ComboBoxBKFG.SelectedIndex
         txtLayersPerGIF.Text = Globals.BkFgGifLayers(ComboBoxBKFG.SelectedIndex)
@@ -680,10 +713,55 @@ Public Class Form3
 
     End Function
 
-    Private Sub EmailCloudEnabled_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles EmailCloudEnabled.CheckedChanged
+    Private Sub pbHueWheel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbHueWheel.Click
+        txtRGBString.Text = ColorIntensity()
+        Call cbFontListColor()
     End Sub
 
-    Private Sub lblAutoPrintCount_Click(sender As System.Object, e As System.EventArgs) Handles lblAutoPrintCount.Click
+    Function ColorIntensity() As String
+        Dim rBitmap As New Rectangle(0, 0, 1, 1)
+        'Dim rgbVal As Integer
+        Dim rVal As String
+        Dim gVal As String
+        Dim bVal As String
+        Dim i As Integer
+        Dim str As String
+        Dim Bit As New Bitmap(rBitmap.Width, rBitmap.Height, Imaging.PixelFormat.Format64bppPArgb)
+        Dim BG As Graphics = Graphics.FromImage(Bit)
+        Using BG
+            BG.CopyFromScreen(Cursor.Position, Point.Empty, rBitmap.Size)
+        End Using
+        Dim PixelColor As Color = Bit.GetPixel(0, 0)
+
+        i = PixelColor.R And &HFF
+        rVal = i.ToString("X2")
+        i = PixelColor.G And &HFF
+        gVal = i.ToString("X2")
+        i = PixelColor.B And &HFF
+        bVal = i.ToString("X2")
+
+        str = "&h" & rVal & gVal & bVal
+
+        BG.Dispose()
+        Bit.Dispose()
+
+        Return (str)
+
+    End Function
+
+    Private Sub cbFontList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFontList.SelectedIndexChanged
+        Dim nam As String = cbFontList.SelectedItem
+        txtFontListIndex.Text = cbFontList.SelectedIndex
+        lblTestFont.Font = New Font(nam, 10)
+        Call cbFontListColor()
     End Sub
+
+    Private Sub cbFontListColor()
+        Dim rgbVal As Integer = txtRGBString.Text
+        lblTestFont.ForeColor = Color.FromArgb(rgbVal)
+    End Sub
+
+
+
 
 End Class
