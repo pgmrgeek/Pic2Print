@@ -10,6 +10,7 @@
 Public Class Form3
 
     Private Sub Form3_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim i As Integer
 
         ' if the user sent in a reset, then reposition on the desktop
         If Globals.cmdLineReset Then
@@ -32,15 +33,24 @@ Public Class Form3
         If prtrSelect1.Text = "" Then prtrSelect1.Text = "0"
         If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
         If tbBKFG.Text = "" Then tbBKFG.Text = "0"
+        If txtFontListIndex.Text = "" Then txtFontListIndex.Text = "0"
 
-        ComboBoxBKFG.SelectedIndex = tbBKFG.Text
-        Printer1LB.SelectedIndex = prtrSelect1.Text
-        Printer2LB.SelectedIndex = prtrSelect2.Text
+        i = tbBKFG.Text
+        If i >= ComboBoxBKFG.Items.Count Then i = 0
+        ComboBoxBKFG.SelectedIndex = i
 
-        ' Load up all the photos in the list box
+        i = prtrSelect1.Text
+        If i >= Printer1LB.Items.Count Then i = 0
+        Printer1LB.SelectedIndex = i
+
+        i = prtrSelect2.Text
+        If i >= Printer2LB.Items.Count Then i = 0
+        Printer2LB.SelectedIndex = i
 
         Call CreateFamilyFontList()
-        cbFontList.SelectedIndex = txtFontListIndex.Text
+        i = txtFontListIndex.Text
+        If i >= cbFontList.Items.Count Then i = 0
+        cbFontList.SelectedIndex = i
 
     End Sub
 
