@@ -19,7 +19,7 @@ Public Class Preview
         ' relocate the objects in the form
 
         Call Form2_Resized()
-        Call SwapButtons(Form3.EmailCloudEnabled.Checked)
+        ' Call SwapButtons(Form3.EmailCloudEnabled.Checked)
 
     End Sub
     Private Sub ThumbnailForm_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
@@ -55,12 +55,6 @@ Public Class Preview
     Private Sub Form2_Resized()
         Dim p As Point
 
-        ' MessageBox.Show("You are in the Form.ResizeEnd event.")
-
-        'p.Y = MyBase.Size.Height - 64
-        'If p.Y < 0 Then p.Y = 0
-        'PrevCloseButton.Location = p
-
         ' resize the picture box
 
         'p = MyBase.Size
@@ -73,37 +67,59 @@ Public Class Preview
 
         Form2PictureBox.Size = p
 
-        'p.Y = MyBase.Size.Height - 35
-        p = Me.Size
-        p.Y = p.Y - 70
+        ' move the close button position
+        p.Y = MyBase.Size.Height - 64
         If p.Y < 0 Then p.Y = 0
-        p.X = 12
-        PrevMMS.Location = p
-        p.X = 93
+
+        p.X = PrevClose.Location.X
         PrevClose.Location = p
 
+        ' move the print message label
+        p.X = lblPrintMsg.Location.X
+        lblPrintMsg.Location = p
+
+        ' move the  message text box
+        p.X = BtnSaveTxt.Location.X
+        BtnSaveTxt.Location = p
+
+        ' move the  message text box
+        p.X = txtPrintMsg.Location.X
+        txtPrintMsg.Location = p
+
+
     End Sub
 
-    Public Sub SwapButtons(TurnOn As Boolean)
-        If TurnOn = True Then
-            'PrevGroup.Visible = True
-            'PrevCloseButton.Visible = False
-        Else
-            'PrevGroup.Visible = False
-            'PrevCloseButton.Visible = True
-        End If
-    End Sub
+    'Public Sub SwapButtons(TurnOn As Boolean)
+    '    If TurnOn = True Then
+    'PrevGroup.Visible = True
+    'PrevCloseButton.Visible = False
+    '    Else
+    'PrevGroup.Visible = False
+    'PrevCloseButton.Visible = True
+    '     End If
+    ' End Sub
 
-    Private Sub PrevClose_Click(sender As System.Object, e As System.EventArgs) Handles PrevClose.Click
+    Private Sub PrevClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PrevClose.Click
+        SaveMessage()
         Me.Hide()
     End Sub
 
-    Private Sub PrevMMS_Click(sender As System.Object, e As System.EventArgs) Handles PrevMMS.Click
-        Globals.fmmsForm.usrEmail1.Text = Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected)
-        Globals.fmmsForm.txtPhoneNum.Text = Globals.FileNamePhone(Globals.ScreenBase + Globals.PictureBoxSelected)
-        Globals.fmmsForm.CarrierLB.SelectedIndex = Globals.FileNamePhoneSel(Globals.ScreenBase + Globals.PictureBoxSelected)
-        Globals.fmmsForm.txtMessage.Text = Globals.FileNameMessage(Globals.ScreenBase + Globals.PictureBoxSelected)
-        Globals.fmmsForm.ShowDialog()
+    'Private Sub PrevMMS_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    '    Globals.fmmsForm.usrEmail1.Text = Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
+    '    Globals.fmmsForm.txtPhoneNum.Text = Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
+    '    Globals.fmmsForm.CarrierCB.SelectedIndex = Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
+    '    Globals.fmmsForm.txtMessage.Text = Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected)
+    '    Globals.fmmsForm.ShowDialog()
+    '
+    ' End Sub
 
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSaveTxt.Click
+        SaveMessage()
     End Sub
+
+    Private Sub SaveMessage()
+        Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPrintMsg.Text
+        Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
+    End Sub
+
 End Class

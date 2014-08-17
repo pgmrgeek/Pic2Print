@@ -29,7 +29,7 @@ Public Class Form3
         ' grays out printer2 if not checked
         Call Print2Status()
 
-        ' pick up the selected printers from application storage
+        ' pick up the selected printers, fonts, and layer set, from application storage
         If prtrSelect1.Text = "" Then prtrSelect1.Text = "0"
         If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
         If tbBKFG.Text = "" Then tbBKFG.Text = "0"
@@ -57,22 +57,14 @@ Public Class Form3
 
     Private Sub CreateFamilyFontList()
 
-        Dim fontFamily As New FontFamily("Arial")
-        Dim font As New Font( _
-           fontFamily, _
-           8, _
-           FontStyle.Regular, _
-           GraphicsUnit.Point)
+         cbFontList.Items.Clear()
 
-        'Dim familyName As String
-        'Dim familyList As String = ""
-        'Dim fontFamilies() As FontFamily
-
-        Dim TheFontFamily As FontFamily
-
-        cbFontList.Items.Clear()
-        For Each TheFontFamily In fontFamily.Families
-            cbFontList.Items.Add(TheFontFamily.Name)
+        For Each FF As FontFamily In System.Drawing.FontFamily.Families
+            If (FF.IsStyleAvailable(FontStyle.Regular)) Then
+                cbFontList.Items.Add(FF.Name)
+            Else
+                debug.txtPrintLn("Fonts: tossing " & FF.Name)
+            End If
         Next
 
     End Sub
@@ -105,9 +97,9 @@ Public Class Form3
     Private Sub MultipleBackgrounds_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MultipleBackgrounds.CheckedChanged
         ' enable/disable the parent form
         Globals.fPic2Print.ModifyForm(MultipleBackgrounds.Checked)
-        If Globals.fPostViewHasLoaded Then
-            Globals.fPostView.FormLayout()
-        End If
+        'If Globals.fPostViewHasLoaded Then
+        'Globals.fPostView.FormLayout()
+        ' End If
 
     End Sub
 
@@ -206,6 +198,7 @@ Public Class Form3
         If Globals.PrintProcessRun = 0 Then
             Globals.PrintProcessRun = 1     ' 1 says state is idle
             Globals.PrintProcessor.Start()
+            Globals.PrintedFolderProcessor.Start()
         End If
         Globals.PrintProcessRun = 2     ' 2 says state is running
 
@@ -725,6 +718,11 @@ Public Class Form3
 
     Private Sub pbHueWheel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbHueWheel.Click
         txtRGBString.Text = ColorIntensity()
+        If txtRGBString.Text = "&hFFFFFF" Then
+            lblTestFont.BackColor = Color.LightGray
+        Else
+            lblTestFont.BackColor = Color.White
+        End If
         Call cbFontListColor()
     End Sub
 

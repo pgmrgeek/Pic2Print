@@ -88,6 +88,7 @@ Partial Class Pic2Print
         Me.gpLoadedFiles = New System.Windows.Forms.GroupBox()
         Me.btClearList = New System.Windows.Forms.Button()
         Me.tbFilesToLoad = New System.Windows.Forms.TextBox()
+        Me.btnTestRun = New System.Windows.Forms.Button()
         Me.PrinterGroupBoxPrinterGroupBox.SuspendLayout()
         Me.BackGroundGroupBox.SuspendLayout()
         CType(Me.Background4PB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -797,6 +798,15 @@ Partial Class Pic2Print
         Me.tbFilesToLoad.TabIndex = 0
         Me.tbFilesToLoad.WordWrap = False
         '
+        'btnTestRun
+        '
+        Me.btnTestRun.Location = New System.Drawing.Point(1006, 289)
+        Me.btnTestRun.Name = "btnTestRun"
+        Me.btnTestRun.Size = New System.Drawing.Size(75, 23)
+        Me.btnTestRun.TabIndex = 65
+        Me.btnTestRun.Text = "Test Run"
+        Me.btnTestRun.UseVisualStyleBackColor = True
+        '
         'Pic2Print
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -804,6 +814,7 @@ Partial Class Pic2Print
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1123, 376)
         Me.ControlBox = False
+        Me.Controls.Add(Me.btnTestRun)
         Me.Controls.Add(Me.gpLoadedFiles)
         Me.Controls.Add(Me.SendEmails)
         Me.Controls.Add(Me.Quit_Button)
@@ -926,5 +937,6 @@ Partial Class Pic2Print
     Friend WithEvents gpLoadedFiles As System.Windows.Forms.GroupBox
     Friend WithEvents btClearList As System.Windows.Forms.Button
     Friend WithEvents tbFilesToLoad As System.Windows.Forms.TextBox
+    Friend WithEvents btnTestRun As System.Windows.Forms.Button
 
 End Class

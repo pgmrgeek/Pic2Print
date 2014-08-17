@@ -22,24 +22,17 @@ Partial Class Preview
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.PrevMMS = New System.Windows.Forms.Button()
         Me.PrevClose = New System.Windows.Forms.Button()
         Me.Form2PictureBox = New System.Windows.Forms.PictureBox()
+        Me.lblPrintMsg = New System.Windows.Forms.Label()
+        Me.txtPrintMsg = New System.Windows.Forms.TextBox()
+        Me.BtnSaveTxt = New System.Windows.Forms.Button()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'PrevMMS
-        '
-        Me.PrevMMS.Location = New System.Drawing.Point(12, 411)
-        Me.PrevMMS.Name = "PrevMMS"
-        Me.PrevMMS.Size = New System.Drawing.Size(75, 23)
-        Me.PrevMMS.TabIndex = 2
-        Me.PrevMMS.Text = "Email/Msg"
-        Me.PrevMMS.UseVisualStyleBackColor = True
-        '
         'PrevClose
         '
-        Me.PrevClose.Location = New System.Drawing.Point(93, 411)
+        Me.PrevClose.Location = New System.Drawing.Point(530, 411)
         Me.PrevClose.Name = "PrevClose"
         Me.PrevClose.Size = New System.Drawing.Size(75, 23)
         Me.PrevClose.TabIndex = 3
@@ -57,14 +50,41 @@ Partial Class Preview
         Me.Form2PictureBox.TabIndex = 0
         Me.Form2PictureBox.TabStop = False
         '
+        'lblPrintMsg
+        '
+        Me.lblPrintMsg.AutoSize = True
+        Me.lblPrintMsg.Location = New System.Drawing.Point(23, 415)
+        Me.lblPrintMsg.Name = "lblPrintMsg"
+        Me.lblPrintMsg.Size = New System.Drawing.Size(86, 13)
+        Me.lblPrintMsg.TabIndex = 4
+        Me.lblPrintMsg.Text = "Printed Message"
+        '
+        'txtPrintMsg
+        '
+        Me.txtPrintMsg.Location = New System.Drawing.Point(115, 413)
+        Me.txtPrintMsg.Name = "txtPrintMsg"
+        Me.txtPrintMsg.Size = New System.Drawing.Size(328, 20)
+        Me.txtPrintMsg.TabIndex = 5
+        '
+        'BtnSaveTxt
+        '
+        Me.BtnSaveTxt.Location = New System.Drawing.Point(449, 411)
+        Me.BtnSaveTxt.Name = "BtnSaveTxt"
+        Me.BtnSaveTxt.Size = New System.Drawing.Size(75, 23)
+        Me.BtnSaveTxt.TabIndex = 6
+        Me.BtnSaveTxt.Text = "Save"
+        Me.BtnSaveTxt.UseVisualStyleBackColor = True
+        '
         'Preview
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = Global.WindowsApplication1.My.MySettings.Default.img_size
         Me.ControlBox = False
+        Me.Controls.Add(Me.BtnSaveTxt)
+        Me.Controls.Add(Me.txtPrintMsg)
+        Me.Controls.Add(Me.lblPrintMsg)
         Me.Controls.Add(Me.PrevClose)
-        Me.Controls.Add(Me.PrevMMS)
         Me.Controls.Add(Me.Form2PictureBox)
         Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.WindowsApplication1.My.MySettings.Default, "Thumbnail_Location", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.DataBindings.Add(New System.Windows.Forms.Binding("ClientSize", Global.WindowsApplication1.My.MySettings.Default, "img_size", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -75,9 +95,12 @@ Partial Class Preview
         Me.Text = "Preview"
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents Form2PictureBox As System.Windows.Forms.PictureBox
-    Friend WithEvents PrevMMS As System.Windows.Forms.Button
     Friend WithEvents PrevClose As System.Windows.Forms.Button
+    Friend WithEvents lblPrintMsg As System.Windows.Forms.Label
+    Friend WithEvents txtPrintMsg As System.Windows.Forms.TextBox
+    Friend WithEvents BtnSaveTxt As System.Windows.Forms.Button
 End Class

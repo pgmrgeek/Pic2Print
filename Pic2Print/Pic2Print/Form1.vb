@@ -65,7 +65,7 @@ Public Class Pic2Print
     ' ================================== Startup/End Code ===================================================
     '
     Private Sub Pic2Print_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim fpostview As New Postview
+        Dim fpostview As New PostView
         Dim fForm3 As New Form3
         Dim fForm4 As New Form4
         Dim fPic2Print As New Pic2Print
@@ -82,6 +82,8 @@ Public Class Pic2Print
         Globals.fPreview = fPreview
         Globals.fSendEmails = fSendEmails
         Globals.fmmsForm = fmmsForm
+        Globals.ImageCache = New ImageCaching
+        Globals.PrintCache = New ImageCaching
 
         ' cursor timeclock..
         ShowBusy(True)
@@ -115,6 +117,7 @@ Public Class Pic2Print
 
         If Globals.cmdLineDebug Then
             Stats.Visible = True
+            btnTestRun.Visible = True
         End If
 
         If Globals.cmdSendEmails Then
@@ -166,6 +169,9 @@ Public Class Pic2Print
         Globals.tmpPrint1_Folder = Globals.fForm3.Print_Folder_1.Text
         Globals.tmpPrint2_Folder = Globals.fForm3.Print_Folder_2.Text
 
+        Globals.ImageCache.filePath = Globals.tmpIncoming_Folder
+        Globals.PrintCache.filePath = Globals.tmpPrint1_Folder
+
         ' make the multiple background pictureboxes disappear if not enabled
         If Globals.fForm3.MultipleBackgrounds.Checked = False Then
             BackGroundGroupBox.Visible = False
@@ -183,6 +189,10 @@ Public Class Pic2Print
         Call ReadBKFGFile()
 
         ' if the source path is valid, load the file names/counts only. Images come later..
+
+        Globals.ImageCache.filePath = Globals.tmpIncoming_Folder
+        Globals.PrintCache.filePath = Globals.tmpPrint1_Folder & "printed\"
+
         If Globals.PathsValidated And 1 Then
             Call ResetFilesArray()
             Call AddFilesToArray()
@@ -191,11 +201,15 @@ Public Class Pic2Print
         ' load the background images just in case they're called upon
         Call LoadBackgrounds()
 
+        ' find our starting print # 
+        Call ScanForLastPrintedJPG()
+
         ShowBusy(False)
 
         ' setup the background thread to watch the 1st print folder for incoming JPGs copied there by the foreground
 
         Globals.PrintProcessor = New Threading.Thread(AddressOf PrintProcessorThread)
+        Globals.PrintedFolderProcessor = New Threading.Thread(AddressOf PrintedFolderThread)
         Globals.EmailProcessor = New Threading.Thread(AddressOf EmailProcessorThread)
 
         ' pop up the config window on start
@@ -228,6 +242,42 @@ Public Class Pic2Print
 
     End Sub
 
+    Private Sub Scanforlastprintedjpg()
+        Dim s As String
+        Dim idx As Integer
+        Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpPrint1_Folder & "printed").GetFiles("*.jpg"))
+
+        ' sort by date/time stamp, not file name 
+        idx = files.Count
+        If idx = 0 Then
+            Call PrintThisCount(-1, 10, 0)
+            Globals.fDebug.txtPrintLn("Next print prefix = 10" & vbCrLf)
+            Return
+        End If
+
+        ' here's the last file name, try to extract a count
+        s = files.Item(idx - 1).Name
+
+        ' find the newest file with 4 leading digits
+        'For Each fi As FileInfo In files
+        s = Microsoft.VisualBasic.Left(s, 4)
+
+        If IsNumeric(s) Then
+            ' string is in the form of 000x, where X is dropped
+            idx = CInt(s)
+            idx = (idx / 10) + 1
+            idx = idx * 10
+            Call PrintThisCount(-1, idx, 0)
+
+            Globals.fDebug.txtPrintLn("Next print prefix = " & idx & vbCrLf)
+
+        Else
+            ' no number, just start at 10
+            Call PrintThisCount(-1, 10, 0)
+            Globals.fDebug.txtPrintLn("Next print prefix = 10" & vbCrLf)
+        End If
+
+    End Sub
     '-----------------------====< ReadPrinterFile() >====---------------------------
     ' read in the .CSV file listing all the printers.
     '
@@ -298,7 +348,7 @@ Public Class Pic2Print
 
                         Globals.carrierName(Globals.carrierMax) = arrCurrentRow(0)
                         Globals.carrierDomain(Globals.carrierMax) = arrCurrentRow(1)
-                        Globals.fmmsForm.CarrierLB.Items.Add(Globals.carrierName(Globals.carrierMax))
+                        Globals.fmmsForm.CarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
                         Globals.carrierMax += 1
 
                     End If
@@ -313,7 +363,7 @@ Public Class Pic2Print
 
             Globals.carrierName(Globals.carrierMax) = "Missing carriers.cvs"
             Globals.carrierDomain(Globals.carrierMax) = "Missing carriers.cvs"
-            Globals.fmmsForm.CarrierLB.Items.Add(Globals.carrierName(Globals.carrierMax))
+            Globals.fmmsForm.CarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
             Globals.carrierMax += 1
 
         End If
@@ -474,13 +524,13 @@ Public Class Pic2Print
     End Sub
 
     '----====< Print count Buttons >====----
-    Private Sub print0_Click(sender As System.Object, e As System.EventArgs) Handles print0.Click
+    Private Sub print0_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print0.Click
 
         ' print count of 0 say's validate this only, don't print it..
         If Validate_and_PrintThisCount(0, PRT_LOAD) Then
 
             ' file is valid, append it to the text box.
-            tbFilesToLoad.AppendText(vbCrLf + Globals.FileNames(Globals.ScreenBase + Globals.PictureBoxSelected))
+            tbFilesToLoad.AppendText(vbCrLf + Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected))
 
             ' save the index for the print routine
             Globals.FileLoadIndexes(Globals.FileLoadCounter) = Globals.ScreenBase + Globals.PictureBoxSelected
@@ -493,7 +543,7 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Sub GifButton_Click(sender As System.Object, e As System.EventArgs) Handles GifButton.Click
+    Private Sub GifButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GifButton.Click
         Call Validate_and_PrintThisCount(1, PRT_GIF)
         Call resetlayercounter()
     End Sub
@@ -538,10 +588,71 @@ Public Class Pic2Print
         Call resetlayercounter()
     End Sub
 
-    Private Sub btClearList_Click(sender As System.Object, e As System.EventArgs) Handles btClearList.Click
+    Private Sub btClearList_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btClearList.Click
         ' flush the list
         Call resetlayercounter()
         Call flushAppDocsInPhotoshop()
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnTestRun.Click
+        Static running As Boolean = False
+        Dim moveRight As Boolean = True
+        Dim printedCount = 2048
+        Dim i As Integer
+        ' kill
+        If running Then
+            btnTestRun.BackColor = Control.DefaultBackColor
+            running = False
+            Return
+        End If
+
+        running = True
+
+        Do While running
+
+            System.Threading.Thread.Sleep(200)
+
+            Application.DoEvents()
+
+            ' moving to the newer until we hit the end
+
+            If moveRight Then
+                ' scroll right
+                ScreenMiddle(True, 3)
+            Else
+                ScreenMiddle(True, -3)
+            End If
+
+            ' select the middle box
+            Call SetPictureBoxFocus(PictureBox1, 3)
+
+            ' click print 1 copy, wait for 5 seconds per print
+            Call Validate_and_PrintThisCount(1, PRT_PRINT)
+            Call resetlayercounter()
+            For i = 0 To 12 ' 2.5 seconds per image output
+                System.Threading.Thread.Sleep(200)
+                Application.DoEvents()
+            Next
+
+            If moveRight Then
+                If Globals.ScreenBase + 7 > Globals.ImageCache.maxIndex Then
+                    moveRight = False
+                End If
+            Else
+                If Globals.ScreenBase = 0 Then
+                    moveRight = True
+                End If
+            End If
+
+            ' run 2048 prints
+            printedCount = printedCount - 1
+            If printedCount < 0 Then
+                running = False
+                Globals.fDebug.txtPrintLn("2048 images printed" & vbCrLf)
+                Return
+            End If
+
+        Loop
     End Sub
 
     Public Sub resetlayercounter()
@@ -612,7 +723,7 @@ Public Class Pic2Print
         End If
 
         ' validate the listed file name to make sure its really here
-        If Globals.FileNames(idx) = "" Then
+        If Globals.ImageCache.fileName(idx) = "" Then
             MessageBox.Show("File is empty, click " & vbCrLf & _
                             "REFRESH and try again.")
             Return False
@@ -709,13 +820,13 @@ Public Class Pic2Print
 
         ' build the path/filename
         exe = Globals.tmpPrint1_Folder & "software\justload.exe"
-        fil = Globals.tmpIncoming_Folder & Globals.FileNames(Globals.ScreenBase + Globals.PictureBoxSelected)
+        fil = Globals.tmpIncoming_Folder & Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         ' for helps..
         debug.txtPrintLn("edit: " & exe & " " & fil)
 
         ' execute the droplet
-        If Globals.FileNames(Globals.ScreenBase + Globals.PictureBoxSelected) <> "" Then
+        If Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) <> "" Then
 
             ' release the picturebox so the image can be cropped/color corrected/etc..
 
@@ -729,8 +840,8 @@ Public Class Pic2Print
             End If
 
             ' release the image from the cache, kill it from our list
-            ImageCacheFlushNamed(Globals.FileNames(Globals.ScreenBase + Globals.PictureBoxSelected))
-            Globals.FileNames(Globals.ScreenBase + Globals.PictureBoxSelected) = ""
+            Globals.ImageCache.FlushNamed(Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected))
+            Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) = ""
 
             ' send to photoshop..
             Process.Start(exe, fil)
@@ -760,11 +871,11 @@ Public Class Pic2Print
             (Globals.FileIndexSelected > Globals.ScreenBase + 6) Then
             idx = Globals.FileIndexSelected - 3
             If idx < 0 Then idx = 0
-            If idx > Globals.FileNamesMax Then idx = Globals.FileNamesMax - 4
+            If idx > Globals.ImageCache.maxIndex Then idx = Globals.ImageCache.maxIndex - 4
         Else
-            idx = Globals.FileNamesHighPrint - 3
+            idx = Globals.ImageCache.maxPrintedIndex - 3
             If idx < 0 Then idx = 0
-            If idx > Globals.FileNamesMax Then idx = Globals.FileNamesMax - 4
+            If idx > Globals.ImageCache.maxIndex Then idx = Globals.ImageCache.maxIndex - 4
 
         End If
 
@@ -776,12 +887,12 @@ Public Class Pic2Print
     End Sub
 
     Public Sub right_start_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles right_start.Click
-        Dim idx As Int16 = Globals.FileNamesMax - 3
+        Dim idx As Int16 = Globals.ImageCache.maxIndex - 3
         ' if too low, set to validate this new index
         'If idx < 3 Then
         'idx = Globals.ScreenBase + 4
         'End If
-        idx = Globals.FileNamesMax - 7
+        idx = Globals.ImageCache.maxIndex - 7
         If idx < 0 Then idx = 0
         ScreenMiddle(False, idx)
     End Sub
@@ -876,7 +987,10 @@ Public Class Pic2Print
     ' ========================================== top level subroutines =========================================== 
     ' ============================================================================================================
     '
-    Private Sub PrintProcessorThread(ByVal i As Int16)
+    ' PrintProcessorThread - This code watches the c:\Onsite folder for incoming JPGs, and processes 
+    ' them out to Photoshop
+    '
+    Private Sub PrintProcessorThread(ByVal i As Integer)
         Dim newNam As String = ""
 
         Do While Globals.PrintProcessRun > 0
@@ -917,47 +1031,47 @@ Public Class Pic2Print
                         Call ppDecorateName(fi.Name, newNam)
 
                         ' if its a POST processing, do that, else do loads/prints/GIFs
-                        If newNam.Contains("_m3") Then
+                        'If newNam.Contains("_m3") Then
 
-                            ' build the post views
-                            'Call ppBuildPosts()
-                            Call ppProcessFiles(newNam)
+                        ' build the post views
+                        'Call ppBuildPosts()
+                        'Call ppProcessFiles(newNam)
 
-                            ' PS is done, now just display
-                            Globals.tmpBuildPostViews = 1
+                        ' PS is done, now just display
+                        'Globals.tmpBuildPostViews = 1
 
-                            ' if there are postviews to show, process them now
+                        ' if there are postviews to show, process them now
 
-                            ppShowPosts()
+                        'ppShowPosts()
 
-                        Else
+                        'Else
 
-                            ' process the files in the \onsite folder through photoshop
-                            Call ppProcessFiles(newNam)
+                        ' process the files in the \onsite folder through photoshop
+                        Call ppProcessFiles(newNam)
 
-                            'If Globals.fForm3.EmailCloudEnabled.Checked Then
+                        'If Globals.fForm3.EmailCloudEnabled.Checked Then
 
-                            ' if enabled, copy the file from the printed folder to the cloud folder
+                        ' if enabled, copy the file from the printed folder to the cloud folder
 
-                            If Globals.tmpEmailCloudEnabled Then
+                        If Globals.tmpEmailCloudEnabled Then
 
-                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                    CopyFileToCloudDir(newNam)
-                                End If
-
+                            ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                            If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                CopyFileToCloudDir(newNam)
                             End If
 
-                            ' send out email..
-                            PostProcessEmail(newNam)
-
                         End If
+
+                        ' send out email..
+                        PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+                        'End If
 
                         'end If
 
                     End If
 
-                        ' check this again in the innerloop, build the Post views if requested
+                    ' check this again in the innerloop, build the Post views if requested
                     'If Globals.tmpBuildPostViews = 2 Then
 
                     ' build the post views
@@ -974,7 +1088,72 @@ Public Class Pic2Print
     End Sub
 
 
-    Private Sub PostProcessEmail(ByRef fnam As String)
+    Private Sub PrintedFolderThread(ByVal i As Int16)
+        Dim newNam As String = ""
+        Dim folder As String = Globals.tmpPrint1_Folder & "printed\"
+        Dim found As Boolean
+        Dim idx As Integer
+        Dim newFile As Boolean
+
+        ' seems reasonable, if the print processor thread can run, so can we..
+        Do While Globals.PrintProcessRun > 0
+
+            ' check the print folder for .jpgs
+            ' if found, feed each one into photoshop
+            ' then move it to the 'orig' folder
+
+            ' state = 0, stop, state = 1, idle, state = 2, run
+            If Globals.PrintProcessRun = 2 Then
+
+                Dim files As New List(Of FileInfo)(New DirectoryInfo(folder).GetFiles("*.*"))
+
+                ' sort by date/time stamp, not file name 
+                'If Globals.tmpSortByDate Then
+                'files.Sort(New FileInfoComparer)
+                'End If
+
+                ' continually scan for the list of printed files and register the found file names
+                found = True
+                newFile = False
+                For Each fi As FileInfo In files
+
+                    ' find all jpg and gif files, see if they're on file
+                    If ((fi.Extension = ".jpg") Or (fi.Extension = ".gif")) Then
+
+                        found = Globals.PrintCache.matchfound(fi.Name)
+
+                        ' if not found, register this file
+
+                        If found = False Then
+                            idx = Globals.PrintCache.newItem()
+                            Globals.PrintCache.fileName(idx) = fi.Name
+                            'Globals.PrintCache.maxIndex += 1
+                            newFile = True
+
+                            ' let the post view form know there are updates available
+
+                        End If
+
+                    End If
+
+                Next
+
+                ' if we've loaded new images, refresh the visuals
+
+                If newFile Then
+                    Globals.fPostView.chkAutoScrolltoNewImages()
+                End If
+
+            End If
+
+            ' sleep for a second before looking for more .JPGs
+            Thread.Sleep(3000)
+
+        Loop
+
+    End Sub
+
+    Public Sub PostProcessEmail(ByRef fnam As String)
         Dim email1 As String = ""
         Dim phone1 As String = ""
         Dim sel As Integer
@@ -989,16 +1168,14 @@ Public Class Pic2Print
                 Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
 
                 ReBuildUserEmails(email1, phone1, sel)
-                EmailSendRequest(email1, Globals.tmpPrint1_Folder & "printed\" & fnam, Globals.tmpSubject)
+                EmailSendRequest(email1, fnam, Globals.tmpSubject)
 
             End If
 
             ' if there is a facebook/client email recipient, send email to them as well..
 
             If Globals.tmpEmailRecipient <> "" Then
-                EmailSendRequest(Globals.tmpEmailRecipient, _
-                                 Globals.tmpPrint1_Folder & "printed\" & _
-                                 fnam, Globals.tmpSubject)
+                EmailSendRequest(Globals.tmpEmailRecipient, fnam, Globals.tmpSubject)
             End If
 
         End If
@@ -1007,15 +1184,15 @@ Public Class Pic2Print
 
     Private Function LoadPrintedTxtFile(ByRef fnam As String, ByRef email1 As String, ByRef phone1 As String, ByRef selector As Integer)
         Dim txtf As String
-        Dim path As String = Globals.tmpPrint1_Folder & "orig\"
+        'Dim path As String = Globals.tmpPrint1_Folder & "orig\"
         Dim cnt As Integer
         Dim p1cnt As Integer
         Dim p2cnt As Integer
 
         txtf = Microsoft.VisualBasic.Left(fnam, Microsoft.VisualBasic.Len(fnam) - 4) & ".txt"
-        If File.Exists(path & txtf) Then
+        If File.Exists(txtf) Then
 
-            Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(path & txtf)
+            Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(txtf)
             cnt = CInt(fileReader.ReadLine())           ' read in the printer & count
             p1cnt = CInt(fileReader.ReadLine())         ' read printer #1 
             p2cnt = CInt(fileReader.ReadLine())         ' read  printer #2 
@@ -1043,7 +1220,7 @@ Public Class Pic2Print
         ' extract the digits from the user's text
         If phone <> "" Then
 
-            If email <> "" Then email = email & ";"
+            If email <> "" Then email = email & ","
 
             ' move the digits to the email line
             For i = 0 To Len(phone) - 1
@@ -1066,7 +1243,7 @@ Public Class Pic2Print
 
         ' automatic decoration is for printing only, no GIFs, so this number
         ' will track the number of images required to make the print
-        Static prtCount = 0
+        Static prtCount As Integer = 0
         Dim mode As Integer
         Dim sMode As String
         Dim bkg As String = "_bk1"
@@ -1074,7 +1251,6 @@ Public Class Pic2Print
         Dim inTxt As String
 
         ' overload - if null string, reset the internal counter
-
         If inNam = "" Then
             prtCount = 0
             Return
@@ -1362,22 +1538,22 @@ Public Class Pic2Print
     Private Sub ppShowPosts()
 
         ' we're here because tmpBuildPostViews is set to 1 by the printer thread
-        If Globals.BackgroundLoaded And 1 Then
-            Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView1PB, "backgrounds\preview1.jpg", 1)
-        End If
-        If Globals.BackgroundLoaded And 2 Then
-            Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView2PB, "backgrounds\preview2.jpg", 2)
-        End If
-        If Globals.BackgroundLoaded And 4 Then
-            Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView3PB, "backgrounds\preview3.jpg", 4)
-        End If
-        If Globals.BackgroundLoaded And 8 Then
-            Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView4PB, "backgrounds\preview4.jpg", 8)
-        End If
+        'If Globals.BackgroundLoaded And 1 Then
+        'Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView1PB, "backgrounds\preview1.jpg", 1)
+        ' End If
+        'If Globals.BackgroundLoaded And 2 Then
+        'Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView2PB, "backgrounds\preview2.jpg", 2)
+        'End If
+        'If Globals.BackgroundLoaded And 4 Then
+        'Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView3PB, "backgrounds\preview3.jpg", 4)
+        'End If
+        'If Globals.BackgroundLoaded And 8 Then
+        'Globals.fPostView.SetLoadPostViews(Globals.fPostView.PostView4PB, "backgrounds\preview4.jpg", 8)
+        'End If
 
         ' all is visible, we're idle now
-        Globals.tmpBuildPostViews = 0
-        Globals.PostViewsLoaded = Globals.PostViewsLoaded Or &H80
+        'Globals.tmpBuildPostViews = 0
+        'Globals.PostViewsLoaded = Globals.PostViewsLoaded Or &H80
 
     End Sub
 
@@ -1530,21 +1706,28 @@ Public Class Pic2Print
         Dim layoutidx = Globals.fForm3.tbBKFG.Text
         Static prefix As Integer = 10
 
+        ' overload the interface, a -1 means set the prefix
+        If idx = -1 Then
+            prefix = count
+            Return True
+        End If
+
         ' do this only if the selected box has a valid image.
-        If idx < Globals.FileNamesMax Then
+        If idx < Globals.ImageCache.maxIndex Then
 
             ' make sure the file hasn't been deleted/moved underneath us..
-            If Globals.FileNames(idx) <> "" Then
+            If Globals.ImageCache.fileName(idx) <> "" Then
 
                 Globals.fDebug.txtPrintLn("PrintThisCount:" & count)
 
                 ' Select the printer, pass in the file name for the load balancing..
-                Call SelectThePrinter(Globals.FileNames(idx), mode)
+                Call SelectThePrinter(Globals.ImageCache.fileName(idx), mode)
 
+                'MsgBox("move following code to class")
                 ' if now the highest/latest image printed, set that - used for the centering button
-                If Globals.FileNamesHighPrint < idx Then
-                    Globals.FileNamesHighPrint = idx
-                End If
+                'If Globals.ImageCache.maxPrintedIndex < idx Then
+                'Globals.ImageCache.maxPrintedIndex = idx
+                ' End If
 
                 ' copy all iterations of the file to the target folder.  This could be X number of "load only"
                 ' files and then the final file to be printed/gif'd
@@ -1605,7 +1788,7 @@ Public Class Pic2Print
 
                 If ((mode = PRT_PRINT) Or (mode = PRT_GIF)) Then
                     ' increment this file's printed count
-                    Globals.FileNamesPrinted(idx) += 1          ' add 1 to the file print count
+                    Globals.ImageCache.maxPrintCount(idx) += 1          ' add 1 to the file print count
                 End If
 
                 ' copy the file to the onsite folder for the background thread
@@ -1616,11 +1799,11 @@ Public Class Pic2Print
                 ' if this is a POST image build, we're done now and can exit. Let the bkg 
                 ' thread handle the rest
 
-                If mode = PRT_POST Then
-                    ' this flag controls the background print processor thread..
-                    Globals.tmpBuildPostViews = 2
-                    Return True
-                End If
+                'If mode = PRT_POST Then
+                '' this flag controls the background print processor thread..
+                'Globals.tmpBuildPostViews = 2
+                ' Return True
+                ' End If
 
                 ' if printing (vs not GIF) we decrement the paper count
                 If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
@@ -1667,7 +1850,7 @@ Public Class Pic2Print
                 PrintCount2.Text = Globals.Printer2Remaining
 
                 ' write everything to the .txt file
-                Call SaveFileNameData(idx)
+                Call SaveFileNameData(Globals.ImageCache, idx)
 
                 ' update the screen text box
                 UpdatePictureBoxCount()
@@ -1687,16 +1870,16 @@ Public Class Pic2Print
 
         email = ""
 
-        If Globals.FileNameEmails(idx) <> "" Then
-            email = Globals.FileNameEmails(idx)
+        If Globals.ImageCache.emailAddr(idx) <> "" Then
+            email = Globals.ImageCache.emailAddr(idx)
         End If
 
         ' extract the digits from the user's text
-        If Globals.FileNamePhone(idx) <> "" Then
+        If Globals.ImageCache.phoneNumber(idx) <> "" Then
 
             If email <> "" Then email = email & ";"
 
-            phone = Globals.FileNamePhone(idx)
+            phone = Globals.ImageCache.phoneNumber(idx)
 
             ' move the digits to the email line
             For i = 0 To Len(phone) - 1
@@ -1708,31 +1891,31 @@ Public Class Pic2Print
 
             ' get the carrier
 
-            email = email & Globals.carrierDomain(Globals.FileNamePhoneSel(idx))
+            email = email & Globals.carrierDomain(Globals.ImageCache.carrierSelector(idx))
 
         End If
 
     End Sub
 
-    Public Sub SaveFileNameData(ByRef idx As Int16)
+    Public Sub SaveFileNameData(ByRef cache As ImageCaching, ByVal idx As Integer)
         ' get just the file name separate from the extension
         Dim trgf As String
         Dim data As String
 
-        trgf = Microsoft.VisualBasic.Left(Globals.FileNames(idx), Microsoft.VisualBasic.Len(Globals.FileNames(idx)) - 4)
+        trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), Microsoft.VisualBasic.Len(cache.fileName(idx)) - 4)
         'debug.TextBox1_println("PrintThisFile:" & trgf & " to " & Globals.DestinationPath)
 
         ' write out the count to the file
-        data = Globals.FileNamesPrinted(idx) & vbCrLf & _
+        data = cache.maxPrintCount(idx) & vbCrLf & _
             "0" & vbCrLf & _
             "0" & vbCrLf & _
-            Globals.FileNameEmails(idx) & vbCrLf & _
-            Globals.FileNamePhone(idx) & vbCrLf & _
-            Globals.FileNamePhoneSel(idx) & vbCrLf & _
-            Globals.FileNameMessage(idx) & vbCrLf
+            cache.emailAddr(idx) & vbCrLf & _
+            cache.phoneNumber(idx) & vbCrLf & _
+            cache.carrierSelector(idx) & vbCrLf & _
+            cache.message(idx) & vbCrLf
 
         My.Computer.FileSystem.WriteAllText(
-            Globals.tmpIncoming_Folder & trgf & ".txt", data, False, System.Text.Encoding.ASCII)
+            cache.filePath & trgf & ".txt", data, False, System.Text.Encoding.ASCII)
 
     End Sub
 
@@ -1748,10 +1931,10 @@ Public Class Pic2Print
         Dim sPrefix As String = String.Format("{0:0000}", prefix)
 
         'If Globals.ScreenBase + Globals.PictureBoxSelected < Globals.FileNamesMax Then
-        If idx < Globals.FileNamesMax Then
+        If idx < Globals.ImageCache.maxIndex Then
 
             ' get just the file name separate from the extension
-            srcf = Microsoft.VisualBasic.Left(Globals.FileNames(idx), Microsoft.VisualBasic.Len(Globals.FileNames(idx)) - 4)
+            srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4)
 
             ' use selected printer path
             If Globals.ToPrinter = 1 Then
@@ -1780,7 +1963,7 @@ Public Class Pic2Print
 
             ' copy it to the proper folder
             My.Computer.FileSystem.CopyFile(
-                Globals.tmpIncoming_Folder & Globals.FileNames(idx),
+                Globals.tmpIncoming_Folder & Globals.ImageCache.fileName(idx),
                 PrinterPath & trgf,
                 Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
@@ -1857,8 +2040,8 @@ Public Class Pic2Print
         End If
 
         ' exit early if post view, no printing done..
-
-        If mode = PRT_POST Then Return
+        '
+        'If mode = PRT_POST Then Return
 
         ' load balancing enabled only if 2nd printer is enabled
         If Globals.fForm3.LoadBalancing.Checked Then
@@ -1947,25 +2130,22 @@ Public Class Pic2Print
     '
     '-----=====< ResetFilesArray >=====------
     '
-    ' All file names and counts are held in arrays (up to 2048 entries) This routine
+    ' All file names and counts are held in arrays  This routine
     ' zeros out the array of file names and print counts. We'll reload from the folder. 
     ' Image data is managed later for smart release
     '
     Private Sub ResetFilesArray()
         'debug.TextBox1_println("ResetFilesArray")
-        Globals.FileNamesMax = 0
+        'Globals.ImageCache.maxIndex = 0
 
         ' force the 2nd form to free up the image resource, 
         ' reassigned later if focus moves to another picturebox
         Preview.Form2PictureBox.Image = My.Resources.blank
 
-        ' all 7 images are now put into idle state
-        Call ImageCacheFreeAllPictures()
+        ' flush all cached images
 
-        For i = 0 To 2047
-            Globals.FileNamesPrinted(i) = 0
-            Globals.FileNames(i) = ""
-        Next
+        Globals.ImageCache.reset()
+
     End Sub
 
     '-----=====< AddFilesToArray >=====-----
@@ -1982,6 +2162,7 @@ Public Class Pic2Print
         Dim sel As Integer
         Dim phone As String
         Dim sMessage As String
+        Dim idx As Integer
 
         'debug.TextBox1_println("AddFilesToArray")
 
@@ -1999,8 +2180,9 @@ Public Class Pic2Print
         For Each fi As FileInfo In files
 
             ' save .jpg file info locally
-            Globals.FileNames(Globals.FileNamesMax) = fi.Name
-            Globals.FileNamesPrinted(Globals.FileNamesMax) = 0
+            idx = Globals.ImageCache.newItem()
+            Globals.ImageCache.fileName(idx) = fi.Name
+            Globals.ImageCache.maxPrintCount(idx) = 0
 
             ' build .txt version of file name
             fCnt = Globals.tmpIncoming_Folder & Microsoft.VisualBasic.Left(fi.Name, (Microsoft.VisualBasic.Len(fi.Name)) - 4) & ".txt"
@@ -2010,9 +2192,6 @@ Public Class Pic2Print
                 'cnt = CInt(My.Computer.FileSystem.ReadAllText(fCnt))    ' read in the printer & count
 
                 Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(fCnt)
-
-                'Dim stringReader = fileReader.ReadLine()
-                'MsgBox("The first line of the file is " & stringReader)
 
                 cnt = CInt(fileReader.ReadLine())           ' read in the printer & count
                 p1cnt = CInt(fileReader.ReadLine())         ' read printer #1 
@@ -2030,23 +2209,25 @@ Public Class Pic2Print
                     sMessage = fileReader.ReadLine()    ' read the message string
                 End If
 
-                Globals.FileNamesPrinted(Globals.FileNamesMax) = cnt
-                Globals.FileNameEmails(Globals.FileNamesMax) = emailaddr
-                Globals.FileNamePhone(Globals.FileNamesMax) = phone
-                Globals.FileNamePhoneSel(Globals.FileNamesMax) = sel
-                Globals.FileNameMessage(Globals.FileNamesMax) = sMessage
-                Globals.FileNamesHighPrint = Globals.FileNamesMax
+                ' save the details from the txt file.
+
+                Globals.ImageCache.maxPrintCount(idx) = cnt
+                Globals.ImageCache.emailAddr(idx) = emailaddr
+                Globals.ImageCache.phoneNumber(idx) = phone
+                Globals.ImageCache.carrierSelector(idx) = sel
+                Globals.ImageCache.message(idx) = sMessage
+                'Globals.ImageCache.maxPrintedIndex  = Globals.ImageCache.maxIndex
+                If cnt > 0 Then Globals.ImageCache.maxPrintedIndex = idx
                 Globals.TotalPrinted += cnt
 
                 fileReader.Close()
                 fileReader.Dispose()
 
             End If
-            Globals.FileNamesMax += 1
 
             ' top out at 2k files
-            If Globals.FileNamesMax = 2048 Then
-                MsgBox("Too many files in folder! (2048)" & vbCrLf & _
+            If Globals.ImageCache.full Then
+                MsgBox("Too many files in the capture folder!" & vbCrLf & _
                         "Reduce the count and rerun this program")
             End If
         Next
@@ -2099,8 +2280,8 @@ Public Class Pic2Print
             Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
 
             ' Whatever the picture box owns, the 2nd form will own..
-
             Preview.Form2PictureBox.Image = pb.Image
+            Preview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
         Else
 
@@ -2117,9 +2298,9 @@ Public Class Pic2Print
         Dim s As String = ""
         'debug.TextBox1_println("UpdatePictureBoxCount")
 
-        If (Globals.ScreenBase + Globals.PictureBoxSelected) < Globals.FileNamesMax Then
+        If (Globals.ScreenBase + Globals.PictureBoxSelected) < Globals.ImageCache.maxIndex Then
             If Globals.PicBoxNames(Globals.PictureBoxSelected).Text <> "" Then
-                s = Globals.FileNamesPrinted(Globals.ScreenBase + Globals.PictureBoxSelected)
+                s = Globals.ImageCache.maxPrintCount(Globals.ScreenBase + Globals.PictureBoxSelected)
             End If
         End If
         Globals.PicBoxCounts(Globals.PictureBoxSelected).Text = s
@@ -2203,7 +2384,7 @@ Public Class Pic2Print
 
         ' the list of thumbs is moving, so make them all inactive (safe, they're not going anywhere..)
         ' bool is relative or absolute centerpoint
-        Call ImageCacheFreeAllPictures()
+        Globals.ImageCache.FreeAllPictures()
 
         If relative Then
             idx = Globals.ScreenBase + offset
@@ -2212,7 +2393,7 @@ Public Class Pic2Print
                 idx = 0
             End If
             ' if too high, keep it the same
-            If (idx + 3) > Globals.FileNamesMax Then
+            If (idx + 3) > Globals.ImageCache.maxIndex Then
                 idx = Globals.ScreenBase
             End If
         Else
@@ -2268,27 +2449,27 @@ Public Class Pic2Print
         ' idx is the filename index from the left edge of the screen
         idx = Globals.ScreenBase + i
 
-        If idx < Globals.FileNamesMax Then
+        If idx < Globals.ImageCache.maxIndex Then
             ' get path + file name.jpg
-            srcImg = Globals.tmpIncoming_Folder & Globals.FileNames(idx)
+            srcImg = Globals.tmpIncoming_Folder & Globals.ImageCache.fileName(idx)
 
             ' load the image from the cache
-            pb.Image = ImageCacheFetchPicture(Globals.FileNames(idx))
+            pb.Image = Globals.ImageCache.FetchPicture(Globals.ImageCache.fileName(idx))
 
             ' Get the PropertyItems property from image
             OrientImage(pb.Image)
 
             ' get path + file name & .txt extension
-            fnam = Microsoft.VisualBasic.Left(Globals.FileNames(idx), _
-                                (Microsoft.VisualBasic.Len(Globals.FileNames(idx)) - 4))
+            fnam = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), _
+                                (Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4))
             ' set the file name in the text box
             fnb.Text = fnam
 
             ' if the count is greater than 0, then print the count, else display nothing..
             str = ""
-            If Globals.FileNameEmails(idx) <> "" Then str = " (email)"
-            If Globals.FileNamesPrinted(idx) > 0 Then
-                pc.Text = Globals.FileNamesPrinted(idx) & str
+            If Globals.ImageCache.emailAddr(idx) <> "" Then str = " (email)"
+            If Globals.ImageCache.maxPrintCount(idx) > 0 Then
+                pc.Text = Globals.ImageCache.maxPrintCount(idx) & str
             Else
                 pc.Text = "" & str
             End If
@@ -2302,197 +2483,7 @@ Public Class Pic2Print
         End If
 
     End Sub
-    '==========================================================================================================================
-    '==========================================< IMAGE MANAGEMENT >============================================================
-    '==========================================================================================================================
-    ' Return a pointer to a cached image.  If not cached, load it in, cache it, then return the pointer
-    Public Function ImageCacheFetchPicture(ByRef fnam As String) As Image
-        Dim found As Int16
-        Dim idx As Int16
-        'Dim fs As System.IO.FileStream
-        Dim srcImg As String
 
-        ' Bad Dog! No Null ptrs!
-        If fnam = "" Then
-            'debug.TextBox1_println("ImageFetchPicture: Don't call this will NULL names")
-            Return Nothing
-        End If
-
-        ' see if we already have it in cache, if so, return the ptr
-        For idx = 0 To 13
-            If Globals.ImageCacheFileName(idx) = fnam Then
-                Globals.ImageCacheAllocFlag(idx) = 2     ' make active again
-                Return Globals.ImageCachePtr(idx)
-            End If
-        Next
-
-        ' not in cache, we have to make sure we now have space in the cache so time something out
-        For idx = 0 To 13
-            If ImageCacheTimeOutDisposeUnused() Then
-                Exit For
-            End If
-        Next
-
-        ' find that free'd location. Gotta rescan for it..
-        found = -1
-        For idx = 0 To 13
-            If Globals.ImageCacheAllocFlag(idx) = 0 Then
-                found = idx
-                Exit For
-            End If
-        Next
-
-        ' make sure that worked..
-        If found = -1 Then
-            'debug.TextBox1_println("Cache is full! Nothing timed out," & vbCrLf & _
-            '        "No space free to add new image!")
-            Return Nothing
-        End If
-
-        ' Specify a valid picture file path on your computer - Get path + file name.jpg
-        srcImg = Globals.tmpIncoming_Folder & fnam
-
-        ' read in the new image, cache it
-        Globals.ImageCacheFileName(idx) = fnam
-        Globals.ImageCacheAllocFlag(idx) = 2
-
-        ' we use this approach to lock the files while in use to avoid UAEs
-        Globals.ImageCachePtr(idx) = Image.FromFile(srcImg)
-
-        'return freshly loaded image
-        Return Globals.ImageCachePtr(idx)
-
-    End Function
-
-    ' free up picture, but don't dispose of it yet. Alloc flag goes from 2 to 1
-    Public Sub ImageCacheFreePicture(ByRef fnam As String)
-        Static Counter As Int16 = 14
-        'Dim found As Int16 = -1
-        Dim idx As Int16
-
-        Counter -= 1
-        If Counter = 0 Then Counter = 14
-
-        ' process only valid file names
-        If fnam <> "" Then
-
-            ' find the matching picture, and set the flag to free, but held state
-            For idx = 0 To 13
-                If Globals.ImageCacheFileName(idx) = fnam Then
-                    Globals.ImageCacheAllocFlag(idx) = 1              ' available to be freed when needed, but keep it around for a while
-                    Globals.ImageCacheTimeToLive(idx) = Counter       ' never twice the same value means randomness on timeouting resources
-                    'found = 1
-                    Exit For
-                End If
-            Next
-
-        End If
-
-    End Sub
-
-    ' free up picture, but don't dispose of it yet
-    Public Sub ImageCacheFreeAllPictures()
-        Dim idx As Int16
-
-        For idx = 0 To 13
-            If Globals.ImageCacheAllocFlag(idx) = 2 Then
-                ImageCacheFreePicture(Globals.ImageCacheFileName(idx))
-            End If
-        Next
-
-    End Sub
-    ' flush this image out of the cache
-    Public Function ImageCacheFlushNamed(ByRef nam As String) As Boolean
-        Dim idx As Integer
-        Dim b As Boolean = False
-
-        ' loop through find all locations set to one, then free them up
-        For idx = 0 To 13
-            ' if found release everything
-            If Globals.ImageCacheFileName(idx) = nam Then
-                Globals.ImageCacheFileName(idx) = ""
-                Globals.ImageCacheAllocFlag(idx) = 0
-                Globals.ImageCacheTimeToLive(idx) = 0
-                Globals.ImageCachePtr(idx).Dispose()
-                b = True
-                Exit For
-            End If
-        Next
-
-        ' return whether we found it in the cache or not..
-        Return b
-
-    End Function
-
-    ' flush this image out of the cache
-    Public Function ImageCachedFindByName(ByRef nam As String) As Boolean
-
-        Dim idx As Integer
-        Dim b As Boolean = False
-
-        ' loop through find all locations for the file name, return true if found
-        For idx = 0 To 13
-            ' if found release everything
-            If Globals.ImageCacheFileName(idx) = nam Then
-                b = True
-                Exit For
-            End If
-        Next
-
-        ' return whether we found it in the cache or not..
-        Return b
-
-    End Function
-
-    ' Force the disposal of unused, but held image resources
-    Public Sub ImageCacheForceDisposeUnused()
-        Dim found As Integer = -1
-        Dim idx As Integer
-
-        ' loop through find all locations set to one, then free them up
-        For idx = 0 To 13
-            If Globals.ImageCacheAllocFlag(idx) = 1 Then
-                Globals.ImageCacheAllocFlag(idx) = 0
-                Globals.ImageCachePtr(idx).Dispose()
-                Globals.ImageCacheFileName(idx) = ""
-            End If
-        Next
-
-    End Sub
-
-    ' Timeout the idle state of unused resources and dispose if timed out
-    Public Function ImageCacheTimeOutDisposeUnused() As Boolean
-        Dim found As Boolean = False
-        Dim idx As Integer
-
-        ' loop through find all locations set to one, if timed out, then free them up
-        For idx = 0 To 13
-
-            ' free space is an automatic win
-            If Globals.ImageCacheAllocFlag(idx) = 0 Then
-                found = True    ' this works too, we find one already freed up
-            End If
-
-            ' timeout the inactive storage
-            If Globals.ImageCacheAllocFlag(idx) = 1 Then
-                ' first if there is a timer, count it down
-                If (Globals.ImageCacheTimeToLive(idx) > 0) Then
-                    Globals.ImageCacheTimeToLive(idx) -= 1
-                End If
-                ' if timer is zero, free it up
-                If Globals.ImageCacheTimeToLive(idx) = 0 Then
-                    Globals.ImageCacheAllocFlag(idx) = 0
-                    Globals.ImageCachePtr(idx).Dispose()
-                    Globals.ImageCacheFileName(idx) = ""
-                    found = True
-                End If
-            End If
-        Next
-
-        ' true if we freed up something, false if all is full
-        Return found
-
-    End Function
     '
     ' ----====< show busy >====---- 
     ' text box shows "BUSY" when we're reading the images in
@@ -2644,7 +2635,7 @@ Public Class Pic2Print
 
             ' check the selected image dimentions to load the appropriate thumbs.
 
-            img = ImageCacheFetchPicture(Globals.FileNames(Globals.PictureBoxSelected + Globals.ScreenBase))
+            img = Globals.ImageCache.FetchPicture(Globals.ImageCache.fileName(Globals.PictureBoxSelected + Globals.ScreenBase))
             If img.Height >= img.Width Then
                 orient = 2
             End If
@@ -2770,63 +2761,66 @@ Public Class Pic2Print
             Return
         End If
 
+        PostView.postLoadThumbs(True)
+        PostView.Show()
+
         ' don't allow a build if one is in progress - only one at a time..
+        '
+        ' If Globals.tmpBuildPostViews > 0 Then
+        'MessageBox.Show("Currently Building Post Views. Click Okay," & vbCrLf & _
+        '                  "and wait for the process to complete before" & vbCrLf & _
+        '                  "requesting another build.")
+        ' Return
+        'End If
 
-        If Globals.tmpBuildPostViews > 0 Then
-            MessageBox.Show("Currently Building Post Views. Click Okay," & vbCrLf & _
-                             "and wait for the process to complete before" & vbCrLf & _
-                             "requesting another build.")
-            Return
-        End If
+        'Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
+        'If idx < Globals.FileNamesMax Then
 
-        Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
-        If idx < Globals.FileNamesMax Then
+        ' make sure the file hasn't been deleted/moved underneath us..
 
-            ' make sure the file hasn't been deleted/moved underneath us..
+        'If Globals.PicBoxNames(Globals.PictureBoxSelected).Text <> "" Then
 
-            If Globals.PicBoxNames(Globals.PictureBoxSelected).Text <> "" Then
+        'Globals.fPostView.usrEmail2.Text = Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected)
 
-                Globals.fPostView.usrEmail2.Text = Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected)
+        ' If Globals.fPostView.Visible = False Then
+        'Globals.fPostView.FormLayout()
+        ' Globals.fPostView.Show()
+        'End If
 
-                If Globals.fPostView.Visible = False Then
-                    Globals.fPostView.FormLayout()
-                    Globals.fPostView.Show()
-                End If
+        ' flush all the pre-existing images from the prior load
+        'If Globals.PostViewsLoaded And &H80 Then
 
-                ' flush all the pre-existing images from the prior load
-                If Globals.PostViewsLoaded And &H80 Then
+        'If Globals.PostViewsLoaded And 1 Then
+        'Globals.fPostView.PostView1PB.Image.Dispose()
+        ' Globals.fPostView.PostView1PB.Image = My.Resources.blank
+        ' End If
 
-                    If Globals.PostViewsLoaded And 1 Then
-                        Globals.fPostView.PostView1PB.Image.Dispose()
-                        Globals.fPostView.PostView1PB.Image = My.Resources.blank
-                    End If
+        ' If Globals.PostViewsLoaded And 2 Then
+        'Globals.fPostView.PostView2PB.Image.Dispose()
+        'Globals.fPostView.PostView2PB.Image = My.Resources.blank
+        'End If
 
-                    If Globals.PostViewsLoaded And 2 Then
-                        Globals.fPostView.PostView2PB.Image.Dispose()
-                        Globals.fPostView.PostView2PB.Image = My.Resources.blank
-                    End If
+        'If Globals.PostViewsLoaded And 4 Then
+        'Globals.fPostView.PostView3PB.Image.Dispose()
+        'Globals.fPostView.PostView3PB.Image = My.Resources.blank
+        'End If
 
-                    If Globals.PostViewsLoaded And 4 Then
-                        Globals.fPostView.PostView3PB.Image.Dispose()
-                        Globals.fPostView.PostView3PB.Image = My.Resources.blank
-                    End If
+        'If Globals.PostViewsLoaded And 8 Then
+        'Globals.fPostView.PostView4PB.Image.Dispose()
+        ' Globals.fPostView.PostView4PB.Image = My.Resources.blank
+        ' End If
 
-                    If Globals.PostViewsLoaded And 8 Then
-                        Globals.fPostView.PostView4PB.Image.Dispose()
-                        Globals.fPostView.PostView4PB.Image = My.Resources.blank
-                    End If
+        ' Globals.PostViewsLoaded = 0
 
-                    Globals.PostViewsLoaded = 0
+        ' End If
 
-                End If
+        ' process it through the normal path now. (as opposed a special case)
+        'PrintThisCount(idx, 1, PRT_POST)
+        'Call resetlayercounter()
 
-                ' process it through the normal path now. (as opposed a special case)
-                PrintThisCount(idx, 1, PRT_POST)
-                Call resetlayercounter()
+        ' End If
 
-            End If
-
-        End If
+        ' End If
 
     End Sub
 
@@ -2849,14 +2843,14 @@ Public Class Pic2Print
             ShowBusy(True)
 
             Globals.SendEmailsAgain = 2
-            If Globals.FileNamesMax > 0 Then
+            If Globals.ImageCache.maxIndex > 0 Then
 
                 ' add wait time so the printing and emails running in the background have time to work
                 Globals.SendEmailsDownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text
 
                 ' scan through all the file names to find the saved email addresses.
 
-                For idx = 0 To Globals.FileNamesMax
+                For idx = 0 To Globals.ImageCache.maxIndex
 
                     ' do this as long as we're in a running state (cancel button stops this..)
                     If Globals.SendEmailsAgain = 2 Then
@@ -2875,8 +2869,8 @@ Public Class Pic2Print
                             Globals.fSendEmails.TextMsgs.AppendText(vbCrLf)
                         Loop
 
-                        If Globals.FileNames(idx) <> "" Then
-                            If Globals.FileNameEmails(idx) <> "" Then
+                        If Globals.ImageCache.fileName(idx) <> "" Then
+                            If Globals.ImageCache.emailAddr(idx) <> "" Then
 
                                 ' add time to the wait
                                 Globals.SendEmailsDownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text
@@ -2884,8 +2878,8 @@ Public Class Pic2Print
                                 ' we found one, let the user know..
                                 sendemailsmgs( _
                                     "emailing " & _
-                                    Globals.FileNames(idx) & " to " & _
-                                    Globals.FileNameEmails(idx) & vbCrLf)
+                                    Globals.ImageCache.fileName(idx) & " to " & _
+                                    Globals.ImageCache.emailAddr(idx) & vbCrLf)
 
                                 ' process the file and email it
                                 Call PrintThisCount(idx, 1, PRT_PRINT)
@@ -2941,7 +2935,8 @@ Public Class Pic2Print
         End If
     End Sub
 
-    Private Sub ButtonsGroup_Enter(sender As System.Object, e As System.EventArgs) Handles ButtonsGroup.Enter
+
+    Private Sub ButtonsGroup_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonsGroup.Enter
 
     End Sub
 
@@ -2951,7 +2946,7 @@ Public Class Pic2Print
     Public Const PRT_LOAD = 0
     Public Const PRT_PRINT = 1
     Public Const PRT_GIF = 2
-    Public Const PRT_POST = 3
+    'Public Const PRT_POST = 3
 
 End Class
 
@@ -2959,13 +2954,13 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 7.04"    ' Version string
+    Public Shared Version As String = "Version 8.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
     Public Shared fForm3 As New Form3
     Public Shared fForm4 As New Form4
-    Public Shared fPostView As New Postview
+    Public Shared fPostView As New PostView
     Public Shared fPostViewHasLoaded As Boolean = False
     Public Shared fDebug As New debug
     Public Shared fPreview As New Preview
@@ -2975,15 +2970,8 @@ Public Class Globals
     Public Delegate Sub SetTextCallback(ByVal str As String)
     Public Delegate Sub SetPostViewCallback(ByRef pb As PictureBox, ByRef fnam As String, ByRef mask As Int16)
 
-    ' list of file names with counts
-    Public Shared FileNames(2048) As String             ' string filenames
-    Public Shared FileNamesPrinted(2048) As Integer     ' # of times printed
-    Public Shared FileNameEmails(2048) As String        ' user email addresses
-    Public Shared FileNamePhone(2048) As String         ' user phone number
-    Public Shared FileNamePhoneSel(2048) As Integer     ' user phone number selector
-    Public Shared FileNameMessage(2048) As String       ' a message the user can send/print on photos
-    Public Shared FileNamesMax As Integer = -1          ' max filename index in array
-    Public Shared FileNamesHighPrint As Integer = 0     ' highest index in filenames thats been printed
+    Public Shared ImageCache As ImageCaching = Nothing  ' the cache of incoming images
+    Public Shared PrintCache As ImageCaching = Nothing  ' the cache of printed images
 
     ' output path to either printer
     Public Shared PathsValidated As Int16 = 0           ' bit fields:0x01=src, 0x02=dest1, 0x04=dest2
@@ -2992,7 +2980,7 @@ Public Class Globals
     Public Shared PrintedFileName As String = ""        ' for the load balancing, keeps same print on same printer
 
     ' controls postview picture box images
-    Public Shared PostViewsLoaded As Boolean = False
+    'Public Shared PostViewsLoaded As Integer = 0
 
     ' control of the screen
     Public Shared ScreenBase As Integer = 0             ' filename index starting point on screen
@@ -3014,12 +3002,6 @@ Public Class Globals
     Public Shared cmdLineDebug As Boolean = False       ' set true for debugging
     Public Shared cmdSendEmails As Boolean = False      '
 
-    ' tracking of image resources
-    Public Shared ImageCacheFileName(14) As String      ' file names matching the image
-    Public Shared ImageCachePtr(14) As Image            ' pointers to images for tracking resources
-    Public Shared ImageCacheAllocFlag(14) As Integer    ' 0=free space, 1=holding, 2=inuse
-    Public Shared ImageCacheTimeToLive(14) As Integer   ' count down to free it up
-
     ' handler control for watching changes to our source folder
     Public Shared WatchFolder As FileSystemWatcher
     Public Shared WatchFolderSetup As Boolean = False
@@ -3038,6 +3020,8 @@ Public Class Globals
     Public Shared Printer2Remaining As Int16 = 0                ' remaining sheets of paper 
 
     Public Shared PrintProcessor As System.Threading.Thread     ' background thread control
+    Public Shared PrintedFolderProcessor As System.Threading.Thread     ' background thread control
+
     Public Shared PrintProcessRun As Int16 = 0                  ' States: 0=dead,1=paused,2=running
 
     Public Shared EmailProcessor As System.Threading.Thread     ' email background thread control
@@ -3118,7 +3102,7 @@ Public Class Globals
     Public Shared tmpAcctName As String
     Public Shared tmpPassword As String
     Public Shared tmpAcctEmailAddr As String
-    Public Shared tmpBuildPostViews As Int16 = 0        ' 0 = idle, 1 = done, 2 = do build
+    'Public Shared tmpBuildPostViews As Int16 = 0        ' 0 = idle, 1 = done, 2 = do build
     Public Shared tmpAutoPrints As Integer = 1          ' # of prints for the automatic processing
     Public Shared tmpSortByDate As Boolean             ' sort by date(true) or name(false)
 

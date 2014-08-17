@@ -14,15 +14,15 @@ Public Class mmsForm
         lblLastEmail.Text = usrEmail1.Text
 
         ' save the text for later..
-        Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail1.Text
+        Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail1.Text
         'Globals.fPic2Print.SaveFileNameData(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         ' save the phone #, carrier info..
-        Globals.FileNamePhone(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPhoneNum.Text
-        Globals.FileNamePhoneSel(Globals.FileIndexSelected) = CarrierLB.SelectedIndex
+        Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPhoneNum.Text
+        Globals.ImageCache.carrierSelector(Globals.FileIndexSelected) = CarrierCB.SelectedIndex
         'Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
-        Globals.FileNameMessage(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
-        Globals.fPic2Print.SaveFileNameData(Globals.ScreenBase + Globals.PictureBoxSelected)
+        Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
+        Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
 
         Me.Hide()
 

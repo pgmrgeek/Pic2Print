@@ -26,7 +26,7 @@ Partial Class mmsForm
         Me.txtPhoneNum = New System.Windows.Forms.TextBox()
         Me.mmsSend = New System.Windows.Forms.Button()
         Me.mmsCancel = New System.Windows.Forms.Button()
-        Me.CarrierLB = New System.Windows.Forms.ComboBox()
+        Me.CarrierCB = New System.Windows.Forms.ComboBox()
         Me.mmsSelCarrier = New System.Windows.Forms.Label()
         Me.email2label = New System.Windows.Forms.Label()
         Me.usrEmail1 = New System.Windows.Forms.TextBox()
@@ -71,13 +71,13 @@ Partial Class mmsForm
         Me.mmsCancel.Text = "Cancel"
         Me.mmsCancel.UseVisualStyleBackColor = True
         '
-        'CarrierLB
+        'CarrierCB
         '
-        Me.CarrierLB.FormattingEnabled = True
-        Me.CarrierLB.Location = New System.Drawing.Point(17, 283)
-        Me.CarrierLB.Name = "CarrierLB"
-        Me.CarrierLB.Size = New System.Drawing.Size(216, 21)
-        Me.CarrierLB.TabIndex = 4
+        Me.CarrierCB.FormattingEnabled = True
+        Me.CarrierCB.Location = New System.Drawing.Point(17, 283)
+        Me.CarrierCB.Name = "CarrierCB"
+        Me.CarrierCB.Size = New System.Drawing.Size(216, 21)
+        Me.CarrierCB.TabIndex = 4
         '
         'mmsSelCarrier
         '
@@ -159,7 +159,7 @@ Partial Class mmsForm
         Me.Controls.Add(Me.email2label)
         Me.Controls.Add(Me.usrEmail1)
         Me.Controls.Add(Me.mmsSelCarrier)
-        Me.Controls.Add(Me.CarrierLB)
+        Me.Controls.Add(Me.CarrierCB)
         Me.Controls.Add(Me.mmsCancel)
         Me.Controls.Add(Me.mmsSend)
         Me.Controls.Add(Me.txtPhoneNum)
@@ -174,7 +174,7 @@ Partial Class mmsForm
     Friend WithEvents txtPhoneNum As System.Windows.Forms.TextBox
     Friend WithEvents mmsSend As System.Windows.Forms.Button
     Friend WithEvents mmsCancel As System.Windows.Forms.Button
-    Friend WithEvents CarrierLB As System.Windows.Forms.ComboBox
+    Friend WithEvents CarrierCB As System.Windows.Forms.ComboBox
     Friend WithEvents mmsSelCarrier As System.Windows.Forms.Label
     Friend WithEvents email2label As System.Windows.Forms.Label
     Friend WithEvents usrEmail1 As System.Windows.Forms.TextBox
