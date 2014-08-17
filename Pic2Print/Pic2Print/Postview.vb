@@ -284,28 +284,28 @@ Public Class PostView
                 If screenBase < Globals.PrintCache.maxIndex Then
                     img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase))
                 Else
-                    img = My.Resources.nobk
+                    img = My.Resources.blank
                 End If
                 pbThumb1.Image = img
 
                 If screenBase + 1 < Globals.PrintCache.maxIndex Then
                     img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 1))
                 Else
-                    img = My.Resources.nobk
+                    img = My.Resources.blank
                 End If
                 pbThumb2.Image = img
 
                 If screenBase + 2 < Globals.PrintCache.maxIndex Then
                     img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 2))
                 Else
-                    img = My.Resources.nobk
+                    img = My.Resources.blank
                 End If
                 PbThumb3.Image = img
 
                 If screenBase + 3 < Globals.PrintCache.maxIndex Then
                     img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 3))
                 Else
-                    img = My.Resources.nobk
+                    img = My.Resources.blank
                 End If
                 pbThumb4.Image = img
 
@@ -315,7 +315,7 @@ Public Class PostView
             If i < Globals.PrintCache.maxIndex Then
                 img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(i))
             Else
-                img = My.Resources.nobk
+                img = My.Resources.blank
             End If
             pbPostView.Image = img
             usrEmail2.Text = Globals.PrintCache.emailAddr(screenBase + ThumbSelect)
