@@ -155,6 +155,7 @@ Public Class Form3
             Call Globals.fPic2Print.ReadBKFGFile()
             Call Globals.fPic2Print.resetlayercounter()
             Call Globals.fPic2Print.enableprintbuttons()
+            Call Globals.fPic2Print.LoadBackgrounds()   ' load the background images just in case they're called upon
 
             ' hide this dialog, never close it..
             Me.Hide()
@@ -386,6 +387,10 @@ Public Class Form3
 
         End If
 
+        '=========================== SKIP THIS SECOND WRITE - TOO MANY CONFLICTING WRITES ====================
+
+        Return  ' causes confusion when the remote rewrites the print machine's config, let the  print machine handle it.
+
         ' ====================== the second target config file ============================
 
         ' Only if the paths are valid, will we write out the text files
@@ -466,6 +471,14 @@ Public Class Form3
                 Else
                     savepsd = "0"
                 End If
+
+                ' ------------- #14 RBG values for the text layer
+
+                ' !!!! Qualify this data before converting; it might cause an exception on bad data
+                'rgb = txtRGBString.Text
+                'colorR = (rgb >> 16) And 255
+                'colorG = (rgb >> 8) And 255
+                'colorB = rgb And 255
 
                 ' -------- write lines of text out to the file ------------
                 Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB)

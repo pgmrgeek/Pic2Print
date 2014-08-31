@@ -93,8 +93,6 @@ Public Class Pic2Print
         Globals.fDebug.Show()
         Globals.fDebug.Hide()
 
-        Globals.alarm = New Threading.Timer(AddressOf OurTimerTick, Nothing, 1000, 1000)
-
         Globals.cmdLineDebug = False
         For Each argument As String In My.Application.CommandLineArgs
             If argument = "/r" Then
@@ -208,6 +206,7 @@ Public Class Pic2Print
 
         ' setup the background thread to watch the 1st print folder for incoming JPGs copied there by the foreground
 
+        Globals.alarm = New Threading.Timer(AddressOf OurTimerTick, Nothing, 1000, 1000)
         Globals.PrintProcessor = New Threading.Thread(AddressOf PrintProcessorThread)
         Globals.PrintedFolderProcessor = New Threading.Thread(AddressOf PrintedFolderThread)
         Globals.EmailProcessor = New Threading.Thread(AddressOf EmailProcessorThread)
@@ -672,7 +671,7 @@ Public Class Pic2Print
             print8.Enabled = False
             print9.Enabled = False
             print10.Enabled = False
-            PostViewButton.Enabled = False
+            'PostViewButton.Enabled = False
         End If
     End Sub
 
@@ -696,7 +695,7 @@ Public Class Pic2Print
             print8.Enabled = True
             print9.Enabled = True
             print10.Enabled = True
-            PostViewButton.Enabled = True
+            'PostViewButton.Enabled = True
         End If
     End Sub
 
@@ -2954,7 +2953,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.01"    ' Version string
+    Public Shared Version As String = "Version 8.02"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
