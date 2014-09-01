@@ -1023,6 +1023,8 @@ Public Class Pic2Print
 
                     If Globals.PrintProcessRun = 2 Then
 
+                        Thread.Sleep(1000)
+
                         ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
                         ' without going through the user controls, then this should be printed. We want to
                         ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
@@ -1189,7 +1191,7 @@ Public Class Pic2Print
         Dim p2cnt As Integer
 
         txtf = Microsoft.VisualBasic.Left(fnam, Microsoft.VisualBasic.Len(fnam) - 4) & ".txt"
-        If File.Exists(txtf) Then
+        If My.Computer.FileSystem.FileExists(txtf) Then
 
             Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(txtf)
             cnt = CInt(fileReader.ReadLine())           ' read in the printer & count
@@ -1293,7 +1295,7 @@ Public Class Pic2Print
         outTxt = outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".txt"
         outNam = outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".jpg"
 
-        If File.Exists(Globals.tmpPrint1_Folder & inTxt) Then
+        If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & inTxt) Then
             My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inTxt, outTxt)
         End If
         My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inNam, outNam)
@@ -1351,17 +1353,17 @@ Public Class Pic2Print
         Globals.fDebug.txtPrintLn("Photoshop Complete")
 
         ' move this file out of the print folder to the 'orig' folder
-        If File.Exists(trgnam) Then
-            File.Delete(trgnam)
+        If My.Computer.FileSystem.FileExists(trgnam) Then
+            My.Computer.FileSystem.DeleteFile(trgnam)
         End If
         My.Computer.FileSystem.MoveFile(fnam, trgnam)
 
         ' move the .txt file out of the print folder to the 'orig' folder
 
-        If File.Exists(fnamtxt) Then
+        If My.Computer.FileSystem.FileExists(fnamtxt) Then
             ' delete it if there's a copy in the orig folder
-            If File.Exists(trgnamtxt) Then
-                File.Delete(trgnamtxt)
+            If My.Computer.FileSystem.FileExists(trgnamtxt) Then
+                My.Computer.FileSystem.DeleteFile(trgnamtxt)
             End If
             ' move the .txt now to the orig folder
             My.Computer.FileSystem.MoveFile(fnamtxt, trgnamtxt)
@@ -1435,7 +1437,7 @@ Public Class Pic2Print
                     gifFname = Microsoft.VisualBasic.Left(fname, InStr(fname, ".jpg", CompareMethod.Text)) & "gif"
 
                     ' if neither file exists, we keep waiting..
-                    If (File.Exists(fname) Or File.Exists(gifFname)) = False Then
+                    If (My.Computer.FileSystem.FileExists(fname) Or My.Computer.FileSystem.FileExists(gifFname)) = False Then
 
                         ttl -= 1            ' file arrival in the printed folder time-to-live: 120 seconds
                         If ttl <= 0 Then
@@ -1459,7 +1461,7 @@ Public Class Pic2Print
                     Else
 
                         ' swapper roo!  sneak in the .gif if it exists
-                        If File.Exists(gifFname) Then fname = gifFname
+                        If My.Computer.FileSystem.FileExists(gifFname) Then fname = gifFname
 
                         ' we know what file to send.  Wait 10 seconds for it to appear in the printed folder
 
@@ -1950,7 +1952,7 @@ Public Class Pic2Print
             ' send the file name to debug 
             Globals.fDebug.txtPrintLn("CopyFileToPrintDir:" & trgf & " to " & PrinterPath)
 
-            If File.Exists(Globals.tmpIncoming_Folder & srcf & ".txt") Then
+            If My.Computer.FileSystem.FileExists(Globals.tmpIncoming_Folder & srcf & ".txt") Then
 
                 ' copy the gumball text file to the proper folder
                 My.Computer.FileSystem.CopyFile(
@@ -1987,7 +1989,7 @@ Public Class Pic2Print
             Return
         End If
 
-        If File.Exists(srcp & fnam) Then
+        If My.Computer.FileSystem.FileExists(srcp & fnam) Then
 
             ' debug msg
             Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & fnam & " to " & trgp)
@@ -2008,7 +2010,7 @@ Public Class Pic2Print
 
         ' if photoshop saved the .GIF file, copy it to the cloud
 
-        If File.Exists(srcp & srcnam & "gif") Then
+        If My.Computer.FileSystem.FileExists(srcp & srcnam & "gif") Then
 
             ' debug msg
             Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & "gif" & " to " & trgp)
@@ -2953,7 +2955,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.02"    ' Version string
+    Public Shared Version As String = "Version 8.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

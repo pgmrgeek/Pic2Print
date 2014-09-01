@@ -1,4 +1,6 @@
-﻿
+﻿Imports System
+Imports System.IO
+Imports System.Text
 '
 '================================================================================================
 '
@@ -508,58 +510,58 @@ Public Class Form3
         ByVal colorG As Integer, _
         ByVal colorB As Integer)
 
-        Dim s As String
+        Dim s(17) As String
 
         'My.Computer.FileSystem.WriteAllText(fconfig, "bad...", encoding:=utf8)
 
-        s = """" & BkFgFolder & """" & " ' #1 Bk/Fg Folder" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, False, System.Text.Encoding.ASCII)
+        s(0) = """" & BkFgFolder & """" & " ' #1 Bk/Fg Folder" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, False, System.Text.Encoding.ASCII)
 
-        s = psize & " ' #2 print size: See printers.csv for list" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(1) = psize & " ' #2 print size: See printers.csv for list" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = xres & " ' #3 x resolution: See printers.csv for list" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(2) = xres & " ' #3 x resolution: See printers.csv for list" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = yres & " ' #4 y resolution: See printers.csv for list" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(3) = yres & " ' #4 y resolution: See printers.csv for list" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = dpi & " ' #5 dpi: See printers.csv for list" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(4) = dpi & " ' #5 dpi: See printers.csv for list" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = bk & " ' #6 Greenscreen: 1=yes, 0=no" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(5) = bk & " ' #6 Greenscreen: 1=yes, 0=no" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = fg & " ' #7 Overlay: 1=yes, 0=no" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(6) = fg & " ' #7 Overlay: 1=yes, 0=no" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = noprt & " ' #8 File Output Only: 1=yes, 0=no" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(7) = noprt & " ' #8 File Output Only: 1=yes, 0=no" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = """" & profil & """" & " ' #9 Printer Profile Name" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(8) = """" & profil & """" & " ' #9 Printer Profile Name" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = bkCnt & " ' #10 Background/Foreground count" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(9) = bkCnt & " ' #10 Background/Foreground count" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = bkRatio & " ' #11 Background/Foreground ratio flags" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(10) = bkRatio & " ' #11 Background/Foreground ratio flags" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = """" & actionset & """" & " ' #12 Background/Foreground action set name" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(11) = """" & actionset & """" & " ' #12 Background/Foreground action set name" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = savepsd & " ' #13 Save layered .PSD" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(12) = savepsd & " ' #13 Save layered .PSD" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = colorR & " ' #14 text layer RGB values" & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
-        s = colorG & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
-        s = colorB & vbCrLf
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(13) = colorR & " ' #14 text layer RGB values" '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(14) = colorG '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(15) = colorB '& vbCrLf
+        'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
-        s = """" & cbFontList.SelectedItem & """" & " ' #15 Font selected"
-        My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
+        s(16) = """" & cbFontList.SelectedItem & """" & " ' #15 Font selected"
+        File.WriteAlllines(fconfig, s, System.Text.Encoding.ASCII)
 
     End Sub
 
