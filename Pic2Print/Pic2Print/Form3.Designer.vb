@@ -460,7 +460,7 @@ Partial Class Form3
         Me.LoadBalancing.Checked = Global.WindowsApplication1.My.MySettings.Default.EnaLoadBalancing
         Me.LoadBalancing.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "EnaLoadBalancing", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.LoadBalancing.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.LoadBalancing.Location = New System.Drawing.Point(20, 134)
+        Me.LoadBalancing.Location = New System.Drawing.Point(21, 129)
         Me.LoadBalancing.Name = "LoadBalancing"
         Me.LoadBalancing.Size = New System.Drawing.Size(136, 17)
         Me.LoadBalancing.TabIndex = 10
@@ -596,7 +596,7 @@ Partial Class Form3
         '
         Me.EnableOverlayDesc.AutoSize = True
         Me.EnableOverlayDesc.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.EnableOverlayDesc.Location = New System.Drawing.Point(680, 144)
+        Me.EnableOverlayDesc.Location = New System.Drawing.Point(685, 144)
         Me.EnableOverlayDesc.Name = "EnableOverlayDesc"
         Me.EnableOverlayDesc.Size = New System.Drawing.Size(198, 13)
         Me.EnableOverlayDesc.TabIndex = 77
@@ -606,7 +606,7 @@ Partial Class Form3
         '
         Me.EnableGreenDesc.AutoSize = True
         Me.EnableGreenDesc.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.EnableGreenDesc.Location = New System.Drawing.Point(681, 180)
+        Me.EnableGreenDesc.Location = New System.Drawing.Point(685, 180)
         Me.EnableGreenDesc.Name = "EnableGreenDesc"
         Me.EnableGreenDesc.Size = New System.Drawing.Size(199, 13)
         Me.EnableGreenDesc.TabIndex = 78
@@ -639,7 +639,7 @@ Partial Class Form3
         Me.EmailCloudEnabled.AutoSize = True
         Me.EmailCloudEnabled.Checked = Global.WindowsApplication1.My.MySettings.Default.SyncFolderEna
         Me.EmailCloudEnabled.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderEna", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.EmailCloudEnabled.Location = New System.Drawing.Point(390, 299)
+        Me.EmailCloudEnabled.Location = New System.Drawing.Point(390, 292)
         Me.EmailCloudEnabled.Name = "EmailCloudEnabled"
         Me.EmailCloudEnabled.Size = New System.Drawing.Size(209, 17)
         Me.EmailCloudEnabled.TabIndex = 0
@@ -650,7 +650,7 @@ Partial Class Form3
         '
         Me.EnaEmailLabel.AutoSize = True
         Me.EnaEmailLabel.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.EnaEmailLabel.Location = New System.Drawing.Point(390, 283)
+        Me.EnaEmailLabel.Location = New System.Drawing.Point(390, 274)
         Me.EnaEmailLabel.Name = "EnaEmailLabel"
         Me.EnaEmailLabel.Size = New System.Drawing.Size(225, 13)
         Me.EnaEmailLabel.TabIndex = 86
@@ -658,7 +658,7 @@ Partial Class Form3
         '
         'EmailConfigBtn
         '
-        Me.EmailConfigBtn.Location = New System.Drawing.Point(415, 322)
+        Me.EmailConfigBtn.Location = New System.Drawing.Point(411, 315)
         Me.EmailConfigBtn.Name = "EmailConfigBtn"
         Me.EmailConfigBtn.Size = New System.Drawing.Size(75, 23)
         Me.EmailConfigBtn.TabIndex = 87
@@ -669,7 +669,7 @@ Partial Class Form3
         '
         Me.lblEnable4bkgnds.AutoSize = True
         Me.lblEnable4bkgnds.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.lblEnable4bkgnds.Location = New System.Drawing.Point(684, 215)
+        Me.lblEnable4bkgnds.Location = New System.Drawing.Point(685, 215)
         Me.lblEnable4bkgnds.Name = "lblEnable4bkgnds"
         Me.lblEnable4bkgnds.Size = New System.Drawing.Size(161, 13)
         Me.lblEnable4bkgnds.TabIndex = 88
@@ -678,7 +678,7 @@ Partial Class Form3
         'txtLayersPerGIF
         '
         Me.txtLayersPerGIF.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerOutput", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerGIF.Location = New System.Drawing.Point(687, 314)
+        Me.txtLayersPerGIF.Location = New System.Drawing.Point(684, 315)
         Me.txtLayersPerGIF.Name = "txtLayersPerGIF"
         Me.txtLayersPerGIF.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerGIF.TabIndex = 89
@@ -688,7 +688,7 @@ Partial Class Form3
         'giflabel1
         '
         Me.giflabel1.AutoSize = True
-        Me.giflabel1.Location = New System.Drawing.Point(715, 317)
+        Me.giflabel1.Location = New System.Drawing.Point(712, 318)
         Me.giflabel1.Name = "giflabel1"
         Me.giflabel1.Size = New System.Drawing.Size(82, 13)
         Me.giflabel1.TabIndex = 91
@@ -697,7 +697,7 @@ Partial Class Form3
         'custlabel1
         '
         Me.custlabel1.AutoSize = True
-        Me.custlabel1.Location = New System.Drawing.Point(713, 361)
+        Me.custlabel1.Location = New System.Drawing.Point(710, 362)
         Me.custlabel1.Name = "custlabel1"
         Me.custlabel1.Size = New System.Drawing.Size(141, 13)
         Me.custlabel1.TabIndex = 92
@@ -706,7 +706,7 @@ Partial Class Form3
         'txtLayersPerCust
         '
         Me.txtLayersPerCust.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerCustom", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerCust.Location = New System.Drawing.Point(687, 357)
+        Me.txtLayersPerCust.Location = New System.Drawing.Point(684, 358)
         Me.txtLayersPerCust.Name = "txtLayersPerCust"
         Me.txtLayersPerCust.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerCust.TabIndex = 93
@@ -756,7 +756,7 @@ Partial Class Form3
         'lblAutoPrintCount
         '
         Me.lblAutoPrintCount.AutoSize = True
-        Me.lblAutoPrintCount.Location = New System.Drawing.Point(713, 402)
+        Me.lblAutoPrintCount.Location = New System.Drawing.Point(710, 403)
         Me.lblAutoPrintCount.Name = "lblAutoPrintCount"
         Me.lblAutoPrintCount.Size = New System.Drawing.Size(157, 13)
         Me.lblAutoPrintCount.TabIndex = 96
@@ -765,7 +765,7 @@ Partial Class Form3
         'txtAutoPrintCnt
         '
         Me.txtAutoPrintCnt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtAutoPrtCnt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(687, 397)
+        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(684, 398)
         Me.txtAutoPrintCnt.Name = "txtAutoPrintCnt"
         Me.txtAutoPrintCnt.Size = New System.Drawing.Size(22, 20)
         Me.txtAutoPrintCnt.TabIndex = 97
@@ -776,7 +776,7 @@ Partial Class Form3
         '
         Me.Label13.AutoSize = True
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label13.Location = New System.Drawing.Point(684, 381)
+        Me.Label13.Location = New System.Drawing.Point(681, 382)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(183, 13)
         Me.Label13.TabIndex = 99
@@ -786,7 +786,7 @@ Partial Class Form3
         '
         Me.Label14.AutoSize = True
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label14.Location = New System.Drawing.Point(684, 298)
+        Me.Label14.Location = New System.Drawing.Point(681, 299)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(134, 13)
         Me.Label14.TabIndex = 100
@@ -796,7 +796,7 @@ Partial Class Form3
         '
         Me.Label15.AutoSize = True
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label15.Location = New System.Drawing.Point(684, 341)
+        Me.Label15.Location = New System.Drawing.Point(681, 342)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(165, 13)
         Me.Label15.TabIndex = 101
@@ -830,7 +830,7 @@ Partial Class Form3
         Me.ckSavePSD.Checked = Global.WindowsApplication1.My.MySettings.Default.ckSavePSDFile
         Me.ckSavePSD.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ckSavePSD.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "ckSavePSDFile", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.ckSavePSD.Location = New System.Drawing.Point(389, 253)
+        Me.ckSavePSD.Location = New System.Drawing.Point(389, 252)
         Me.ckSavePSD.Name = "ckSavePSD"
         Me.ckSavePSD.Size = New System.Drawing.Size(112, 17)
         Me.ckSavePSD.TabIndex = 104
@@ -841,7 +841,7 @@ Partial Class Form3
         '
         Me.lblSavePSD.AutoSize = True
         Me.lblSavePSD.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.lblSavePSD.Location = New System.Drawing.Point(390, 239)
+        Me.lblSavePSD.Location = New System.Drawing.Point(390, 235)
         Me.lblSavePSD.Name = "lblSavePSD"
         Me.lblSavePSD.Size = New System.Drawing.Size(189, 13)
         Me.lblSavePSD.TabIndex = 105

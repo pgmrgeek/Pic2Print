@@ -479,7 +479,8 @@ Partial Class Pic2Print
         'PrinterSelect1
         '
         Me.PrinterSelect1.AutoSize = True
-        Me.PrinterSelect1.Checked = True
+        Me.PrinterSelect1.Checked = Global.WindowsApplication1.My.MySettings.Default.Printer1RadioSelect
+        Me.PrinterSelect1.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "Printer1RadioSelect", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.PrinterSelect1.Location = New System.Drawing.Point(6, 26)
         Me.PrinterSelect1.Name = "PrinterSelect1"
         Me.PrinterSelect1.Size = New System.Drawing.Size(71, 17)

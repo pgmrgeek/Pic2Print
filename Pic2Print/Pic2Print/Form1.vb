@@ -8,7 +8,7 @@ Imports System.Threading
 '
 ' Copyright (c) 2014. Bay Area Event Photography. All Rights Reserved.
 '
-' BETA Release 7.04 (A work in progress)
+' BETA Release x.xx (A work in progress)
 '
 '"Pic2Print.exe" is a Microsoft Visual Studio 2010 Visual Basic .NET
 'program that provides a user interface to an incoming stream of images.
@@ -127,6 +127,16 @@ Public Class Pic2Print
         PrinterSelect1.BackColor = Color.LightGreen
         PrinterSelect2.BackColor = Color.LightGreen
 
+        ' setup printer #2 radio button if the printer #1 saved state is false & the 2nd printer is enabled
+        If PrinterSelect1.Checked = False Then
+            If Globals.fForm3.Print2Enabled.Checked = True Then
+                PrinterSelect2.Checked = True
+            Else
+                PrinterSelect1.Checked = True
+            End If
+        End If
+
+
         ' pull the last printer counts from the application settings storage
 
         Globals.Printer1Remaining = PrintCount1.Text
@@ -200,7 +210,7 @@ Public Class Pic2Print
         Call LoadBackgrounds()
 
         ' find our starting print # 
-        Call ScanForLastPrintedJPG()
+        Call Scanforlastprintedjpg()
 
         ShowBusy(False)
 
@@ -249,7 +259,7 @@ Public Class Pic2Print
         ' sort by date/time stamp, not file name 
         idx = files.Count
         If idx = 0 Then
-            Call PrintThisCount(-1, 10, 0)
+            Globals.FileNamePrefix = 10
             Globals.fDebug.txtPrintLn("Next print prefix = 10" & vbCrLf)
             Return
         End If
@@ -266,13 +276,12 @@ Public Class Pic2Print
             idx = CInt(s)
             idx = (idx / 10) + 1
             idx = idx * 10
-            Call PrintThisCount(-1, idx, 0)
-
+            Globals.FileNamePrefix = idx
             Globals.fDebug.txtPrintLn("Next print prefix = " & idx & vbCrLf)
 
         Else
             ' no number, just start at 10
-            Call PrintThisCount(-1, 10, 0)
+            Globals.FileNamePrefix = 10
             Globals.fDebug.txtPrintLn("Next print prefix = 10" & vbCrLf)
         End If
 
@@ -305,6 +314,7 @@ Public Class Pic2Print
                     Globals.prtrDPI(Globals.prtrMax) = arrCurrentRow(4)
                     Globals.prtrProf(Globals.prtrMax) = arrCurrentRow(5)
                     Globals.prtrRatio(Globals.prtrMax) = arrCurrentRow(6)
+                    Globals.prtrSeconds(Globals.prtrMax) = arrCurrentRow(7)
 
                     Globals.fForm3.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
                     Globals.fForm3.Printer2LB.Items.Add(Globals.prtrName(Globals.prtrMax))
@@ -991,6 +1001,8 @@ Public Class Pic2Print
     '
     Private Sub PrintProcessorThread(ByVal i As Integer)
         Dim newNam As String = ""
+        Dim mode As Integer
+        Dim count As Integer
 
         Do While Globals.PrintProcessRun > 0
 
@@ -1004,17 +1016,9 @@ Public Class Pic2Print
             ' state = 0, stop, state = 1, idle, state = 2, run
             If Globals.PrintProcessRun = 2 Then
 
-                ' if the Post views are requested, run the script to build them 
-                'If Globals.tmpBuildPostViews = 2 Then
-
-                ' build the post views
-                'Call ppBuildPosts()
-
-                'End If
-
                 Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpPrint1_Folder).GetFiles("*.jpg"))
 
-                ' sort by date/time stamp, not file name 
+                ' SAVE THIS - sort by date/time stamp, not file name 
                 'If Globals.tmpSortByDate Then
                 'files.Sort(New FileInfoComparer)
                 'End If
@@ -1025,60 +1029,102 @@ Public Class Pic2Print
 
                         Thread.Sleep(1000)
 
-                        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                        ' without going through the user controls, then this should be printed. We want to
-                        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+                        ' Special Case - if the 2nd printer path is enabled, and the user has the 2nd print checked, kiosk 
+                        ' mode will send all images automatically to the 2nd printer in a fwd'ing action rather than use
+                        ' photoshop locally.
 
-                        Call ppDecorateName(fi.Name, newNam)
+                        If Globals.fForm3.Print2Enabled.Checked = True Then
 
-                        ' if its a POST processing, do that, else do loads/prints/GIFs
-                        'If newNam.Contains("_m3") Then
+                            If PrinterSelect2.Checked = True Then
 
-                        ' build the post views
-                        'Call ppBuildPosts()
-                        'Call ppProcessFiles(newNam)
+                                mode = PRT_PRINT
+                                If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
+                                    (Globals.prtrSize(Globals.prtr2Selector) <= 12)) Then mode = PRT_GIF
 
-                        ' PS is done, now just display
-                        'Globals.tmpBuildPostViews = 1
+                                ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                ' without going through the user controls, then this should be printed. We want to
+                                ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
 
-                        ' if there are postviews to show, process them now
+                                count = ppDecorateName(fi.Name, newNam, mode)
 
-                        'ppShowPosts()
+                                ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
+                                ' the file print/gif.  So we now need to examine the decorated name for the mode 
 
-                        'Else
+                                ' yep, this is a forced case of sending the image directly to printer #2
+                                CopyFileToPrint2Dir(newNam)
 
-                        ' process the files in the \onsite folder through photoshop
-                        Call ppProcessFiles(newNam)
+                                ' increment/decrement all the print counters
+                                'IncrementPrintCounts(mode, count)
 
-                        'If Globals.fForm3.EmailCloudEnabled.Checked Then
+                            Else
 
-                        ' if enabled, copy the file from the printed folder to the cloud folder
+                                mode = PRT_PRINT
+                                If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
+                                    (Globals.prtrSize(Globals.prtr1Selector) <= 12)) Then mode = PRT_GIF
 
-                        If Globals.tmpEmailCloudEnabled Then
+                                ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                ' without going through the user controls, then this should be printed. We want to
+                                ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
 
-                            ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                            If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                CopyFileToCloudDir(newNam)
+                                count = ppDecorateName(fi.Name, newNam, mode)
+
+                                ' process the files in the \onsite folder through photoshop
+                                Call ppProcessFiles(newNam)
+
+                                ' increment/decrement all the print counters
+                                'IncrementPrintCounts(mode, count)
+
+                            ' if enabled, copy the file from the printed folder to the cloud folder
+
+                            If Globals.tmpEmailCloudEnabled Then
+
+                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                    CopyFileToCloudDir(newNam)
+                                End If
+
+                                ' send out email..
+                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+                            End If
+
+                            End If
+
+                        Else
+
+                            mode = PRT_PRINT
+                            If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
+                                (Globals.prtrSize(Globals.prtr1Selector) <= 12)) Then mode = PRT_GIF
+
+                            ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                            ' without going through the user controls, then this should be printed. We want to
+                            ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+
+                            count = ppDecorateName(fi.Name, newNam, mode)
+
+                            ' process the files in the \onsite folder through photoshop
+                            Call ppProcessFiles(newNam)
+
+                            ' increment/decrement all the print counters
+                            'IncrementPrintCounts(mode, count)
+
+                            ' if enabled, copy the file from the printed folder to the cloud folder
+
+                            If Globals.tmpEmailCloudEnabled Then
+
+                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                    CopyFileToCloudDir(newNam)
+                                End If
+
+                                ' send out email..
+                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
                             End If
 
                         End If
 
-                        ' send out email..
-                        PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                        'End If
-
-                        'end If
-
                     End If
-
-                    ' check this again in the innerloop, build the Post views if requested
-                    'If Globals.tmpBuildPostViews = 2 Then
-
-                    ' build the post views
-                    'Call ppBuildPosts()
-
-                    'End If
 
                 Next
 
@@ -1088,6 +1134,14 @@ Public Class Pic2Print
 
     End Sub
 
+    ' AdvancePrefixCount increments the FileNamePrefix by 00010, clears the low digit
+    Private Sub AdvancePrefixCount()
+        ' modulo 10' drawing this out because my single compound statement wasn't working..
+        Globals.FileNamePrefix = Globals.FileNamePrefix / 10
+        Globals.FileNamePrefix += 1
+        Globals.FileNamePrefix = Globals.FileNamePrefix * 10
+
+    End Sub
 
     Private Sub PrintedFolderThread(ByVal i As Int16)
         Dim newNam As String = ""
@@ -1121,7 +1175,7 @@ Public Class Pic2Print
                     ' find all jpg and gif files, see if they're on file
                     If ((fi.Extension = ".jpg") Or (fi.Extension = ".gif")) Then
 
-                        found = Globals.PrintCache.matchfound(fi.Name)
+                        found = Globals.PrintCache.matchFound(fi.Name)
 
                         ' if not found, register this file
 
@@ -1240,29 +1294,47 @@ Public Class Pic2Print
     End Sub
 
 
-    Private Sub ppDecorateName(ByRef inNam As String, ByRef outNam As String)
+    Function ppDecorateName(ByRef inNam As String, ByRef outNam As String, ByVal mode As Integer)
 
         ' automatic decoration is for printing only, no GIFs, so this number
         ' will track the number of images required to make the print
         Static prtCount As Integer = 0
-        Dim mode As Integer
         Dim sMode As String
         Dim bkg As String = "_bk1"
         Dim outTxt As String
         Dim inTxt As String
+        Dim maxlayers As Integer
+        Dim sPrefix As String
+        Dim count
 
         ' overload - if null string, reset the internal counter
         If inNam = "" Then
             prtCount = 0
-            Return
+            Return 0
         End If
 
         outNam = inNam  ' just in case we don't need to do anything..
 
         ' bail if the name is decorated..
-        If (inNam.Contains("_m") Or inNam.Contains("_bk")) Then
-            Return
+        If (inNam.Contains("_m") And inNam.Contains("_bk")) Then
+
+            ' since its decorated, we msut extract the print count
+            count = InStr(inNam, "_p", CompareMethod.Text)
+            outTxt = inNam(count + 1)
+            If (IsNumeric(inNam(count + 2))) Then
+                outTxt = outTxt & inNam(count + 2)
+            End If
+            If IsNumeric(outTxt) Then
+                count = outTxt
+            Else
+                count = Globals.tmpAutoPrints
+            End If
+            Return count
+
         End If
+
+        sPrefix = String.Format("{0:0000}", Globals.FileNamePrefix)
+        Globals.FileNamePrefix += 1
 
         ' we will now decorate this name in multiple ways -
         '   1 one image, one layout
@@ -1271,19 +1343,23 @@ Public Class Pic2Print
 
         prtCount += 1       ' when prtCount = Max, then we print it, up to that point, we just load it.
 
-        ' create the mode, either load only or print
-        If prtCount = Globals.MaxCustLayersNeeded Then
-            sMode = "_m1"    ' print mode
-            prtCount = 0     ' reset the count if we've maxed out
-            mode = PRT_PRINT
-        Else
-            sMode = "_m0"    ' load image mode
-            mode = PRT_LOAD
+        ' background/foreground may be animated, so advance that in the new name
+
+        If Globals.fForm3.chkBkFgsAnimated.Checked = True Then
+            bkg = "_bk" & prtCount                      ' move to the next bk/fg selection
         End If
 
-        ' background is either #1 or when multiple backgrounds, the current selected background.
+        ' create the mode, either load only or print/gif. first find out how many layers we need, the build the mode string off that
 
-        Call buildBackGroundSelector(bkg, mode)
+        If (mode = PRT_PRINT) Then maxlayers = Globals.MaxCustLayersNeeded
+        If (mode = PRT_GIF) Then maxlayers = Globals.MaxGifLayersNeeded
+
+        sMode = "_m0"                   ' default to load image mode
+        If prtCount = maxlayers Then
+            sMode = "_m" & mode         ' print mode
+            prtCount = 0                ' reset the count if we've maxed out
+            AdvancePrefixCount()
+        End If
 
         ' build the decorated name.  First remove .jpg to get to the base name, then add -
         '    _pX for number of prints
@@ -1292,23 +1368,17 @@ Public Class Pic2Print
         '
         outNam = Microsoft.VisualBasic.Left(inNam, InStr(inNam, ".jpg", CompareMethod.Text) - 1)
         inTxt = outNam & ".txt"
-        outTxt = outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".txt"
-        outNam = outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".jpg"
+        outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".txt"
+        outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".jpg"
 
         If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & inTxt) Then
             My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inTxt, outTxt)
         End If
         My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inNam, outNam)
 
-    End Sub
+        Return Globals.tmpAutoPrints
 
-    Public Sub buildBackGroundSelector(ByRef bkg As String, ByVal mode As Integer)
-        ' background is selected by the number of the image loaded/processed
-        bkg = "_bk1"
-        If Globals.fForm3.MultipleBackgrounds.Checked Then
-            bkg = "_bk" & Globals.BackgroundSelected
-        End If
-    End Sub
+    End Function
 
     Private Sub flushAppDocsInPhotoshop()
 
@@ -1325,7 +1395,7 @@ Public Class Pic2Print
         compiler.WaitForExit()
 
         ' overloaded call to reset the internal counters
-        Call ppDecorateName("", "")
+        Call ppDecorateName("", "", 0)
 
         Globals.fDebug.txtPrintLn("Close Complete")
 
@@ -1333,7 +1403,6 @@ Public Class Pic2Print
 
     Private Sub ppProcessFiles(ByRef fName As String)
         Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jpg", CompareMethod.Text) - 1) & ".txt"
-        Dim trgnam As String = "c:\onsite\orig\" & fName
         Dim trgnamtxt As String = "c:\onsite\orig\" & fNameTxt
         ' execute the droplet with this file name with path
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
@@ -1351,6 +1420,17 @@ Public Class Pic2Print
         compiler.WaitForExit()
 
         Globals.fDebug.txtPrintLn("Photoshop Complete")
+
+        ppMoveFiles(fName)
+
+    End Sub
+
+    Private Sub ppMoveFiles(ByRef fName As String)
+        Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jpg", CompareMethod.Text) - 1) & ".txt"
+        Dim trgnamtxt As String = "c:\onsite\orig\" & fNameTxt
+        Dim trgnam As String = "c:\onsite\orig\" & fName
+        Dim fnam As String = Globals.tmpPrint1_Folder & fName
+        Dim fnamtxt As String = Globals.tmpPrint1_Folder & fNameTxt
 
         ' move this file out of the print folder to the 'orig' folder
         If My.Computer.FileSystem.FileExists(trgnam) Then
@@ -1371,34 +1451,6 @@ Public Class Pic2Print
 
     End Sub
 
-    ' printer thread builds the images to keep in sync with photoshop
-    'Private Sub ppBuildPosts()
-    '
-    ' execute the preview droplet with this file name with path
-    'Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
-    'Dim fnam As String = Globals.tmpIncoming_Folder & Globals.FileNames(idx)  ' change this..
-    'Dim pgm As String = "c:\onsite\software\postviewbld.exe"
-
-    '    Globals.fDebug.txtPrintLn("Creating Postviews of " & fnam)
-
-    'Dim compiler As New Process()
-    '    compiler.StartInfo.FileName = pgm
-    '    compiler.StartInfo.Arguments = fnam
-    '    compiler.StartInfo.UseShellExecute = False
-    '    compiler.StartInfo.RedirectStandardOutput = True
-    '    compiler.Start()
-    '    compiler.WaitForExit()
-
-    '    Globals.fDebug.txtPrintLn("Postview Build Complete")
-
-    ' PS is done, now just display
-    '    Globals.tmpBuildPostViews = 1
-
-    ' if there are postviews to show, process them now
-
-    '     ppShowPosts()
-
-    ' End Sub
 
     ' ------------------------====< EmailProcessorThread >====---------------------------------
     ' this thread runs to take output from the PrintProcessorThread
@@ -1705,13 +1757,13 @@ Public Class Pic2Print
         Dim lidx As Integer
         Dim bkgd As Integer = Globals.BackgroundSelected
         Dim layoutidx = Globals.fForm3.tbBKFG.Text
-        Static prefix As Integer = 10
+        'Static prefix As Integer = 10
 
         ' overload the interface, a -1 means set the prefix
-        If idx = -1 Then
-            prefix = count
-            Return True
-        End If
+        'If idx = -1 Then
+        'Globals.FileNamePrefix = count
+        'Return True
+        'End If
 
         ' do this only if the selected box has a valid image.
         If idx < Globals.ImageCache.maxIndex Then
@@ -1721,7 +1773,7 @@ Public Class Pic2Print
 
                 Globals.fDebug.txtPrintLn("PrintThisCount:" & count)
 
-                ' Select the printer, pass in the file name for the load balancing..
+                ' Call this just once for a print/gif. This selects the printer.
                 Call SelectThePrinter(Globals.ImageCache.fileName(idx), mode)
 
                 'MsgBox("move following code to class")
@@ -1741,8 +1793,8 @@ Public Class Pic2Print
                     End If
 
                     lidx = Globals.FileLoadIndexes(0)
-                    CopyFileToPrintDir(PRT_LOAD, lidx, 0, prefix, bkgd)
-                    prefix += 1
+                    CopyFileToPrintDir(PRT_LOAD, lidx, 0, Globals.FileNamePrefix, bkgd)
+                    Globals.FileNamePrefix += 1
 
                     ' Load image #2
                     If Globals.FileLoadCounter >= 2 Then
@@ -1751,8 +1803,8 @@ Public Class Pic2Print
                             If bkgd > 4 Then bkgd = 4
                         End If
                         lidx = Globals.FileLoadIndexes(1)
-                        CopyFileToPrintDir(PRT_LOAD, lidx, 0, prefix, bkgd)
-                        prefix += 1
+                        CopyFileToPrintDir(PRT_LOAD, lidx, 0, Globals.FileNamePrefix, bkgd)
+                        Globals.FileNamePrefix += 1
                     End If
 
                     ' image #3 
@@ -1763,8 +1815,8 @@ Public Class Pic2Print
                         End If
                         If Globals.FileLoadCounter >= 2 Then
                             lidx = Globals.FileLoadIndexes(2)
-                            CopyFileToPrintDir(PRT_LOAD, lidx, 0, prefix, bkgd)
-                            prefix += 1
+                            CopyFileToPrintDir(PRT_LOAD, lidx, 0, Globals.FileNamePrefix, bkgd)
+                            Globals.FileNamePrefix += 1
                         End If
                     End If
 
@@ -1776,82 +1828,44 @@ Public Class Pic2Print
 
                 End If
 
-                ' if this is a print, we use the selected background. GIFs may use the 
-                ' entire range; we let that pass through. if this an actual print, then 
-                ' incr the totoal count
-
                 If mode = PRT_PRINT Then
                     bkgd = Globals.BackgroundSelected
-                    Globals.TotalPrinted += 1                   ' and to the total print count.
                 End If
 
-                ' increment the image printed count for GIF & Prints
-
-                If ((mode = PRT_PRINT) Or (mode = PRT_GIF)) Then
-                    ' increment this file's printed count
-                    Globals.ImageCache.maxPrintCount(idx) += 1          ' add 1 to the file print count
+                If Globals.ToPrinter = 1 Then
+                    ' save target printer path here for emails
+                    printpath = Globals.tmpPrint1_Folder
+                Else
+                    ' save target printer path here for emails
+                    printpath = Globals.tmpPrint2_Folder
                 End If
 
                 ' copy the file to the onsite folder for the background thread
 
-                prtfnam = CopyFileToPrintDir(mode, idx, count, prefix, bkgd) ' copy the file and receive the copied file name
-                prefix += 10
+                prtfnam = CopyFileToPrintDir(mode, idx, count, Globals.FileNamePrefix, bkgd) ' copy the file and receive the copied file name
+                AdvancePrefixCount()
 
-                ' if this is a POST image build, we're done now and can exit. Let the bkg 
-                ' thread handle the rest
+                ' advance our counters even though the 2nd printer is on another machine..
+                'If Globals.ToPrinter = 2 Then
+                IncrementPrintCounts(mode, count)
+                'End If
 
-                'If mode = PRT_POST Then
-                '' this flag controls the background print processor thread..
-                'Globals.tmpBuildPostViews = 2
-                ' Return True
-                ' End If
+                ' increment the image printed count for GIF & Prints
 
-                ' if printing (vs not GIF) we decrement the paper count
-                If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
-
-                    ' Decrement the selected printer downcounters 
-                    If Globals.ToPrinter = 1 Then
-
-                        ' printer 1 has one less sheet. Turn the button yellow for the duration
-                        Globals.Printer1DownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text
-                        PrinterSelect1.BackColor = Color.LightYellow
-
-                        ' if this an actual print, then decr the remaining counts
-                        If mode = PRT_PRINT Then
-                            If Globals.Printer1Remaining > 0 Then
-                                Globals.Printer1Remaining -= 1
-                            End If
-                        End If
-
-                        ' save target printer path here for emails
-                        printpath = Globals.tmpPrint1_Folder
-
-                    Else
-
-                        ' printer 2 has one less sheet. turn the button yellow for the duration
-                        Globals.Printer2DownCount += Globals.fForm3.Printer2PrintTimeSeconds.Text
-                        PrinterSelect2.BackColor = Color.LightYellow
-
-                        ' if this an actual print, then decr the remaining counts
-                        If mode = PRT_PRINT Then
-                            If Globals.Printer2Remaining > 0 Then
-                                Globals.Printer2Remaining -= 1
-                            End If
-                        End If
-
-                        ' save target printer path here for emails
-                        printpath = Globals.tmpPrint2_Folder
-
-                    End If
-
+                'If ((mode = PRT_PRINT) Or (mode = PRT_GIF)) Then
+                ' increment this file's printed count
+                If mode = PRT_GIF Then
+                    Globals.ImageCache.maxPrintCount(idx) += 1      ' add to the file print count
+                Else
+                    Globals.ImageCache.maxPrintCount(idx) += count
                 End If
-
-                ' Update the printer text boxes with the remaining count
-                PrintCount1.Text = Globals.Printer1Remaining
-                PrintCount2.Text = Globals.Printer2Remaining
+                'End If
 
                 ' write everything to the .txt file
                 Call SaveFileNameData(Globals.ImageCache, idx)
+
+                '' do this in the kiosk thread - increment all the up and down counters
+                'IncrementPrintCounts(idx, mode, count)
 
                 ' update the screen text box
                 UpdatePictureBoxCount()
@@ -1864,6 +1878,78 @@ Public Class Pic2Print
         Return False
 
     End Function
+
+
+    Public Sub IncrementPrintCounts(ByVal mode As Integer, ByVal count As Integer)
+
+        ' incr total global print count, ignore gifs
+
+        If mode = PRT_PRINT Then
+            Globals.TotalPrinted += count                       ' and to the total print count.
+        End If
+
+        ' if printing (vs not GIF) we decrement the paper count
+        ''''''''' dsc - For debugging load balancing, use the simple if statement; don't check for NoPrint or you'll never see it..
+        If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
+            'If (mode = PRT_PRINT) Then
+
+            ' Decrement the selected printer downcounters 
+            If Globals.ToPrinter = 1 Then
+
+                ' printer 1 has one less sheet. Turn the button yellow for the duration
+                Globals.Printer1DownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text * count
+                PrinterSelect1.BackColor = Color.LightYellow
+
+                ' if this an actual print, then decr the remaining counts
+                If mode = PRT_PRINT Then
+                    If Globals.Printer1Remaining > 0 Then
+                        Globals.Printer1Remaining -= count
+                        If Globals.Printer1Remaining < 0 Then
+                            Globals.Printer1Remaining = 0
+                        End If
+                    End If
+                End If
+
+            Else
+
+                ' printer 2 has one less sheet. turn the button yellow for the duration
+                Globals.Printer2DownCount += Globals.fForm3.Printer2PrintTimeSeconds.Text * count
+                PrinterSelect2.BackColor = Color.LightYellow
+
+                ' if this an actual print, then decr the remaining counts
+                If mode = PRT_PRINT Then
+                    If Globals.Printer2Remaining > 0 Then
+                        Globals.Printer2Remaining -= count
+                        If Globals.Printer2Remaining < 0 Then
+                            Globals.Printer2Remaining = 0
+                        End If
+                    End If
+                End If
+
+            End If
+
+        End If
+
+        ' Update the printer text boxes with the remaining count
+        UpdatePrinterCountBoxes(Globals.Printer1Remaining, Globals.Printer2Remaining)
+
+        'PrintCount1.Text = Globals.Printer1Remaining
+        'PrintCount2.Text = 
+
+    End Sub
+
+    Public Delegate Sub UpdatePrinterCountBoxesCallback(ByVal count1 As Integer, ByVal count2 As Integer)
+    Public Sub UpdatePrinterCountBoxes(ByVal count1, ByVal count2)
+
+        If PrintCount1.InvokeRequired Then
+            Dim d As New UpdatePrinterCountBoxesCallback(AddressOf UpdatePrinterCountBoxes)
+            Me.Invoke(d, New Object() {count1, count2})
+        Else
+            PrintCount1.Text = Globals.Printer1Remaining
+            PrintCount2.Text = Globals.Printer2Remaining
+        End If
+
+    End Sub
 
     Public Sub BuildUserEmails(ByVal idx As Integer, ByRef email As String)
         Dim i As Integer
@@ -1976,6 +2062,85 @@ Public Class Pic2Print
     End Function
 
     '
+    ' Copy the file to either printer #1 or printer #2
+    '
+    Function CopyFileToPrint2Dir(ByRef src As String) As String
+        'Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
+        Dim srcf As String
+        Dim trgf As String = ""
+        Dim trgtxt As String
+        Dim PrinterPath As String
+        Dim sPrefix As String
+        Dim pre As Integer
+
+        ' this we know..
+
+        PrinterPath = Globals.tmpPrint2_Folder
+
+        ' if already prefixed, we assume the name is fully decorated and can skip the decoration process
+
+        sPrefix = Microsoft.VisualBasic.Left(src, 4)
+        If (IsNumeric(sPrefix) And (src(4) = "-")) Then
+
+            ' before we leave, lets grab the highest # of prefixes
+            pre = sPrefix
+            If (pre > Globals.FileNamePrefix) Then
+
+                Globals.FileNamePrefix = ((pre / 10) * 10) + 10
+
+            End If
+
+            ' take the name as-is and build the new names
+
+            srcf = Microsoft.VisualBasic.Left(src, Microsoft.VisualBasic.Len(src) - 4)
+            trgf = srcf
+            trgtxt = trgf & ".txt"
+            trgf = trgf & ".jpg"
+
+        Else
+
+            ' build a new name by adding the prefix only. we know its decorated beyond that..
+
+            sPrefix = String.Format("{0:0000}", Globals.FileNamePrefix)
+            Globals.FileNamePrefix += 1
+
+            ' get just the file name separate from the extension
+            srcf = Microsoft.VisualBasic.Left(src, Microsoft.VisualBasic.Len(src) - 4)
+
+            ' build the whole file name: printcnt+mode+background #+counter
+            trgf = sPrefix & "-" & srcf
+            trgtxt = trgf & ".txt"
+            trgf = trgf & ".jpg"
+
+        End If
+
+        ' send the file name to debug 
+        Globals.fDebug.txtPrintLn("CopyFileToPrintDir:" & trgf & " to " & PrinterPath)
+
+        If My.Computer.FileSystem.FileExists("c:\onsite\" & srcf & ".txt") Then
+
+            ' copy the gumball text file to the proper folder
+            My.Computer.FileSystem.CopyFile(
+                "c:\onsite\" & srcf & ".txt",
+                PrinterPath & trgtxt,
+                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+        End If
+
+        ' copy it to the proper folder
+        My.Computer.FileSystem.CopyFile(
+            "c:\onsite\" & src,
+            PrinterPath & trgf,
+            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+            Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+
+        ppMoveFiles(src)
+
+        Return trgf
+
+    End Function
+
+    '
     ' subroutine to copy the final output file from the printed folder to the cloud folder
     '
     Private Sub CopyFileToCloudDir(ByRef fnam As String)
@@ -2029,7 +2194,7 @@ Public Class Pic2Print
     '
     '----====< SelectThePrinter >====----
     ' sets an index to the printer for future reference.  This routine is called at the start of 
-    ' print requests in order to direct output to a given printer.  This is called once when a print
+    ' print requests in order to direct output to a given printer.  This is called once when a print/gif
     ' count button is clicked.  
     '
     Public Sub SelectThePrinter(ByRef fnam As String, ByVal mode As Integer)
@@ -2039,10 +2204,6 @@ Public Class Pic2Print
         If Globals.ToPrinter = 0 Then
             Globals.ToPrinter = 1
         End If
-
-        ' exit early if post view, no printing done..
-        '
-        'If mode = PRT_POST Then Return
 
         ' load balancing enabled only if 2nd printer is enabled
         If Globals.fForm3.LoadBalancing.Checked Then
@@ -2064,13 +2225,13 @@ Public Class Pic2Print
             'debug.TextBox1_println("SEC printer1(" & Globals.Printer1DownCount & ") printer2(" & Globals.Printer2DownCount & ")")
             'debug.TextBox1_println("Fil " & fnam)
 
-            If Globals.PrintedFileName = fnam Then
-                'debug.TextBox1_println("keep printer")
-                Return
-            End If
+            'If Globals.PrintedFileName = fnam Then
+            ''debug.TextBox1_println("keep printer")
+            'Return
+            'End If
 
             'debug.TextBox1_println("new printer")
-            Globals.PrintedFileName = fnam
+            'Globals.PrintedFileName = fnam
 
             ' Time to choose the printer.  
             '
@@ -2955,7 +3116,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.03"    ' Version string
+    Public Shared Version As String = "Version 8.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -2978,7 +3139,8 @@ Public Class Globals
     Public Shared PathsValidated As Int16 = 0           ' bit fields:0x01=src, 0x02=dest1, 0x04=dest2
     Public Shared ToPrinter As Int16 = 0                ' set per print output: 1 = Printer 1, 2 = Printer 2
     Public Shared TotalPrinted As Int16 = 0             ' total # of prints
-    Public Shared PrintedFileName As String = ""        ' for the load balancing, keeps same print on same printer
+    'Public Shared PrintedFileName As String = ""        ' for the load balancing, keeps same print on same printer
+    Public Shared FileNamePrefix As Integer = 10        ' prefixing the name on outgoing files to the kiosk folder
 
     ' controls postview picture box images
     'Public Shared PostViewsLoaded As Integer = 0
@@ -3041,6 +3203,8 @@ Public Class Globals
 
     ' Array of printer info read from the CSV file
     Public Shared prtrMax As Int16 = 0
+    Public Shared prtr1Selector As Integer
+    Public Shared prtr2Selector As Integer
     Public Shared prtrName(128) As String
     Public Shared prtrProf(128) As String
     Public Shared prtrSize(128) As Int16
@@ -3048,6 +3212,7 @@ Public Class Globals
     Public Shared prtrYres(128) As Int16
     Public Shared prtrDPI(128) As Int16
     Public Shared prtrRatio(128) As Int16
+    Public Shared prtrSeconds(128) As Int16
 
     ' Array of phone MMS carriers from the CSV file
     Public Shared carrierMax As Int16 = 0

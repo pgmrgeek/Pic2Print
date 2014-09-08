@@ -116,6 +116,7 @@ Public Class Form3
     ' "Okay" button
     '
     Private Sub OKay_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OKay.Click
+        Dim i As Integer
 
         ' validate the three paths
         If Globals.fPic2Print.ValidatePaths(-1, True) Then
@@ -141,7 +142,7 @@ Public Class Form3
             ' fix up the GIF/Custom load counters
 
             Globals.MaxGifLayersNeeded = txtLayersPerGIF.Text
-            If Globals.MaxGifLayersNeeded > 4 Then
+            If ((Globals.MaxGifLayersNeeded < 0) Or (Globals.MaxGifLayersNeeded > 4)) Then
                 MessageBox.Show("GIF Layer Count is invalid, defaulting to 0")
                 Globals.MaxGifLayersNeeded = 0
                 txtLayersPerGIF.Text = "0"
@@ -152,6 +153,17 @@ Public Class Form3
                 MessageBox.Show("Custom Layer Count is invalid, defaulting to 1")
                 Globals.MaxCustLayersNeeded = 1
                 txtLayersPerCust.Text = "1"
+            End If
+
+            If IsNumeric(txtAutoPrintCnt.Text) Then
+                i = txtAutoPrintCnt.Text
+                If ((i < 1) Or (i > 10)) Then
+                    MessageBox.Show("Kiosk Auto Print Count is invalid, defaulting to 1")
+                    txtAutoPrintCnt.Text = "1"
+                End If
+            Else
+                MessageBox.Show("Kiosk Auto Print Count is invalid, defaulting to 1")
+                txtAutoPrintCnt.Text = "1"
             End If
 
             Call Globals.fPic2Print.ReadBKFGFile()
@@ -176,11 +188,20 @@ Public Class Form3
         Globals.tmpPrint1_Folder = Print_Folder_1.Text
         Globals.tmpPrint2_Folder = Print_Folder_2.Text
         Globals.tmpAutoPrints = txtAutoPrintCnt.Text
+        Globals.prtr1Selector = prtrSelect1.Text
+        Globals.prtr2Selector = prtrSelect2.Text
 
         If SortByDate.Checked Then
             Globals.tmpSortByDate = True
         Else
             Globals.tmpSortByDate = False
+        End If
+
+        If Globals.tmpAutoPrints < 0 Then
+            Globals.tmpAutoPrints = 1
+        End If
+        If Globals.tmpAutoPrints > 10 Then
+            Globals.tmpAutoPrints = 10
         End If
 
         ' if the source path is valid, then start the watch routine
@@ -654,11 +675,14 @@ Public Class Form3
 
     Private Sub Printer1LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer1LB.SelectedIndexChanged
         prtrSelect1.Text = Printer1LB.SelectedIndex
+        Printer1PrintTimeSeconds.Text = Globals.prtrSeconds(Printer1LB.SelectedIndex)
     End Sub
 
     Private Sub Printer2LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer2LB.SelectedIndexChanged
         prtrSelect2.Text = Printer2LB.SelectedIndex
+        Printer2PrintTimeSeconds.Text = Globals.prtrSeconds(Printer2LB.SelectedIndex)
     End Sub
+
     Private Sub ComboBoxBKFG_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxBKFG.SelectedIndexChanged
 
         tbBKFG.Text = ComboBoxBKFG.SelectedIndex
