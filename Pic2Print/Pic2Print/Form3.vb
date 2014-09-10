@@ -190,6 +190,7 @@ Public Class Form3
         Globals.tmpAutoPrints = txtAutoPrintCnt.Text
         Globals.prtr1Selector = prtrSelect1.Text
         Globals.prtr2Selector = prtrSelect2.Text
+        Globals.tmpMachineName = txtMachineName.Text
 
         If SortByDate.Checked Then
             Globals.tmpSortByDate = True

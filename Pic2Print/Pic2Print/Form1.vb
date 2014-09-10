@@ -269,10 +269,10 @@ Public Class Pic2Print
 
         ' find the newest file with 4 leading digits
         'For Each fi As FileInfo In files
-        s = Microsoft.VisualBasic.Left(s, 4)
+        s = Microsoft.VisualBasic.Left(s, 5)
 
         If IsNumeric(s) Then
-            ' string is in the form of 000x, where X is dropped
+            ' string is in the form of 0000x, where X is dropped
             idx = CInt(s)
             idx = (idx / 10) + 1
             idx = idx * 10
@@ -1333,7 +1333,7 @@ Public Class Pic2Print
 
         End If
 
-        sPrefix = String.Format("{0:0000}", Globals.FileNamePrefix)
+        sPrefix = String.Format("{0:00000}", Globals.FileNamePrefix)
         Globals.FileNamePrefix += 1
 
         ' we will now decorate this name in multiple ways -
@@ -1368,8 +1368,8 @@ Public Class Pic2Print
         '
         outNam = Microsoft.VisualBasic.Left(inNam, InStr(inNam, ".jpg", CompareMethod.Text) - 1)
         inTxt = outNam & ".txt"
-        outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".txt"
-        outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & ".jpg"
+        outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".txt"
+        outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".jpg"
 
         If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & inTxt) Then
             My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inTxt, outTxt)
@@ -2015,7 +2015,7 @@ Public Class Pic2Print
         Dim trgf As String = ""
         Dim trgtxt As String
         Dim PrinterPath As String
-        Dim sPrefix As String = String.Format("{0:0000}", prefix)
+        Dim sPrefix As String = String.Format("{0:00000}", prefix)
 
         'If Globals.ScreenBase + Globals.PictureBoxSelected < Globals.FileNamesMax Then
         If idx < Globals.ImageCache.maxIndex Then
@@ -2031,7 +2031,7 @@ Public Class Pic2Print
             End If
 
             ' build the whole file name: printcnt+mode+background #+counter
-            trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd
+            trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
 
@@ -2062,7 +2062,7 @@ Public Class Pic2Print
     End Function
 
     '
-    ' Copy the file to either printer #1 or printer #2
+    ' Copy the file to printer #2
     '
     Function CopyFileToPrint2Dir(ByRef src As String) As String
         'Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
@@ -2079,8 +2079,8 @@ Public Class Pic2Print
 
         ' if already prefixed, we assume the name is fully decorated and can skip the decoration process
 
-        sPrefix = Microsoft.VisualBasic.Left(src, 4)
-        If (IsNumeric(sPrefix) And (src(4) = "-")) Then
+        sPrefix = Microsoft.VisualBasic.Left(src, 5)
+        If (IsNumeric(sPrefix) And (src(5) = "-")) Then
 
             ' before we leave, lets grab the highest # of prefixes
             pre = sPrefix
@@ -2101,7 +2101,7 @@ Public Class Pic2Print
 
             ' build a new name by adding the prefix only. we know its decorated beyond that..
 
-            sPrefix = String.Format("{0:0000}", Globals.FileNamePrefix)
+            sPrefix = String.Format("{0:00000}", Globals.FileNamePrefix)
             Globals.FileNamePrefix += 1
 
             ' get just the file name separate from the extension
@@ -3116,7 +3116,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.05"    ' Version string
+    Public Shared Version As String = "Version 8.06"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3267,6 +3267,7 @@ Public Class Globals
     Public Shared tmpServerPort As String
     Public Shared tmpAcctName As String
     Public Shared tmpPassword As String
+    Public Shared tmpMachineName As String
     Public Shared tmpAcctEmailAddr As String
     'Public Shared tmpBuildPostViews As Int16 = 0        ' 0 = idle, 1 = done, 2 = do build
     Public Shared tmpAutoPrints As Integer = 1          ' # of prints for the automatic processing

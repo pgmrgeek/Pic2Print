@@ -182,5 +182,8 @@
     <Setting Name="Printer1RadioSelect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="MachineName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">lt1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

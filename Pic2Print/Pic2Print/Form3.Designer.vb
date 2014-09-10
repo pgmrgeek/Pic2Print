@@ -101,6 +101,9 @@ Partial Class Form3
         Me.Label16 = New System.Windows.Forms.Label()
         Me.lblTestFont = New System.Windows.Forms.Label()
         Me.pbHueWheel = New System.Windows.Forms.PictureBox()
+        Me.txtMachineName = New System.Windows.Forms.TextBox()
+        Me.lblMachineName = New System.Windows.Forms.Label()
+        Me.Label17 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -913,12 +916,43 @@ Partial Class Form3
         Me.pbHueWheel.TabIndex = 108
         Me.pbHueWheel.TabStop = False
         '
+        'txtMachineName
+        '
+        Me.txtMachineName.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "MachineName", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtMachineName.Location = New System.Drawing.Point(684, 456)
+        Me.txtMachineName.Name = "txtMachineName"
+        Me.txtMachineName.Size = New System.Drawing.Size(37, 20)
+        Me.txtMachineName.TabIndex = 112
+        Me.txtMachineName.Text = Global.WindowsApplication1.My.MySettings.Default.MachineName
+        '
+        'lblMachineName
+        '
+        Me.lblMachineName.AutoSize = True
+        Me.lblMachineName.Location = New System.Drawing.Point(728, 460)
+        Me.lblMachineName.Name = "lblMachineName"
+        Me.lblMachineName.Size = New System.Drawing.Size(142, 13)
+        Me.lblMachineName.TabIndex = 113
+        Me.lblMachineName.Text = "Machine name for file names"
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label17.Location = New System.Drawing.Point(681, 437)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(143, 13)
+        Me.Label17.TabIndex = 114
+        Me.Label17.Text = "3 char name for this machine"
+        '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(923, 534)
         Me.ControlBox = False
+        Me.Controls.Add(Me.Label17)
+        Me.Controls.Add(Me.lblMachineName)
+        Me.Controls.Add(Me.txtMachineName)
         Me.Controls.Add(Me.lblTestFont)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.gbFonts)
@@ -1077,4 +1111,7 @@ Partial Class Form3
     Friend WithEvents cbFontList As System.Windows.Forms.ComboBox
     Friend WithEvents Label16 As System.Windows.Forms.Label
     Friend WithEvents lblTestFont As System.Windows.Forms.Label
+    Friend WithEvents txtMachineName As System.Windows.Forms.TextBox
+    Friend WithEvents lblMachineName As System.Windows.Forms.Label
+    Friend WithEvents Label17 As System.Windows.Forms.Label
 End Class
