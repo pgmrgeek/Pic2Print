@@ -1371,6 +1371,10 @@ Public Class Pic2Print
         outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".txt"
         outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".jpg"
 
+        ' replace spaces with underscores
+        outTxt = outTxt.Replace(" ", "_")
+        outNam = outNam.Replace(" ", "_")
+
         If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & inTxt) Then
             My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inTxt, outTxt)
         End If
@@ -2034,6 +2038,10 @@ Public Class Pic2Print
             trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
+
+            ' replace spaces with underscores
+            trgtxt = trgtxt.Replace(" ", "_")
+            trgf = trgf.Replace(" ", "_")
 
             ' send the file name to debug 
             Globals.fDebug.txtPrintLn("CopyFileToPrintDir:" & trgf & " to " & PrinterPath)
@@ -3116,7 +3124,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.06"    ' Version string
+    Public Shared Version As String = "Version 8.07"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
