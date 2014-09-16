@@ -54,6 +54,10 @@ Public Class Form3
         If i >= cbFontList.Items.Count Then i = 0
         cbFontList.SelectedIndex = i
 
+        ' false until the user changes these fields
+        print1CountUpdated = False
+        print2CountUpdated = False
+
     End Sub
 
 
@@ -630,12 +634,15 @@ Public Class Form3
         Printer2PaperCount.Text = i
 
         ' Update the printer text boxes with the remaining count
-        If Globals.fPic2Print.PrintCount1.Text = "0" Then
+
+        If print1CountUpdated = True Then
+            print1CountUpdated = False
             Globals.fPic2Print.PrintCount1.Text = Printer1PaperCount.Text
             Globals.Printer1Remaining = Printer1PaperCount.Text
         End If
 
-        If Globals.fPic2Print.PrintCount2.Text = "0" Then
+        If print2CountUpdated = True Then
+            print2CountUpdated = False
             Globals.fPic2Print.PrintCount2.Text = Printer2PaperCount.Text
             Globals.Printer2Remaining = Printer2PaperCount.Text
         End If
@@ -654,9 +661,11 @@ Public Class Form3
     End Sub
 
     Private Sub Printer1PaperCount_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer1PaperCount.TextChanged
+        print1CountUpdated = True
     End Sub
 
     Private Sub Printer2PaperCount_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer2PaperCount.TextChanged
+        print2CountUpdated = True
     End Sub
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFolderDialog1.Click
@@ -820,5 +829,8 @@ Public Class Form3
         Dim rgbVal As Integer = txtRGBString.Text
         lblTestFont.ForeColor = Color.FromArgb(rgbVal)
     End Sub
+
+    Dim print1CountUpdated As Boolean = False
+    Dim print2CountUpdated As Boolean = False
 
 End Class
