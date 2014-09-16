@@ -3226,7 +3226,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.07"    ' Version string
+    Public Shared Version As String = "Version 8.08"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
