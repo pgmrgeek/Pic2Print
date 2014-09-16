@@ -324,15 +324,8 @@ Public Class PostView
 
     End Sub
 
-    Private Sub cbAutoScroll_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkAutoScroll.CheckedChanged
-
+    Private Sub btnReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReprint.Click
+        Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
     End Sub
 
-    Private Sub pbPostView_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPostView.Click
-
-    End Sub
-
-    Private Sub emaillabel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles emaillabel.Click
-
-    End Sub
 End Class

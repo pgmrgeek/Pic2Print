@@ -1,4 +1,6 @@
-﻿
+﻿Imports System
+Imports System.IO
+Imports System.Text
 '
 '================================================================================================
 '
@@ -22,6 +24,8 @@ Public Class Preview
         ' Call SwapButtons(Form3.EmailCloudEnabled.Checked)
 
     End Sub
+
+
     Private Sub ThumbnailForm_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
 
         Call Form2_Resized()
@@ -77,6 +81,9 @@ Public Class Preview
         ' move the print message label
         p.X = lblPrintMsg.Location.X
         lblPrintMsg.Location = p
+        p.Y += 16
+        lblRemaining.Location = p
+        p.Y -= 16
 
         ' move the  message text box
         p.X = BtnSaveTxt.Location.X
@@ -122,4 +129,7 @@ Public Class Preview
         Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
     End Sub
 
+    Private Sub txtPrintMsg_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtPrintMsg.TextChanged
+        lblRemaining.Text = "Remaining = " & Globals.fForm3.txtLayoutTxTLen.Text - Microsoft.VisualBasic.Len(txtPrintMsg.Text)
+    End Sub
 End Class

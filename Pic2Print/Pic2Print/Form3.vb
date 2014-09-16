@@ -181,6 +181,7 @@ Public Class Form3
     End Sub
 
     Private Sub form3IsClosing()
+        Dim i As Integer
 
         ' FORM3: move control data to globals for threads
         Globals.tmpEmailCloudEnabled = EmailCloudEnabled.Checked
@@ -217,6 +218,17 @@ Public Class Form3
         If SortByDate.Checked() Then
             Globals.SortBy = 2
         End If
+
+        ' qualify the text field length 
+
+        If IsNumeric(txtLayoutTxTLen.Text) = False Then
+            txtLayoutTxTLen.Text = "16"
+        End If
+        i = txtLayoutTxTLen.Text
+        If (i < 0) Then i = 16
+        If (i > 64) Then i = 64
+        txtLayoutTxTLen.Text = i
+        Globals.fPreview.txtPrintMsg.MaxLength = i
 
         ' start the background cloud copy thread..
 
@@ -808,8 +820,5 @@ Public Class Form3
         Dim rgbVal As Integer = txtRGBString.Text
         lblTestFont.ForeColor = Color.FromArgb(rgbVal)
     End Sub
-
-
-
 
 End Class

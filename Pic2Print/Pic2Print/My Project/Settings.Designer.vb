@@ -740,7 +740,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("&HFFFFFF")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("16")>  _
         Public Property txtRGBValue() As String
             Get
                 Return CType(Me("txtRGBValue"),String)

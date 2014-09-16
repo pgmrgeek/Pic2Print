@@ -779,6 +779,10 @@ Public Class Pic2Print
         Return False
 
     End Function
+
+    '
+    ' User clicked one of the 4 backgrounds so give the selected background picturebox a 3D beveled edge
+    '
     Private Sub Background1PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background1PB.Click
         Call BackgroundHighlight(Background1PB, 1)
     End Sub
@@ -791,10 +795,6 @@ Public Class Pic2Print
     Private Sub Background4PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background4PB.Click
         Call BackgroundHighlight(Background4PB, 4)
     End Sub
-
-    '
-    ' User clicked one of the 4 backgrounds so give the selected background picturebox a 3D beveled edge
-    '
     Public Sub BackgroundHighlightDefault()
         Call BackgroundHighlight(Background1PB, 1)
     End Sub
@@ -1175,17 +1175,23 @@ Public Class Pic2Print
                     ' find all jpg and gif files, see if they're on file
                     If ((fi.Extension = ".jpg") Or (fi.Extension = ".gif")) Then
 
-                        found = Globals.PrintCache.matchFound(fi.Name)
+                        ' skip any reprinted images, they're redundant
 
-                        ' if not found, register this file
+                        If fi.Name.Contains("_m4_") = False Then
 
-                        If found = False Then
-                            idx = Globals.PrintCache.newItem()
-                            Globals.PrintCache.fileName(idx) = fi.Name
-                            'Globals.PrintCache.maxIndex += 1
-                            newFile = True
+                            found = Globals.PrintCache.matchFound(fi.Name)
 
-                            ' let the post view form know there are updates available
+                            ' if not found, register this file
+
+                            If found = False Then
+                                idx = Globals.PrintCache.newItem()
+                                Globals.PrintCache.fileName(idx) = fi.Name
+                                'Globals.PrintCache.maxIndex += 1
+                                newFile = True
+
+                                ' let the post view form know there are updates available
+
+                            End If
 
                         End If
 
@@ -1300,7 +1306,7 @@ Public Class Pic2Print
         ' will track the number of images required to make the print
         Static prtCount As Integer = 0
         Dim sMode As String
-        Dim bkg As String = "_bk1"
+        Dim bkg As String
         Dim outTxt As String
         Dim inTxt As String
         Dim maxlayers As Integer
@@ -1343,10 +1349,16 @@ Public Class Pic2Print
 
         prtCount += 1       ' when prtCount = Max, then we print it, up to that point, we just load it.
 
-        ' background/foreground may be animated, so advance that in the new name
-
-        If Globals.fForm3.chkBkFgsAnimated.Checked = True Then
-            bkg = "_bk" & prtCount                      ' move to the next bk/fg selection
+        If mode = PRT_PRINT Then
+            ' prints only use one background
+            bkg = "_bk" & Globals.BackgroundSelected
+        Else
+            ' background/foreground may be animated, so advance that in the new name
+            If Globals.fForm3.chkBkFgsAnimated.Checked = True Then
+                bkg = "_bk" & prtCount                      ' move to the next bk/fg selection
+            Else
+                bkg = "_bk" & Globals.BackgroundSelected
+            End If
         End If
 
         ' create the mode, either load only or print/gif. first find out how many layers we need, the build the mode string off that
@@ -2068,6 +2080,95 @@ Public Class Pic2Print
         Return trgf
 
     End Function
+
+    '
+    ' Copy the file to either printer #1 or printer #2
+    '
+    Public Sub CopyReprintToPrintDir(ByVal idx As Integer)
+        Dim srcf As String
+        Dim trgf As String = ""
+        Dim trgtxt As String
+        Dim PrinterPath As String
+        Dim sPrefix As String = String.Format("{0:00000}", Globals.FileNamePrefix)
+        Dim mode As Integer = PRT_REPRINT
+
+        ' make sure the index is within range
+        If idx < Globals.PrintCache.maxIndex Then
+
+            ' gifs don't reprint
+            If Globals.PrintCache.fileName(idx).Contains(".gif") Then
+                Return
+            End If
+            ' get just the file name separate from the extension
+            srcf = Microsoft.VisualBasic.Left(Globals.PrintCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.PrintCache.fileName(idx)) - 4)
+
+            ' check the prefix, replace it with the latest prefix
+            trgf = Microsoft.VisualBasic.Left(srcf, 5)
+            If IsNumeric(trgf) Then
+                trgf = sPrefix & Microsoft.VisualBasic.Right(srcf, Microsoft.VisualBasic.Len(srcf) - 5)
+                AdvancePrefixCount()
+            Else
+                trgf = srcf
+            End If
+
+            If Globals.ToPrinter = 0 Then Globals.ToPrinter = 1
+
+            ' use selected printer path
+            If Globals.ToPrinter = 1 Then
+                PrinterPath = Globals.tmpPrint1_Folder
+            Else
+                PrinterPath = Globals.tmpPrint2_Folder
+            End If
+
+            ' build the whole file name: printcnt+mode+background #+counter
+            'trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
+            trgtxt = trgf & ".txt"
+            trgf = trgf & ".jpg"
+
+            ' change the mode decoration with the reprint mode #
+            If trgf.Contains("_m1_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+            If trgf.Contains("_m2_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+
+            ' change the print count
+            If trgf.Contains("_p2_") Then trgf = trgf.Replace("_p2_", "_p1_")
+            If trgf.Contains("_p3_") Then trgf = trgf.Replace("_p3_", "_p1_")
+            If trgf.Contains("_p4_") Then trgf = trgf.Replace("_p4_", "_p1_")
+            If trgf.Contains("_p5_") Then trgf = trgf.Replace("_p5_", "_p1_")
+            If trgf.Contains("_p6_") Then trgf = trgf.Replace("_p6_", "_p1_")
+            If trgf.Contains("_p7_") Then trgf = trgf.Replace("_p7_", "_p1_")
+            If trgf.Contains("_p8_") Then trgf = trgf.Replace("_p8_", "_p1_")
+            If trgf.Contains("_p9_") Then trgf = trgf.Replace("_p9_", "_p1_")
+            If trgf.Contains("_p10_") Then trgf = trgf.Replace("_p10_", "_p1_")
+
+            ' replace spaces with underscores
+            trgtxt = trgtxt.Replace(" ", "_")
+            trgf = trgf.Replace(" ", "_")
+
+            ' send the file name to debug 
+            Globals.fDebug.txtPrintLn("CopyReprintToPrintDir:" & trgf & " to " & PrinterPath)
+
+            If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & srcf & ".txt") Then
+
+                ' copy the gumball text file to the proper folder
+                My.Computer.FileSystem.CopyFile(
+                    Globals.tmpPrint1_Folder & srcf & ".txt",
+                    PrinterPath & trgtxt,
+                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                    Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+            End If
+
+            ' copy it to the proper folder
+            My.Computer.FileSystem.CopyFile(
+                Globals.tmpPrint1_Folder & "printed\" & srcf & ".jpg",
+                PrinterPath & trgf,
+                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+
+        End If
+
+        Return
+
+    End Sub
 
     '
     ' Copy the file to printer #2
@@ -3117,6 +3218,7 @@ Public Class Pic2Print
     Public Const PRT_PRINT = 1
     Public Const PRT_GIF = 2
     'Public Const PRT_POST = 3
+    Public Const PRT_REPRINT = 4
 
 End Class
 

@@ -174,7 +174,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="txtRGBValue" Type="System.String" Scope="User">
-      <Value Profile="(Default)">&amp;HFFFFFF</Value>
+      <Value Profile="(Default)">16</Value>
     </Setting>
     <Setting Name="txtFontIndex" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>

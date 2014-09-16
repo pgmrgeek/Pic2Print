@@ -104,6 +104,8 @@ Partial Class Form3
         Me.txtMachineName = New System.Windows.Forms.TextBox()
         Me.lblMachineName = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.lblLayoutTxTlen = New System.Windows.Forms.Label()
+        Me.txtLayoutTxTLen = New System.Windows.Forms.TextBox()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -853,11 +855,12 @@ Partial Class Form3
         'txtRGBString
         '
         Me.txtRGBString.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtRGBValue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtRGBString.Location = New System.Drawing.Point(547, 456)
+        Me.txtRGBString.Location = New System.Drawing.Point(573, 450)
         Me.txtRGBString.Name = "txtRGBString"
-        Me.txtRGBString.Size = New System.Drawing.Size(82, 20)
+        Me.txtRGBString.Size = New System.Drawing.Size(63, 20)
         Me.txtRGBString.TabIndex = 106
         Me.txtRGBString.Text = Global.WindowsApplication1.My.MySettings.Default.txtRGBValue
+        Me.txtRGBString.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'gbFonts
         '
@@ -890,11 +893,11 @@ Partial Class Form3
         'Label16
         '
         Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(466, 459)
+        Me.Label16.Location = New System.Drawing.Point(468, 453)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(75, 13)
+        Me.Label16.Size = New System.Drawing.Size(99, 13)
         Me.Label16.TabIndex = 110
-        Me.Label16.Text = "Click for Color "
+        Me.Label16.Text = "Click for Text Color "
         '
         'lblTestFont
         '
@@ -944,12 +947,34 @@ Partial Class Form3
         Me.Label17.TabIndex = 114
         Me.Label17.Text = "3 char name for this machine"
         '
+        'lblLayoutTxTlen
+        '
+        Me.lblLayoutTxTlen.AutoSize = True
+        Me.lblLayoutTxTlen.Location = New System.Drawing.Point(470, 478)
+        Me.lblLayoutTxTlen.Name = "lblLayoutTxTlen"
+        Me.lblLayoutTxTlen.Size = New System.Drawing.Size(91, 13)
+        Me.lblLayoutTxTlen.TabIndex = 115
+        Me.lblLayoutTxTlen.Text = "Layout text length"
+        '
+        'txtLayoutTxTLen
+        '
+        Me.txtLayoutTxTLen.Location = New System.Drawing.Point(573, 475)
+        Me.txtLayoutTxTLen.MaxLength = 2
+        Me.txtLayoutTxTLen.Name = "txtLayoutTxTLen"
+        Me.txtLayoutTxTLen.Size = New System.Drawing.Size(26, 20)
+        Me.txtLayoutTxTLen.TabIndex = 116
+        Me.txtLayoutTxTLen.Text = "16"
+        Me.txtLayoutTxTLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.txtLayoutTxTLen.WordWrap = False
+        '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(923, 534)
         Me.ControlBox = False
+        Me.Controls.Add(Me.txtLayoutTxTLen)
+        Me.Controls.Add(Me.lblLayoutTxTlen)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.lblMachineName)
         Me.Controls.Add(Me.txtMachineName)
@@ -1114,4 +1139,6 @@ Partial Class Form3
     Friend WithEvents txtMachineName As System.Windows.Forms.TextBox
     Friend WithEvents lblMachineName As System.Windows.Forms.Label
     Friend WithEvents Label17 As System.Windows.Forms.Label
+    Friend WithEvents lblLayoutTxTlen As System.Windows.Forms.Label
+    Friend WithEvents txtLayoutTxTLen As System.Windows.Forms.TextBox
 End Class

@@ -27,6 +27,7 @@ Partial Class Preview
         Me.lblPrintMsg = New System.Windows.Forms.Label()
         Me.txtPrintMsg = New System.Windows.Forms.TextBox()
         Me.BtnSaveTxt = New System.Windows.Forms.Button()
+        Me.lblRemaining = New System.Windows.Forms.Label()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -53,7 +54,7 @@ Partial Class Preview
         'lblPrintMsg
         '
         Me.lblPrintMsg.AutoSize = True
-        Me.lblPrintMsg.Location = New System.Drawing.Point(23, 415)
+        Me.lblPrintMsg.Location = New System.Drawing.Point(23, 407)
         Me.lblPrintMsg.Name = "lblPrintMsg"
         Me.lblPrintMsg.Size = New System.Drawing.Size(86, 13)
         Me.lblPrintMsg.TabIndex = 4
@@ -61,9 +62,11 @@ Partial Class Preview
         '
         'txtPrintMsg
         '
-        Me.txtPrintMsg.Location = New System.Drawing.Point(115, 413)
+        Me.txtPrintMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtPrintMsg.Location = New System.Drawing.Point(115, 408)
+        Me.txtPrintMsg.MaxLength = 64
         Me.txtPrintMsg.Name = "txtPrintMsg"
-        Me.txtPrintMsg.Size = New System.Drawing.Size(328, 20)
+        Me.txtPrintMsg.Size = New System.Drawing.Size(328, 29)
         Me.txtPrintMsg.TabIndex = 5
         '
         'BtnSaveTxt
@@ -75,12 +78,22 @@ Partial Class Preview
         Me.BtnSaveTxt.Text = "Save"
         Me.BtnSaveTxt.UseVisualStyleBackColor = True
         '
+        'lblRemaining
+        '
+        Me.lblRemaining.AutoSize = True
+        Me.lblRemaining.Location = New System.Drawing.Point(23, 424)
+        Me.lblRemaining.Name = "lblRemaining"
+        Me.lblRemaining.Size = New System.Drawing.Size(66, 13)
+        Me.lblRemaining.TabIndex = 7
+        Me.lblRemaining.Text = "Remaining ="
+        '
         'Preview
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = Global.WindowsApplication1.My.MySettings.Default.img_size
         Me.ControlBox = False
+        Me.Controls.Add(Me.lblRemaining)
         Me.Controls.Add(Me.BtnSaveTxt)
         Me.Controls.Add(Me.txtPrintMsg)
         Me.Controls.Add(Me.lblPrintMsg)
@@ -103,4 +116,5 @@ Partial Class Preview
     Friend WithEvents lblPrintMsg As System.Windows.Forms.Label
     Friend WithEvents txtPrintMsg As System.Windows.Forms.TextBox
     Friend WithEvents BtnSaveTxt As System.Windows.Forms.Button
+    Friend WithEvents lblRemaining As System.Windows.Forms.Label
 End Class
