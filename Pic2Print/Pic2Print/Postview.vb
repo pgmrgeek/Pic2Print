@@ -319,6 +319,14 @@ Public Class PostView
             End If
             pbPostView.Image = img
             usrEmail2.Text = Globals.PrintCache.emailAddr(screenBase + ThumbSelect)
+            tbPhoneNum.Text = Globals.PrintCache.phoneNumber(screenBase + ThumbSelect)
+
+            If Globals.fPostViewHasLoaded Then
+                CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
+            End If
+
+            ' CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
+
 
         End If
 

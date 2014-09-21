@@ -1149,6 +1149,9 @@ Public Class Pic2Print
         Dim found As Boolean
         Dim idx As Integer
         Dim newFile As Boolean
+        Dim email1 As String
+        Dim phone1 As String
+        Dim sel As Integer
 
         ' seems reasonable, if the print processor thread can run, so can we..
         Do While Globals.PrintProcessRun > 0
@@ -1184,12 +1187,20 @@ Public Class Pic2Print
                             ' if not found, register this file
 
                             If found = False Then
+
+                                ' was not found, so save this as a new file in the list
                                 idx = Globals.PrintCache.newItem()
                                 Globals.PrintCache.fileName(idx) = fi.Name
-                                'Globals.PrintCache.maxIndex += 1
-                                newFile = True
+
+                                ' possibly load the email address & phone #
+                                If LoadPrintedTxtFile(folder & fi.Name, email1, phone1, sel) = True Then
+                                    Globals.PrintCache.emailAddr(idx) = email1
+                                    Globals.PrintCache.phoneNumber(idx) = phone1
+                                    Globals.PrintCache.carrierSelector(idx) = sel
+                                End If
 
                                 ' let the post view form know there are updates available
+                                newFile = True
 
                             End If
 
@@ -3226,7 +3237,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.09"    ' Version string
+    Public Shared Version As String = "Version 8.10"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
