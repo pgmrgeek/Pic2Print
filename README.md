@@ -1,5 +1,5 @@
 Pic2Print <br> [![PayPayl donate button](http://img.shields.io/paypal/donate.png?color=yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7JRTAVG63XHUL  "Donate once-off to this project using Paypal")
-=========
+========= 
 
 BETA Release 7.03 (A work in progress) 
 
