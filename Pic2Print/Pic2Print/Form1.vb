@@ -435,6 +435,7 @@ Public Class Pic2Print
                         Globals.BkFgImage4Bk(Globals.BkFgMax) = arrCurrentRow(11)
                         Globals.BkFgAnimated(Globals.BkFgMax) = arrCurrentRow(12)
                         Globals.BkFgRatio(Globals.BkFgMax) = bin2dec(arrCurrentRow(13))
+                        Globals.BkFgGIFDelay(Globals.BkFgMax) = bin2dec(arrCurrentRow(14))
                         'MessageBox.Show("ratio = " & Globals.BkFgRatio(Globals.BkFgMax))
 
                         Globals.fForm3.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
@@ -1039,7 +1040,7 @@ Public Class Pic2Print
 
                                 mode = PRT_PRINT
                                 If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
-                                    (Globals.prtrSize(Globals.prtr2Selector) <= 12)) Then mode = PRT_GIF
+                                    (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
 
                                 ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
                                 ' without going through the user controls, then this should be printed. We want to
@@ -1060,7 +1061,7 @@ Public Class Pic2Print
 
                                 mode = PRT_PRINT
                                 If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                    (Globals.prtrSize(Globals.prtr1Selector) <= 12)) Then mode = PRT_GIF
+                                    (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
 
                                 ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
                                 ' without going through the user controls, then this should be printed. We want to
@@ -1094,7 +1095,7 @@ Public Class Pic2Print
 
                             mode = PRT_PRINT
                             If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                (Globals.prtrSize(Globals.prtr1Selector) <= 12)) Then mode = PRT_GIF
+                                (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
 
                             ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
                             ' without going through the user controls, then this should be printed. We want to
@@ -3237,7 +3238,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 8.10"    ' Version string
+    Public Shared Version As String = "Version 9.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3357,6 +3358,7 @@ Public Class Globals
     Public Shared BkFgImage4Bk(256) As Int16        ' 4 if there is a 4th layout, -1 = not used 
     Public Shared BkFgAnimated(256) As Int16        ' Bk/Fg files are used as animation layers, 0=false,1=true
     Public Shared BkFgRatio(256) As Int16           ' ratio supported - see below
+    Public Shared BkFgGIFDelay(256) As Int16        ' GIF needs delay at end
     '
     '   In the BkFgRatio data, we specify which features are supported by bitfields
     '   The bit fields are:" 

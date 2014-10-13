@@ -106,6 +106,8 @@ Partial Class Form3
         Me.Label17 = New System.Windows.Forms.Label()
         Me.lblLayoutTxTlen = New System.Windows.Forms.Label()
         Me.txtLayoutTxTLen = New System.Windows.Forms.TextBox()
+        Me.cbGifDelay = New System.Windows.Forms.CheckBox()
+        Me.Label18 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -214,7 +216,7 @@ Partial Class Form3
         '
         Me.Label11.AutoSize = True
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label11.Location = New System.Drawing.Point(13, 512)
+        Me.Label11.Location = New System.Drawing.Point(12, 517)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(317, 13)
         Me.Label11.TabIndex = 35
@@ -222,7 +224,7 @@ Partial Class Form3
         '
         'OKay
         '
-        Me.OKay.Location = New System.Drawing.Point(819, 502)
+        Me.OKay.Location = New System.Drawing.Point(815, 512)
         Me.OKay.Name = "OKay"
         Me.OKay.Size = New System.Drawing.Size(75, 23)
         Me.OKay.TabIndex = 27
@@ -260,7 +262,7 @@ Partial Class Form3
         'VersionBox
         '
         Me.VersionBox.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.VersionBox.Location = New System.Drawing.Point(336, 508)
+        Me.VersionBox.Location = New System.Drawing.Point(335, 514)
         Me.VersionBox.Name = "VersionBox"
         Me.VersionBox.Size = New System.Drawing.Size(68, 18)
         Me.VersionBox.TabIndex = 38
@@ -683,7 +685,7 @@ Partial Class Form3
         'txtLayersPerGIF
         '
         Me.txtLayersPerGIF.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerOutput", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerGIF.Location = New System.Drawing.Point(684, 315)
+        Me.txtLayersPerGIF.Location = New System.Drawing.Point(684, 350)
         Me.txtLayersPerGIF.Name = "txtLayersPerGIF"
         Me.txtLayersPerGIF.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerGIF.TabIndex = 89
@@ -693,7 +695,7 @@ Partial Class Form3
         'giflabel1
         '
         Me.giflabel1.AutoSize = True
-        Me.giflabel1.Location = New System.Drawing.Point(712, 318)
+        Me.giflabel1.Location = New System.Drawing.Point(712, 353)
         Me.giflabel1.Name = "giflabel1"
         Me.giflabel1.Size = New System.Drawing.Size(82, 13)
         Me.giflabel1.TabIndex = 91
@@ -702,7 +704,7 @@ Partial Class Form3
         'custlabel1
         '
         Me.custlabel1.AutoSize = True
-        Me.custlabel1.Location = New System.Drawing.Point(710, 362)
+        Me.custlabel1.Location = New System.Drawing.Point(710, 397)
         Me.custlabel1.Name = "custlabel1"
         Me.custlabel1.Size = New System.Drawing.Size(141, 13)
         Me.custlabel1.TabIndex = 92
@@ -711,7 +713,7 @@ Partial Class Form3
         'txtLayersPerCust
         '
         Me.txtLayersPerCust.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerCustom", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerCust.Location = New System.Drawing.Point(684, 358)
+        Me.txtLayersPerCust.Location = New System.Drawing.Point(684, 393)
         Me.txtLayersPerCust.Name = "txtLayersPerCust"
         Me.txtLayersPerCust.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerCust.TabIndex = 93
@@ -761,7 +763,7 @@ Partial Class Form3
         'lblAutoPrintCount
         '
         Me.lblAutoPrintCount.AutoSize = True
-        Me.lblAutoPrintCount.Location = New System.Drawing.Point(710, 403)
+        Me.lblAutoPrintCount.Location = New System.Drawing.Point(710, 438)
         Me.lblAutoPrintCount.Name = "lblAutoPrintCount"
         Me.lblAutoPrintCount.Size = New System.Drawing.Size(157, 13)
         Me.lblAutoPrintCount.TabIndex = 96
@@ -770,7 +772,7 @@ Partial Class Form3
         'txtAutoPrintCnt
         '
         Me.txtAutoPrintCnt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtAutoPrtCnt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(684, 398)
+        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(684, 433)
         Me.txtAutoPrintCnt.Name = "txtAutoPrintCnt"
         Me.txtAutoPrintCnt.Size = New System.Drawing.Size(22, 20)
         Me.txtAutoPrintCnt.TabIndex = 97
@@ -781,7 +783,7 @@ Partial Class Form3
         '
         Me.Label13.AutoSize = True
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label13.Location = New System.Drawing.Point(681, 382)
+        Me.Label13.Location = New System.Drawing.Point(681, 417)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(183, 13)
         Me.Label13.TabIndex = 99
@@ -791,7 +793,7 @@ Partial Class Form3
         '
         Me.Label14.AutoSize = True
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label14.Location = New System.Drawing.Point(681, 299)
+        Me.Label14.Location = New System.Drawing.Point(681, 334)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(134, 13)
         Me.Label14.TabIndex = 100
@@ -801,7 +803,7 @@ Partial Class Form3
         '
         Me.Label15.AutoSize = True
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label15.Location = New System.Drawing.Point(681, 342)
+        Me.Label15.Location = New System.Drawing.Point(681, 377)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(165, 13)
         Me.Label15.TabIndex = 101
@@ -922,7 +924,7 @@ Partial Class Form3
         'txtMachineName
         '
         Me.txtMachineName.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "MachineName", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtMachineName.Location = New System.Drawing.Point(684, 456)
+        Me.txtMachineName.Location = New System.Drawing.Point(684, 482)
         Me.txtMachineName.Name = "txtMachineName"
         Me.txtMachineName.Size = New System.Drawing.Size(37, 20)
         Me.txtMachineName.TabIndex = 112
@@ -931,7 +933,7 @@ Partial Class Form3
         'lblMachineName
         '
         Me.lblMachineName.AutoSize = True
-        Me.lblMachineName.Location = New System.Drawing.Point(728, 460)
+        Me.lblMachineName.Location = New System.Drawing.Point(728, 486)
         Me.lblMachineName.Name = "lblMachineName"
         Me.lblMachineName.Size = New System.Drawing.Size(142, 13)
         Me.lblMachineName.TabIndex = 113
@@ -941,7 +943,7 @@ Partial Class Form3
         '
         Me.Label17.AutoSize = True
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label17.Location = New System.Drawing.Point(681, 437)
+        Me.Label17.Location = New System.Drawing.Point(681, 463)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(143, 13)
         Me.Label17.TabIndex = 114
@@ -967,12 +969,36 @@ Partial Class Form3
         Me.txtLayoutTxTLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.txtLayoutTxTLen.WordWrap = False
         '
+        'cbGifDelay
+        '
+        Me.cbGifDelay.AutoSize = True
+        Me.cbGifDelay.Checked = Global.WindowsApplication1.My.MySettings.Default.resGifDelay
+        Me.cbGifDelay.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "resGifDelay", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbGifDelay.Location = New System.Drawing.Point(684, 304)
+        Me.cbGifDelay.Name = "cbGifDelay"
+        Me.cbGifDelay.Size = New System.Drawing.Size(136, 17)
+        Me.cbGifDelay.TabIndex = 117
+        Me.cbGifDelay.Text = "Add Delay to end of Gif"
+        Me.cbGifDelay.UseVisualStyleBackColor = True
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label18.Location = New System.Drawing.Point(686, 288)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(225, 13)
+        Me.Label18.TabIndex = 118
+        Me.Label18.Text = "Check to add a 1 second delay to end of GIFs"
+        '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(923, 534)
+        Me.ClientSize = New System.Drawing.Size(923, 543)
         Me.ControlBox = False
+        Me.Controls.Add(Me.Label18)
+        Me.Controls.Add(Me.cbGifDelay)
         Me.Controls.Add(Me.txtLayoutTxTLen)
         Me.Controls.Add(Me.lblLayoutTxTlen)
         Me.Controls.Add(Me.Label17)
@@ -1141,4 +1167,6 @@ Partial Class Form3
     Friend WithEvents Label17 As System.Windows.Forms.Label
     Friend WithEvents lblLayoutTxTlen As System.Windows.Forms.Label
     Friend WithEvents txtLayoutTxTLen As System.Windows.Forms.TextBox
+    Friend WithEvents cbGifDelay As System.Windows.Forms.CheckBox
+    Friend WithEvents Label18 As System.Windows.Forms.Label
 End Class

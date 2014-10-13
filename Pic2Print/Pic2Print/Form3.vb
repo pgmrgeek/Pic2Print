@@ -335,6 +335,7 @@ Public Class Form3
         Dim colorR As Integer
         Dim colorG As Integer
         Dim colorB As Integer
+        Dim GifDelay As Integer
 
         ' ====================== the first target config file ============================
 
@@ -421,9 +422,14 @@ Public Class Form3
             colorG = (rgb >> 8) And 255
             colorB = rgb And 255
 
+            ' ------------- #15 GIF pause at end for dramatic effect
+
+            GifDelay = 0
+            If cbGifDelay.Checked Then GifDelay = 1
+
             ' -------- write  lines of text out to the file ------------
 
-            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB)
+            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB, GifDelay)
 
         End If
 
@@ -521,7 +527,7 @@ Public Class Form3
                 'colorB = rgb And 255
 
                 ' -------- write lines of text out to the file ------------
-                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB)
+                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB, GifDelay)
 
             End If
 
@@ -546,9 +552,10 @@ Public Class Form3
         ByRef savepsd As String, _
         ByVal colorR As Integer, _
         ByVal colorG As Integer, _
-        ByVal colorB As Integer)
+        ByVal colorB As Integer, _
+        ByVal GifDelay As Integer)
 
-        Dim s(17) As String
+        Dim s(18) As String
 
         'My.Computer.FileSystem.WriteAllText(fconfig, "bad...", encoding:=utf8)
 
@@ -599,7 +606,12 @@ Public Class Form3
         'My.Computer.FileSystem.WriteAllText(fconfig, s, True, System.Text.Encoding.ASCII)
 
         s(16) = """" & cbFontList.SelectedItem & """" & " ' #15 Font selected"
-        File.WriteAlllines(fconfig, s, System.Text.Encoding.ASCII)
+
+        ' pause the gif at the end 
+        s(17) = GifDelay
+
+        ' dump all strings at once
+        File.WriteAllLines(fconfig, s, System.Text.Encoding.ASCII)
 
     End Sub
 
@@ -743,6 +755,13 @@ Public Class Form3
             chkBkFgsAnimated.Checked = False
         Else
             chkBkFgsAnimated.Checked = True
+        End If
+
+        ' change the Bk/Fg GIF Delay checkbox 
+        If Globals.BkFgGIFDelay(ComboBoxBKFG.SelectedIndex) = 0 Then
+            cbGifDelay.Checked = False
+        Else
+            cbGifDelay.Checked = True
         End If
 
         Call Globals.fPic2Print.BackgroundHighlightDefault()  ' force background selection to #1 in case there's a change
