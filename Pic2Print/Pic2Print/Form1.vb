@@ -2919,8 +2919,10 @@ Public Class Pic2Print
             ' check the selected image dimentions to load the appropriate thumbs.
 
             img = Globals.ImageCache.FetchPicture(Globals.ImageCache.fileName(Globals.PictureBoxSelected + Globals.ScreenBase))
-            If img.Height >= img.Width Then
-                orient = 2
+            If IsNothing(img) = False Then
+                If img.Height >= img.Width Then
+                    orient = 2
+                End If
             End If
 
             If orient = 1 Then
@@ -3238,7 +3240,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.01"    ' Version string
+    Public Shared Version As String = "Version 9.02"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
