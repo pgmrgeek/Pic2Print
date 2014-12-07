@@ -797,6 +797,18 @@ Namespace My
                 Me("resGifDelay") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property AutoFollowRight() As Boolean
+            Get
+                Return CType(Me("AutoFollowRight"),Boolean)
+            End Get
+            Set
+                Me("AutoFollowRight") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

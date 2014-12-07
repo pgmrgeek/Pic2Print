@@ -909,6 +909,8 @@ Public Class Pic2Print
 
     '----====< New Files load  button >====----
     Private Sub New_Files_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles New_Files.Click
+        Dim idx As Int16
+        Dim wasGreen As Boolean = False
 
         If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
@@ -920,8 +922,22 @@ Public Class Pic2Print
         Call ResetFilesArray()
         Call AddFilesToArray()
 
+
+        If New_Files.BackColor <> Control.DefaultBackColor Then wasGreen = True
+
         ' turn off the background color on the button
         New_Files.BackColor = Control.DefaultBackColor
+
+        ' automatically move out to the left ONLY if the refresh button was green. don't change the screen otherwise
+
+        If wasGreen = True Then
+            If cbAutoFollow.Checked Then
+                idx = Globals.ImageCache.maxIndex - 7
+                If idx < 0 Then idx = 0
+                ScreenMiddle(False, idx)
+            End If
+        End If
+
 
     End Sub
 
@@ -1701,24 +1717,30 @@ Public Class Pic2Print
     '
     Public Sub ModifyForm(ByVal TurnOn As Boolean)
 
-        Dim topPt As New Point(272, 159)
-        Dim btmPt As New Point(272, 264)
+        Dim topPt As New Point(141, 159)
+        Dim btmPt As New Point(141, 264)
+        Dim btmPt2 As New Point(141, 368)
 
         If TurnOn Then
+
             BackGroundGroupBox.Visible = True
-            Me.Height = 410
 
             ButtonsGroup.Location = btmPt
+            gbPreview.Location = btmPt2
             BackGroundGroupBox.Location = topPt
+
+            Me.Height = 740
 
         Else
             BackGroundGroupBox.Visible = False
             Call BackgroundHighlight(Background1PB, 1)
 
             ButtonsGroup.Location = topPt
+            gbPreview.Location = btmPt
             BackGroundGroupBox.Location = btmPt
 
-            Me.Height = 320
+            Me.Height = 638
+
         End If
 
     End Sub
@@ -2566,11 +2588,13 @@ Public Class Pic2Print
             Preview.Form2PictureBox.Image = pb.Image
             Preview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
+            pbPreview.Image = pb.Image
         Else
 
             ' not guarranteed to be loaded, so we have to free this up
 
             Preview.Form2PictureBox.Image = My.Resources.blank
+            pbPreview.Image = My.Resources.blank
 
         End If
 
@@ -3234,13 +3258,56 @@ Public Class Pic2Print
     'Public Const PRT_POST = 3
     Public Const PRT_REPRINT = 4
 
+    Private Sub cbQuickBG_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbQuickBG.CheckedChanged
+
+        ' Quick control check/uncheck of the background layer
+        ' do this only if form3 is not open. if it is, let form3 handle it
+
+        If Globals.fForm3.Visible = False Then
+            If cbQuickBG.Checked Then
+                Globals.fForm3.GreenScreen.Checked = True
+            Else
+                Globals.fForm3.GreenScreen.Checked = False
+            End If
+            Globals.fForm3.WriteConfigurationFiles()
+        End If
+
+    End Sub
+
+    Private Sub cbQuickFG_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbQuickFG.CheckedChanged
+
+        ' Quick control for check/uncheck of the foreground layer
+        ' do this only if form3 is not open. if it is, let form3 handle it
+
+        If Globals.fForm3.Visible = False Then
+            If cbQuickFG.Checked Then
+                Globals.fForm3.PaperForeground.Checked = True
+            Else
+                Globals.fForm3.PaperForeground.Checked = False
+            End If
+            Globals.fForm3.WriteConfigurationFiles()
+        End If
+
+    End Sub
+
+    Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
+
+    End Sub
+
+    Private Sub PictureBox3Count_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3Count.TextChanged
+
+    End Sub
+
+    Private Sub PictureBox5Count_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox5Count.TextChanged
+
+    End Sub
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.02"    ' Version string
+    Public Shared Version As String = "Version 9.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
