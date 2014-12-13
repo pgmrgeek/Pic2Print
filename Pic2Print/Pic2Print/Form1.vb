@@ -1008,6 +1008,67 @@ Public Class Pic2Print
         Globals.fDebug.Show()
     End Sub
 
+    Private Sub Form1_ResizeEnd(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.ResizeEnd
+
+        Call my_preview_resizing()
+
+    End Sub
+
+    ' this routine resizes the preview picture box on the main screen to fit the resized form
+    Private Sub my_preview_resizing()
+        Dim siz As Point
+        Dim loc As Point
+        Dim bsiz As Point
+        Dim bloc As Point
+        Dim sizY, sizX, midX As Integer
+
+        bsiz = ButtonsGroup.Size
+        bloc = ButtonsGroup.Location
+
+        ' this is the new size
+        siz = Me.Size
+        loc = gbPreview.Location
+
+        ' SOLVE FOR VERTICAL (y)
+        ' get the total usable space for the pb
+        sizY = siz.Y - gbPreview.Location.Y
+
+        ' padd the boundaries so the pb fits in the form nicely
+        sizY = sizY - 30
+
+        ' no changes if the windows shrunk so far the pb isn't visible
+        If sizY < 100 Then Return
+
+        ' for the preview group window, we want the horz to be 1.5 times the vert size
+        sizX = sizY / 2
+        sizX = sizY + sizX
+        siz.X = sizX
+        siz.Y = sizY
+
+        ' locate the center of the above buttons group for alignment purposes
+
+        midX = bloc.X + (bsiz.X / 2) 'siz.X ' bug siz.x is not half way into window
+        midX = midX - (sizX / 2)
+
+        loc.X = midX
+
+        ' groupbox location and size
+
+        gbPreview.Location = loc
+        gbPreview.Size = siz
+
+        ' move the picturebox in 2 pixels on all sides
+
+        loc.Y = 15
+        loc.X = 10
+        pbPreview.Location = loc
+
+        siz.X = siz.X - 20
+        siz.Y = siz.Y - 30
+        pbPreview.Size = siz
+
+    End Sub
+
     '
     ' ============================================================================================================
     ' ========================================== top level subroutines =========================================== 
@@ -1091,19 +1152,19 @@ Public Class Pic2Print
                                 ' increment/decrement all the print counters
                                 'IncrementPrintCounts(mode, count)
 
-                            ' if enabled, copy the file from the printed folder to the cloud folder
+                                ' if enabled, copy the file from the printed folder to the cloud folder
 
-                            If Globals.tmpEmailCloudEnabled Then
+                                If Globals.tmpEmailCloudEnabled Then
 
-                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                    CopyFileToCloudDir(newNam)
+                                    ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                    If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                        CopyFileToCloudDir(newNam)
+                                    End If
+
+                                    ' send out email..
+                                    PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
                                 End If
-
-                                ' send out email..
-                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                            End If
 
                             End If
 
@@ -1742,6 +1803,8 @@ Public Class Pic2Print
             Me.Height = 638
 
         End If
+
+        Call my_preview_resizing()
 
     End Sub
 
@@ -3307,7 +3370,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.03"    ' Version string
+    Public Shared Version As String = "Version 9.04"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

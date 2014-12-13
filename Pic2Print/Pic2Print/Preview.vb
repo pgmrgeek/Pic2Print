@@ -132,4 +132,8 @@ Public Class Preview
     Private Sub txtPrintMsg_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtPrintMsg.TextChanged
         lblRemaining.Text = "Remaining = " & Globals.fForm3.txtLayoutTxTLen.Text - Microsoft.VisualBasic.Len(txtPrintMsg.Text)
     End Sub
+
+    Private Sub Form2PictureBox_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Form2PictureBox.Click
+
+    End Sub
 End Class
