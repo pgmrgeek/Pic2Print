@@ -626,9 +626,9 @@ Partial Class Form3
         Me.NoPrint.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "NoPrintCheck", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.NoPrint.Location = New System.Drawing.Point(389, 215)
         Me.NoPrint.Name = "NoPrint"
-        Me.NoPrint.Size = New System.Drawing.Size(101, 17)
+        Me.NoPrint.Size = New System.Drawing.Size(120, 17)
         Me.NoPrint.TabIndex = 25
-        Me.NoPrint.Text = "File Output Only"
+        Me.NoPrint.Text = "Files Only, No Prints"
         Me.NoPrint.UseVisualStyleBackColor = True
         '
         'Label4

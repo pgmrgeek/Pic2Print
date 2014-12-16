@@ -849,6 +849,9 @@ Public Class Pic2Print
                 'Preview.usrEmail1.Text = ""
             End If
 
+            ' 9.05 forgot to add this blanking out while editing.
+            pbPreview.Image = My.Resources.blank
+
             ' release the image from the cache, kill it from our list
             Globals.ImageCache.FlushNamed(Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected))
             Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) = ""
@@ -922,7 +925,6 @@ Public Class Pic2Print
         Call ResetFilesArray()
         Call AddFilesToArray()
 
-
         If New_Files.BackColor <> Control.DefaultBackColor Then wasGreen = True
 
         ' turn off the background color on the button
@@ -935,9 +937,14 @@ Public Class Pic2Print
                 idx = Globals.ImageCache.maxIndex - 7
                 If idx < 0 Then idx = 0
                 ScreenMiddle(False, idx)
+            Else
+                ' do this for the preview window on the form1
+                Call HighlightLastSelection()
             End If
+        Else
+            ' do this for the preview window on the form1
+            Call HighlightLastSelection()
         End If
-
 
     End Sub
 
@@ -2649,9 +2656,9 @@ Public Class Pic2Print
 
             ' Whatever the picture box owns, the 2nd form will own..
             Preview.Form2PictureBox.Image = pb.Image
+            pbPreview.Image = pb.Image
             Preview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
-            pbPreview.Image = pb.Image
         Else
 
             ' not guarranteed to be loaded, so we have to free this up
@@ -2783,10 +2790,12 @@ Public Class Pic2Print
 
         If (idx >= 0) And (idx <= 6) Then
             Call SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
+            pbPreview.Image = Globals.PicBoxes(idx).Image
         Else
             Globals.PicBoxes(Globals.PictureBoxSelected).BorderStyle = BorderStyle.FixedSingle
             Globals.PicBoxCounts(Globals.PictureBoxSelected).BackColor = Color.White
             Preview.Form2PictureBox.Image = Nothing
+            pbPreview.Image = Nothing
         End If
 
     End Sub
@@ -3353,6 +3362,22 @@ Public Class Pic2Print
 
     End Sub
 
+    Private Sub cbFilesOnly_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilesOnly.CheckedChanged
+
+        ' Quick control for check/uncheck of the foreground layer
+        ' do this only if form3 is not open. if it is, let form3 handle it
+
+        If Globals.fForm3.Visible = False Then
+            If cbFilesOnly.Checked Then
+                Globals.fForm3.NoPrint.Checked = True
+            Else
+                Globals.fForm3.NoPrint.Checked = False
+            End If
+            Globals.fForm3.WriteConfigurationFiles()
+        End If
+
+    End Sub
+
     Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
 
     End Sub
@@ -3364,13 +3389,15 @@ Public Class Pic2Print
     Private Sub PictureBox5Count_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox5Count.TextChanged
 
     End Sub
+
+
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.04"    ' Version string
+    Public Shared Version As String = "Version 9.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

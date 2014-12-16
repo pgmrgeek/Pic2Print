@@ -175,7 +175,8 @@ Public Class Form3
             Call Globals.fPic2Print.enableprintbuttons()
             Call Globals.fPic2Print.LoadBackgrounds()   ' load the background images just in case they're called upon
 
-            ' update the quick controls on the front page
+            ' update the shortcut quick controls on the front page
+
             If GreenScreen.Checked = True Then
                 Globals.fPic2Print.cbQuickBG.Checked = True
             Else
@@ -186,6 +187,12 @@ Public Class Form3
                 Globals.fPic2Print.cbQuickFG.Checked = True
             Else
                 Globals.fPic2Print.cbQuickFG.Checked = False
+            End If
+
+            If NoPrint.Checked = True Then
+                Globals.fPic2Print.cbFilesOnly.Checked = True
+            Else
+                Globals.fPic2Print.cbFilesOnly.Checked = False
             End If
 
             ' hide this dialog, never close it..
@@ -865,11 +872,4 @@ Public Class Form3
     Dim print1CountUpdated As Boolean = False
     Dim print2CountUpdated As Boolean = False
 
-    Private Sub PaperForeground_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PaperForeground.CheckedChanged
-
-    End Sub
-
-    Private Sub GreenScreen_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GreenScreen.CheckedChanged
-
-    End Sub
 End Class

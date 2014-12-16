@@ -80,6 +80,7 @@ Partial Class Pic2Print
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.ButtonsGroup = New System.Windows.Forms.GroupBox()
+        Me.cbFilesOnly = New System.Windows.Forms.CheckBox()
         Me.cbQuickBG = New System.Windows.Forms.CheckBox()
         Me.cbQuickFG = New System.Windows.Forms.CheckBox()
         Me.cbAutoFollow = New System.Windows.Forms.CheckBox()
@@ -698,6 +699,7 @@ Partial Class Pic2Print
         '
         'ButtonsGroup
         '
+        Me.ButtonsGroup.Controls.Add(Me.cbFilesOnly)
         Me.ButtonsGroup.Controls.Add(Me.cbQuickBG)
         Me.ButtonsGroup.Controls.Add(Me.cbQuickFG)
         Me.ButtonsGroup.Controls.Add(Me.cbAutoFollow)
@@ -730,10 +732,20 @@ Partial Class Pic2Print
         Me.ButtonsGroup.TabIndex = 61
         Me.ButtonsGroup.TabStop = False
         '
+        'cbFilesOnly
+        '
+        Me.cbFilesOnly.AutoSize = True
+        Me.cbFilesOnly.Location = New System.Drawing.Point(201, 79)
+        Me.cbFilesOnly.Name = "cbFilesOnly"
+        Me.cbFilesOnly.Size = New System.Drawing.Size(71, 17)
+        Me.cbFilesOnly.TabIndex = 60
+        Me.cbFilesOnly.Text = "Files Only"
+        Me.cbFilesOnly.UseVisualStyleBackColor = True
+        '
         'cbQuickBG
         '
         Me.cbQuickBG.AutoSize = True
-        Me.cbQuickBG.Location = New System.Drawing.Point(285, 79)
+        Me.cbQuickBG.Location = New System.Drawing.Point(317, 80)
         Me.cbQuickBG.Name = "cbQuickBG"
         Me.cbQuickBG.Size = New System.Drawing.Size(48, 17)
         Me.cbQuickBG.TabIndex = 59
@@ -743,7 +755,7 @@ Partial Class Pic2Print
         'cbQuickFG
         '
         Me.cbQuickFG.AutoSize = True
-        Me.cbQuickFG.Location = New System.Drawing.Point(243, 79)
+        Me.cbQuickFG.Location = New System.Drawing.Point(278, 80)
         Me.cbQuickFG.Name = "cbQuickFG"
         Me.cbQuickFG.Size = New System.Drawing.Size(40, 17)
         Me.cbQuickFG.TabIndex = 58
@@ -1013,5 +1025,6 @@ Partial Class Pic2Print
     Friend WithEvents cbQuickFG As System.Windows.Forms.CheckBox
     Friend WithEvents gbPreview As System.Windows.Forms.GroupBox
     Friend WithEvents pbPreview As System.Windows.Forms.PictureBox
+    Friend WithEvents cbFilesOnly As System.Windows.Forms.CheckBox
 
 End Class
