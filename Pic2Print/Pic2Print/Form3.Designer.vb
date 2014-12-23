@@ -605,9 +605,9 @@ Partial Class Form3
         Me.EnableOverlayDesc.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.EnableOverlayDesc.Location = New System.Drawing.Point(685, 144)
         Me.EnableOverlayDesc.Name = "EnableOverlayDesc"
-        Me.EnableOverlayDesc.Size = New System.Drawing.Size(198, 13)
+        Me.EnableOverlayDesc.Size = New System.Drawing.Size(194, 13)
         Me.EnableOverlayDesc.TabIndex = 77
-        Me.EnableOverlayDesc.Text = "Check this if using overlay/watermarking"
+        Me.EnableOverlayDesc.Text = "Check this for FG overlay/watermarking"
         '
         'EnableGreenDesc
         '
@@ -615,9 +615,9 @@ Partial Class Form3
         Me.EnableGreenDesc.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.EnableGreenDesc.Location = New System.Drawing.Point(685, 180)
         Me.EnableGreenDesc.Name = "EnableGreenDesc"
-        Me.EnableGreenDesc.Size = New System.Drawing.Size(199, 13)
+        Me.EnableGreenDesc.Size = New System.Drawing.Size(166, 13)
         Me.EnableGreenDesc.TabIndex = 78
-        Me.EnableGreenDesc.Text = "Check this for Green Screen middle layer"
+        Me.EnableGreenDesc.Text = "Check this for BKG Green Screen"
         '
         'NoPrint
         '
@@ -678,9 +678,9 @@ Partial Class Form3
         Me.lblEnable4bkgnds.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblEnable4bkgnds.Location = New System.Drawing.Point(685, 215)
         Me.lblEnable4bkgnds.Name = "lblEnable4bkgnds"
-        Me.lblEnable4bkgnds.Size = New System.Drawing.Size(161, 13)
+        Me.lblEnable4bkgnds.Size = New System.Drawing.Size(183, 13)
         Me.lblEnable4bkgnds.TabIndex = 88
-        Me.lblEnable4bkgnds.Text = "Check this to see multiple bk/fgs"
+        Me.lblEnable4bkgnds.Text = "Check this to see up to 4 BKG/FGgs "
         '
         'txtLayersPerGIF
         '
@@ -729,7 +729,7 @@ Partial Class Form3
         Me.GroupBoxBKFG.Size = New System.Drawing.Size(255, 47)
         Me.GroupBoxBKFG.TabIndex = 72
         Me.GroupBoxBKFG.TabStop = False
-        Me.GroupBoxBKFG.Text = "Bk/Fg Set Selection"
+        Me.GroupBoxBKFG.Text = "Layout Selection"
         '
         'tbBKFG
         '
@@ -756,9 +756,9 @@ Partial Class Form3
         Me.Label12.ForeColor = System.Drawing.Color.Snow
         Me.Label12.Location = New System.Drawing.Point(655, 58)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(257, 13)
+        Me.Label12.Size = New System.Drawing.Size(265, 13)
         Me.Label12.TabIndex = 95
-        Me.Label12.Text = "                  Layouts & Output                      "
+        Me.Label12.Text = "                  Layouts && Options                     "
         '
         'lblAutoPrintCount
         '
@@ -816,9 +816,9 @@ Partial Class Form3
         Me.chkBkFgsAnimated.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "resBkFgAnimated", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.chkBkFgsAnimated.Location = New System.Drawing.Point(684, 267)
         Me.chkBkFgsAnimated.Name = "chkBkFgsAnimated"
-        Me.chkBkFgsAnimated.Size = New System.Drawing.Size(210, 17)
+        Me.chkBkFgsAnimated.Size = New System.Drawing.Size(213, 17)
         Me.chkBkFgsAnimated.TabIndex = 102
-        Me.chkBkFgsAnimated.Text = "Background/foregrounds are Animated"
+        Me.chkBkFgsAnimated.Text = "Background/Foregrounds are Animated"
         Me.chkBkFgsAnimated.UseVisualStyleBackColor = True
         '
         'lblBkFgAnimated
@@ -827,9 +827,9 @@ Partial Class Form3
         Me.lblBkFgAnimated.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblBkFgAnimated.Location = New System.Drawing.Point(686, 251)
         Me.lblBkFgAnimated.Name = "lblBkFgAnimated"
-        Me.lblBkFgAnimated.Size = New System.Drawing.Size(231, 13)
+        Me.lblBkFgAnimated.Size = New System.Drawing.Size(234, 13)
         Me.lblBkFgAnimated.TabIndex = 103
-        Me.lblBkFgAnimated.Text = "Check this if using bk/fgs as layers of animation"
+        Me.lblBkFgAnimated.Text = "Check this if using BKG/FGs as animation layers"
         '
         'ckSavePSD
         '

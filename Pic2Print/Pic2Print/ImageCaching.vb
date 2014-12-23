@@ -208,7 +208,7 @@
         For idx = 0 To 13
             If _ImageCacheFileName(idx) = fnam Then
                 _ImageCacheAllocFlag(idx) = 2     ' make active again
-                Globals.fDebug.txtPrintLn("FetchPicture: " & fnam & " found")
+                'Globals.fDebug.txtPrintLn("FetchPicture: " & fnam & " found")
                 Return _ImageCachePtr(idx)
             End If
         Next
@@ -231,8 +231,8 @@
 
         ' make sure that worked..
         If found = -1 Then
-            Globals.fDebug.TxtPrint("FetchPicture: Cache is full! Nothing timed out," & vbCrLf & _
-                    "No space free to add new image!")
+            'Globals.fDebug.TxtPrint("FetchPicture: Cache is full! Nothing timed out," & vbCrLf & _
+            '        "No space free to add new image!")
             Return Nothing
         End If
 
@@ -246,7 +246,7 @@
 
         ' we use this approach to lock the files while in use to avoid UAEs
         _ImageCachePtr(idx) = Image.FromFile(srcImg)
-        Globals.fDebug.txtPrintLn("FetchPicture: Loaded " & fnam & " from file.")
+        'Globals.fDebug.txtPrintLn("FetchPicture: Loaded " & fnam & " from file.")
         'return freshly loaded image
         Return _ImageCachePtr(idx)
 

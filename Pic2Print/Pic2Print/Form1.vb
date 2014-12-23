@@ -136,7 +136,6 @@ Public Class Pic2Print
             End If
         End If
 
-
         ' pull the last printer counts from the application settings storage
 
         Globals.Printer1Remaining = PrintCount1.Text
@@ -1086,6 +1085,7 @@ Public Class Pic2Print
     '
     Private Sub PrintProcessorThread(ByVal i As Integer)
         Dim newNam As String = ""
+        Dim ext As String
         Dim mode As Integer
         Dim count As Integer
 
@@ -1096,12 +1096,12 @@ Public Class Pic2Print
             ' then move it to the 'orig' folder
 
             ' sleep for a second before looking for more .JPGs
-            Thread.Sleep(1000)
+            ''''''Thread.Sleep(1000)
 
             ' state = 0, stop, state = 1, idle, state = 2, run
             If Globals.PrintProcessRun = 2 Then
 
-                Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpPrint1_Folder).GetFiles("*.jpg"))
+                Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpPrint1_Folder).GetFiles("*.*"))
 
                 ' SAVE THIS - sort by date/time stamp, not file name 
                 'If Globals.tmpSortByDate Then
@@ -1112,102 +1112,115 @@ Public Class Pic2Print
 
                     If Globals.PrintProcessRun = 2 Then
 
-                        Thread.Sleep(1000)
+                        ''''' Thread.Sleep(1500)
 
-                        ' Special Case - if the 2nd printer path is enabled, and the user has the 2nd print checked, kiosk 
-                        ' mode will send all images automatically to the 2nd printer in a fwd'ing action rather than use
-                        ' photoshop locally.
+                        ext = fi.Extension.ToLower
 
-                        If Globals.fForm3.Print2Enabled.Checked = True Then
+                        If ((ext = ".jpg") Or (ext = ".jpeg")) Then
 
-                            If PrinterSelect2.Checked = True Then
+                            ' The file might not be accessable yet (nikon software, dropbox, thunderbird email attachment 
+                            ' plugin still writing it so we will wait until the file is available. 
 
-                                mode = PRT_PRINT
-                                If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
-                                    (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
+                            If (ValidateFileAccess(fi)) Then
 
-                                ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                ' without going through the user controls, then this should be printed. We want to
-                                ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+                                ' Special Case - if the 2nd printer path is enabled, and the user has the 2nd print checked, kiosk 
+                                ' mode will send all images automatically to the 2nd printer in a fwd'ing action rather than use
+                                ' photoshop locally.
 
-                                count = ppDecorateName(fi.Name, newNam, mode)
+                                If Globals.fForm3.Print2Enabled.Checked = True Then
 
-                                ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
-                                ' the file print/gif.  So we now need to examine the decorated name for the mode 
+                                    If PrinterSelect2.Checked = True Then
 
-                                ' yep, this is a forced case of sending the image directly to printer #2
-                                CopyFileToPrint2Dir(newNam)
+                                        mode = PRT_PRINT
+                                        If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
+                                            (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
 
-                                ' increment/decrement all the print counters
-                                'IncrementPrintCounts(mode, count)
+                                        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                        ' without going through the user controls, then this should be printed. We want to
+                                        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
 
-                            Else
+                                        count = ppDecorateName(fi.Name, newNam, mode)
 
-                                mode = PRT_PRINT
-                                If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                    (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+                                        ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
+                                        ' the file print/gif.  So we now need to examine the decorated name for the mode 
 
-                                ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                ' without going through the user controls, then this should be printed. We want to
-                                ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+                                        ' yep, this is a forced case of sending the image directly to printer #2
+                                        CopyFileToPrint2Dir(newNam)
 
-                                count = ppDecorateName(fi.Name, newNam, mode)
+                                        ' increment/decrement all the print counters
+                                        'IncrementPrintCounts(mode, count)
 
-                                ' process the files in the \onsite folder through photoshop
-                                Call ppProcessFiles(newNam)
+                                    Else
 
-                                ' increment/decrement all the print counters
-                                'IncrementPrintCounts(mode, count)
+                                        mode = PRT_PRINT
+                                        If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
+                                            (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
 
-                                ' if enabled, copy the file from the printed folder to the cloud folder
+                                        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                        ' without going through the user controls, then this should be printed. We want to
+                                        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
 
-                                If Globals.tmpEmailCloudEnabled Then
+                                        count = ppDecorateName(fi.Name, newNam, mode)
 
-                                    ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                    If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                        CopyFileToCloudDir(newNam)
+                                        ' process the files in the \onsite folder through photoshop
+                                        Call ppProcessFiles(newNam)
+
+                                        ' increment/decrement all the print counters
+                                        'IncrementPrintCounts(mode, count)
+
+                                        ' if enabled, copy the file from the printed folder to the cloud folder
+
+                                        If Globals.tmpEmailCloudEnabled Then
+
+                                            ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                            If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                                CopyFileToCloudDir(newNam)
+                                            End If
+
+                                            ' send out email..
+                                            PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+                                        End If
+
                                     End If
 
-                                    ' send out email..
-                                    PostProcessEmail(Globals.PrintCache.filePath & newNam)
+                                Else
+
+                                    mode = PRT_PRINT
+                                    If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
+                                        (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+
+                                    ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                    ' without going through the user controls, then this should be printed. We want to
+                                    ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+
+                                    count = ppDecorateName(fi.Name, newNam, mode)
+
+                                    ' process the files in the \onsite folder through photoshop
+                                    Call ppProcessFiles(newNam)
+
+                                    ' increment/decrement all the print counters
+                                    'IncrementPrintCounts(mode, count)
+
+                                    ' if enabled, copy the file from the printed folder to the cloud folder
+
+                                    If Globals.tmpEmailCloudEnabled Then
+
+                                        ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                        If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                            CopyFileToCloudDir(newNam)
+                                        End If
+
+                                        ' send out email..
+                                        PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+                                    End If
 
                                 End If
 
-                            End If
+                            End If ' locked file 
 
-                        Else
-
-                            mode = PRT_PRINT
-                            If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
-
-                            ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                            ' without going through the user controls, then this should be printed. We want to
-                            ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
-
-                            count = ppDecorateName(fi.Name, newNam, mode)
-
-                            ' process the files in the \onsite folder through photoshop
-                            Call ppProcessFiles(newNam)
-
-                            ' increment/decrement all the print counters
-                            'IncrementPrintCounts(mode, count)
-
-                            ' if enabled, copy the file from the printed folder to the cloud folder
-
-                            If Globals.tmpEmailCloudEnabled Then
-
-                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                    CopyFileToCloudDir(newNam)
-                                End If
-
-                                ' send out email..
-                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                            End If
-
-                        End If
+                        End If ' file extension
 
                     End If
 
@@ -1218,6 +1231,43 @@ Public Class Pic2Print
         Loop
 
     End Sub
+
+    Private Function ValidateFileAccess(ByRef fi As FileInfo)
+        Dim count = 5
+        Dim itWorked = True
+
+        If (fi.Name.EndsWith("~")) Then
+            Globals.fDebug.txtPrintLn(fi.Name & "is a temp file!")
+            Return (False)
+        End If
+
+        ' try five times to copy the file to a temp location
+
+        Do
+            Try
+                My.Computer.FileSystem.CopyFile(fi.FullName, "c:\onsite\copy.tmp", True)
+
+            Catch ex As System.IO.IOException
+                ' MsgBox("An error occurred")
+                Globals.fDebug.txtPrintLn(fi.Name & "access failed " & (6 - count) & " times")
+                Thread.Sleep(500)
+                itWorked = False
+
+            Finally
+                count = count - 1
+            End Try
+
+            ' if it worked, then we're done, access worked..
+            If itWorked Then Return True
+
+            ' set it true for the next pass
+            itWorked = True
+
+        Loop Until count = 0
+
+        Return False
+
+    End Function
 
     ' AdvancePrefixCount increments the FileNamePrefix by 00010, clears the low digit
     Private Sub AdvancePrefixCount()
@@ -1261,7 +1311,7 @@ Public Class Pic2Print
                 For Each fi As FileInfo In files
 
                     ' find all jpg and gif files, see if they're on file
-                    If ((fi.Extension = ".jpg") Or (fi.Extension = ".gif")) Then
+                    If ((fi.Extension = ".jpg") Or (fi.Extension = ".jpeg") Or (fi.Extension = ".gif")) Then
 
                         ' skip any reprinted images, they're redundant
 
@@ -1345,8 +1395,19 @@ Public Class Pic2Print
         Dim cnt As Integer
         Dim p1cnt As Integer
         Dim p2cnt As Integer
+        Dim eon As Integer
 
-        txtf = Microsoft.VisualBasic.Left(fnam, Microsoft.VisualBasic.Len(fnam) - 4) & ".txt"
+        ' calculate the end of the file name based upon either .JPG or .GIF extension
+        eon = InStr(fnam, ".jp", CompareMethod.Text)
+        If eon = 0 Then
+            eon = InStr(fnam, ".gif", CompareMethod.Text)
+        End If
+        If eon > 0 Then
+            eon = eon - 1
+        End If
+
+        ' txtf = Microsoft.VisualBasic.Left(fnam, Microsoft.VisualBasic.Len(fnam) - 4) & ".txt"
+        txtf = Microsoft.VisualBasic.Left(fnam, eon) & ".txt"
         If My.Computer.FileSystem.FileExists(txtf) Then
 
             Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(txtf)
@@ -1420,7 +1481,7 @@ Public Class Pic2Print
         ' bail if the name is decorated..
         If (inNam.Contains("_m") And inNam.Contains("_bk")) Then
 
-            ' since its decorated, we msut extract the print count
+            ' since its decorated, we must extract the print count
             count = InStr(inNam, "_p", CompareMethod.Text)
             outTxt = inNam(count + 1)
             If (IsNumeric(inNam(count + 2))) Then
@@ -1474,7 +1535,7 @@ Public Class Pic2Print
         '    _m0 to load, _m1 to print
         '    _bkX for the background # selected by the user. This gives up to 4 options on backgrounds.
         '
-        outNam = Microsoft.VisualBasic.Left(inNam, InStr(inNam, ".jpg", CompareMethod.Text) - 1)
+        outNam = Microsoft.VisualBasic.Left(inNam, InStr(inNam, ".jp", CompareMethod.Text) - 1)
         inTxt = outNam & ".txt"
         outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".txt"
         outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".jpg"
@@ -1514,7 +1575,7 @@ Public Class Pic2Print
     End Sub
 
     Private Sub ppProcessFiles(ByRef fName As String)
-        Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jpg", CompareMethod.Text) - 1) & ".txt"
+        Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jp", CompareMethod.Text) - 1) & ".txt"
         Dim trgnamtxt As String = "c:\onsite\orig\" & fNameTxt
         ' execute the droplet with this file name with path
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
@@ -1538,7 +1599,7 @@ Public Class Pic2Print
     End Sub
 
     Private Sub ppMoveFiles(ByRef fName As String)
-        Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jpg", CompareMethod.Text) - 1) & ".txt"
+        Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jp", CompareMethod.Text) - 1) & ".txt"
         Dim trgnamtxt As String = "c:\onsite\orig\" & fNameTxt
         Dim trgnam As String = "c:\onsite\orig\" & fName
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
@@ -1598,7 +1659,7 @@ Public Class Pic2Print
                     ' the .jpg(Version)
                     '
                     fname = Strings.LCase(fname)            ' lower case works in windows..
-                    gifFname = Microsoft.VisualBasic.Left(fname, InStr(fname, ".jpg", CompareMethod.Text)) & "gif"
+                    gifFname = Microsoft.VisualBasic.Left(fname, InStr(fname, ".jp", CompareMethod.Text) - 1) & ".gif"
 
                     ' if neither file exists, we keep waiting..
                     If (My.Computer.FileSystem.FileExists(fname) Or My.Computer.FileSystem.FileExists(gifFname)) = False Then
@@ -2109,7 +2170,8 @@ Public Class Pic2Print
         Dim trgf As String
         Dim data As String
 
-        trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), Microsoft.VisualBasic.Len(cache.fileName(idx)) - 4)
+        ' trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), Microsoft.VisualBasic.Len(cache.fileName(idx)) - 4)
+        trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), InStr(cache.fileName(idx), ".jp", CompareMethod.Text) - 1)
         'debug.TextBox1_println("PrintThisFile:" & trgf & " to " & Globals.DestinationPath)
 
         ' write out the count to the file
@@ -2141,7 +2203,8 @@ Public Class Pic2Print
         If idx < Globals.ImageCache.maxIndex Then
 
             ' get just the file name separate from the extension
-            srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4)
+            ' srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4)
+            srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), InStr(Globals.ImageCache.fileName(idx), ".jp", CompareMethod.Text) - 1)
 
             ' use selected printer path
             If Globals.ToPrinter = 1 Then
@@ -2204,7 +2267,7 @@ Public Class Pic2Print
                 Return
             End If
             ' get just the file name separate from the extension
-            srcf = Microsoft.VisualBasic.Left(Globals.PrintCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.PrintCache.fileName(idx)) - 4)
+            srcf = Microsoft.VisualBasic.Left(Globals.PrintCache.fileName(idx), InStr(Globals.PrintCache.fileName(idx), ".jp", CompareMethod.Text) - 1)
 
             ' check the prefix, replace it with the latest prefix
             trgf = Microsoft.VisualBasic.Left(srcf, 5)
@@ -2305,7 +2368,7 @@ Public Class Pic2Print
 
             ' take the name as-is and build the new names
 
-            srcf = Microsoft.VisualBasic.Left(src, Microsoft.VisualBasic.Len(src) - 4)
+            srcf = Microsoft.VisualBasic.Left(src, InStr(src, ".jp", CompareMethod.Text) - 1)
             trgf = srcf
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
@@ -2318,7 +2381,7 @@ Public Class Pic2Print
             Globals.FileNamePrefix += 1
 
             ' get just the file name separate from the extension
-            srcf = Microsoft.VisualBasic.Left(src, Microsoft.VisualBasic.Len(src) - 4)
+            srcf = Microsoft.VisualBasic.Left(src, InStr(src, ".jp", CompareMethod.Text) - 1)
 
             ' build the whole file name: printcnt+mode+background #+counter
             trgf = sPrefix & "-" & srcf
@@ -2383,7 +2446,7 @@ Public Class Pic2Print
 
         ' trim the file name of the .jpg for a .gif search/copy
 
-        i = InStr(fnam, ".jpg", CompareMethod.Text)
+        i = InStr(fnam, ".jp", CompareMethod.Text)
         srcnam = Microsoft.VisualBasic.Left(fnam, i)
 
         ' if photoshop saved the .GIF file, copy it to the cloud
@@ -2538,6 +2601,7 @@ Public Class Pic2Print
         Dim phone As String
         Dim sMessage As String
         Dim idx As Integer
+        Dim ext As String
 
         'debug.TextBox1_println("AddFilesToArray")
 
@@ -2545,7 +2609,7 @@ Public Class Pic2Print
         Globals.TotalPrinted = 0
 
         ' load the first file if available
-        Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpIncoming_Folder).GetFiles("*.jpg"))
+        Dim files As New List(Of FileInfo)(New DirectoryInfo(Globals.tmpIncoming_Folder).GetFiles("*.*"))
 
         ' if we want to sort by date, then sort the files names
         If Globals.SortBy = 2 Then
@@ -2554,57 +2618,64 @@ Public Class Pic2Print
 
         For Each fi As FileInfo In files
 
-            ' save .jpg file info locally
-            idx = Globals.ImageCache.newItem()
-            Globals.ImageCache.fileName(idx) = fi.Name
-            Globals.ImageCache.maxPrintCount(idx) = 0
+            ext = fi.Extension.ToLower
 
-            ' build .txt version of file name
-            fCnt = Globals.tmpIncoming_Folder & Microsoft.VisualBasic.Left(fi.Name, (Microsoft.VisualBasic.Len(fi.Name)) - 4) & ".txt"
+            If ((ext = ".jpg") Or (ext = ".jpeg")) Then
 
-            If My.Computer.FileSystem.FileExists(fCnt) Then
+                ' save .jpg file info locally
+                idx = Globals.ImageCache.newItem()
+                Globals.ImageCache.fileName(idx) = fi.Name
+                Globals.ImageCache.maxPrintCount(idx) = 0
 
-                'cnt = CInt(My.Computer.FileSystem.ReadAllText(fCnt))    ' read in the printer & count
+                ' build .txt version of file name
+                fCnt = Globals.tmpIncoming_Folder & Microsoft.VisualBasic.Left(fi.Name, InStr(fi.Name, ".jp", CompareMethod.Text) - 1) & ".txt"
 
-                Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(fCnt)
+                If My.Computer.FileSystem.FileExists(fCnt) Then
 
-                cnt = CInt(fileReader.ReadLine())           ' read in the printer & count
-                p1cnt = CInt(fileReader.ReadLine())         ' read printer #1 
-                p2cnt = CInt(fileReader.ReadLine())         ' read  printer #2 
-                emailaddr = fileReader.ReadLine()           ' read in the email address
-                phone = ""
-                sMessage = ""
-                sel = 0
-                If Not fileReader.EndOfStream Then
-                    phone = fileReader.ReadLine()           ' read the phone #
-                    sel = CInt(fileReader.ReadLine())       ' read the carrier selector
+                    'cnt = CInt(My.Computer.FileSystem.ReadAllText(fCnt))    ' read in the printer & count
+
+                    Dim fileReader = My.Computer.FileSystem.OpenTextFileReader(fCnt)
+
+                    cnt = CInt(fileReader.ReadLine())           ' read in the printer & count
+                    p1cnt = CInt(fileReader.ReadLine())         ' read printer #1 
+                    p2cnt = CInt(fileReader.ReadLine())         ' read  printer #2 
+                    emailaddr = fileReader.ReadLine()           ' read in the email address
+                    phone = ""
+                    sMessage = ""
+                    sel = 0
+                    If Not fileReader.EndOfStream Then
+                        phone = fileReader.ReadLine()           ' read the phone #
+                        sel = CInt(fileReader.ReadLine())       ' read the carrier selector
+                    End If
+                    If Not fileReader.EndOfStream Then
+                        ' read the user text message
+                        sMessage = fileReader.ReadLine()    ' read the message string
+                    End If
+
+                    ' save the details from the txt file.
+
+                    Globals.ImageCache.maxPrintCount(idx) = cnt
+                    Globals.ImageCache.emailAddr(idx) = emailaddr
+                    Globals.ImageCache.phoneNumber(idx) = phone
+                    Globals.ImageCache.carrierSelector(idx) = sel
+                    Globals.ImageCache.message(idx) = sMessage
+                    'Globals.ImageCache.maxPrintedIndex  = Globals.ImageCache.maxIndex
+                    If cnt > 0 Then Globals.ImageCache.maxPrintedIndex = idx
+                    Globals.TotalPrinted += cnt
+
+                    fileReader.Close()
+                    fileReader.Dispose()
+
                 End If
-                If Not fileReader.EndOfStream Then
-                    ' read the user text message
-                    sMessage = fileReader.ReadLine()    ' read the message string
+
+                ' top out at 2k files
+                If Globals.ImageCache.full Then
+                    MsgBox("Too many files in the capture folder!" & vbCrLf & _
+                            "Reduce the count and rerun this program")
                 End If
-
-                ' save the details from the txt file.
-
-                Globals.ImageCache.maxPrintCount(idx) = cnt
-                Globals.ImageCache.emailAddr(idx) = emailaddr
-                Globals.ImageCache.phoneNumber(idx) = phone
-                Globals.ImageCache.carrierSelector(idx) = sel
-                Globals.ImageCache.message(idx) = sMessage
-                'Globals.ImageCache.maxPrintedIndex  = Globals.ImageCache.maxIndex
-                If cnt > 0 Then Globals.ImageCache.maxPrintedIndex = idx
-                Globals.TotalPrinted += cnt
-
-                fileReader.Close()
-                fileReader.Dispose()
 
             End If
 
-            ' top out at 2k files
-            If Globals.ImageCache.full Then
-                MsgBox("Too many files in the capture folder!" & vbCrLf & _
-                        "Reduce the count and rerun this program")
-            End If
         Next
 
         ' load the thumbnails in the pictureboxes
@@ -2699,7 +2770,7 @@ Public Class Pic2Print
 
             ' set the path, turn it on..
             Globals.WatchFolder.Path = Globals.tmpIncoming_Folder
-            Globals.WatchFolder.Filter = "*.jpg"
+            Globals.WatchFolder.Filter = "*.jp*"
             Globals.WatchFolder.EnableRaisingEvents = True
 
             'Add a list of Filter we want to specify
@@ -2840,7 +2911,7 @@ Public Class Pic2Print
 
             ' get path + file name & .txt extension
             fnam = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), _
-                                (Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4))
+                                (InStr(Globals.ImageCache.fileName(idx), ".jp", CompareMethod.Text) - 1))
             ' set the file name in the text box
             fnb.Text = fnam
 
@@ -3397,7 +3468,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.05"    ' Version string
+    Public Shared Version As String = "Version 9.06"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
