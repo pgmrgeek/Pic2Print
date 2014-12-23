@@ -238,7 +238,7 @@ Public Class PostView
     Public Delegate Sub chkAutoScrollDelegate()
     Public Sub chkAutoScrolltoNewImages()
 
-        '''''''''''' commented out, its not working, so I'm tossing VB some problems here, skipping for now ''''''''''''''''''''
+        '''''''''''' commented out, its not working, theres some sort of VB problems here, skipping for now ''''''''''''''''''''
         Return
 
         If chkAutoScroll.InvokeRequired Then

@@ -449,8 +449,11 @@ Public Class Pic2Print
             ioReader.Close()
 
         Else
+
+            ' this sets up a default bkg/fg layout set.  Hopefully, set '000' is intalled..
             If first = True Then
-                Globals.BkFgName(Globals.BkFgMax) = "000-Blank"
+                Globals.BkFgName(Globals.BkFgMax) = "000-Simple One Bk/Fg Layout w/GIF"
+                Globals.BkFgSetName(Globals.BkFgMax) = "Onsite.Printing"
                 Globals.BkFgFolder(Globals.BkFgMax) = "000"
                 Globals.BkFgGifLayers(Globals.BkFgMax) = 4
                 Globals.BkFgCustLayers(Globals.BkFgMax) = 1
@@ -463,6 +466,8 @@ Public Class Pic2Print
                 Globals.BkFgImage4Bk(Globals.BkFgMax) = -1
                 Globals.BkFgAnimated(Globals.BkFgMax) = -1
                 Globals.BkFgRatio(Globals.BkFgMax) = 31
+                Globals.BkFgGIFDelay(Globals.BkFgMax) = 0
+
                 Globals.fForm3.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
                 Globals.BkFgMax += 1
             End If
@@ -1096,7 +1101,7 @@ Public Class Pic2Print
             ' then move it to the 'orig' folder
 
             ' sleep for a second before looking for more .JPGs
-            ''''''Thread.Sleep(1000)
+            Thread.Sleep(1000)
 
             ' state = 0, stop, state = 1, idle, state = 2, run
             If Globals.PrintProcessRun = 2 Then
@@ -1112,7 +1117,7 @@ Public Class Pic2Print
 
                     If Globals.PrintProcessRun = 2 Then
 
-                        ''''' Thread.Sleep(1500)
+                        Thread.Sleep(1000)
 
                         ext = fi.Extension.ToLower
 
@@ -1284,8 +1289,8 @@ Public Class Pic2Print
         Dim found As Boolean
         Dim idx As Integer
         Dim newFile As Boolean
-        Dim email1 As String
-        Dim phone1 As String
+        Dim email1 As String = ""
+        Dim phone1 As String = ""
         Dim sel As Integer
 
         ' seems reasonable, if the print processor thread can run, so can we..
@@ -3468,7 +3473,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.06"    ' Version string
+    Public Shared Version As String = "Version 9.07"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
