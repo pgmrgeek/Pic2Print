@@ -14,6 +14,8 @@ Public Class Form3
     Private Sub Form3_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim i As Integer
 
+        Globals.Form3Loading = True
+
         ' if the user sent in a reset, then reposition on the desktop
         If Globals.cmdLineReset Then
 
@@ -57,6 +59,8 @@ Public Class Form3
         ' false until the user changes these fields
         print1CountUpdated = False
         print2CountUpdated = False
+
+        Globals.Form3Loading = False
 
     End Sub
 
@@ -739,50 +743,54 @@ Public Class Form3
 
     Private Sub ComboBoxBKFG_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxBKFG.SelectedIndexChanged
 
-        tbBKFG.Text = ComboBoxBKFG.SelectedIndex
-        txtLayersPerGIF.Text = Globals.BkFgGifLayers(ComboBoxBKFG.SelectedIndex)
-        txtLayersPerCust.Text = Globals.BkFgCustLayers(ComboBoxBKFG.SelectedIndex)
+        If Globals.Form3Loading = False Then
 
-        ' change the foreground selection if its 0 or 1
-        If Globals.BkFgFGSelect(ComboBoxBKFG.SelectedIndex) <> -1 Then
-            If Globals.BkFgFGSelect(ComboBoxBKFG.SelectedIndex) = 0 Then
-                PaperForeground.Checked = False
-            Else
-                PaperForeground.Checked = True
+            tbBKFG.Text = ComboBoxBKFG.SelectedIndex
+            txtLayersPerGIF.Text = Globals.BkFgGifLayers(ComboBoxBKFG.SelectedIndex)
+            txtLayersPerCust.Text = Globals.BkFgCustLayers(ComboBoxBKFG.SelectedIndex)
+
+            ' change the foreground selection if its 0 or 1
+            If Globals.BkFgFGSelect(ComboBoxBKFG.SelectedIndex) <> -1 Then
+                If Globals.BkFgFGSelect(ComboBoxBKFG.SelectedIndex) = 0 Then
+                    PaperForeground.Checked = False
+                Else
+                    PaperForeground.Checked = True
+                End If
             End If
-        End If
 
-        ' change the greenscreen selection if its 0 or 1
-        If Globals.BkFgBKSelect(ComboBoxBKFG.SelectedIndex) <> -1 Then
-            If Globals.BkFgBKSelect(ComboBoxBKFG.SelectedIndex) = 0 Then
-                GreenScreen.Checked = False
-            Else
-                GreenScreen.Checked = True
+            ' change the greenscreen selection if its 0 or 1
+            If Globals.BkFgBKSelect(ComboBoxBKFG.SelectedIndex) <> -1 Then
+                If Globals.BkFgBKSelect(ComboBoxBKFG.SelectedIndex) = 0 Then
+                    GreenScreen.Checked = False
+                Else
+                    GreenScreen.Checked = True
+                End If
             End If
-        End If
 
-        ' change the multiple background selection if its 0 or 1
-        If Globals.BkFgMultLayers(ComboBoxBKFG.SelectedIndex) <> -1 Then
-            If Globals.BkFgMultLayers(ComboBoxBKFG.SelectedIndex) = 0 Then
-                MultipleBackgrounds.Checked = False
-            Else
-                MultipleBackgrounds.Checked = True
+            ' change the multiple background selection if its 0 or 1
+            If Globals.BkFgMultLayers(ComboBoxBKFG.SelectedIndex) <> -1 Then
+                If Globals.BkFgMultLayers(ComboBoxBKFG.SelectedIndex) = 0 Then
+                    MultipleBackgrounds.Checked = False
+                Else
+                    MultipleBackgrounds.Checked = True
+                End If
             End If
-        End If
 
-        ' change the Bk/Fg animation checkbox 
-        If Globals.BkFgAnimated(ComboBoxBKFG.SelectedIndex) = 0 Then
-            chkBkFgsAnimated.Checked = False
-        Else
-            chkBkFgsAnimated.Checked = True
-        End If
+            ' change the Bk/Fg animation checkbox 
+            If Globals.BkFgAnimated(ComboBoxBKFG.SelectedIndex) = 0 Then
+                chkBkFgsAnimated.Checked = False
+            Else
+                chkBkFgsAnimated.Checked = True
+            End If
 
-        ' change the Bk/Fg GIF Delay checkbox 
-        If Globals.BkFgGIFDelay(ComboBoxBKFG.SelectedIndex) = 0 Then
-            cbGifDelay.Checked = False
-        Else
-            cbGifDelay.Checked = True
-        End If
+            ' change the Bk/Fg GIF Delay checkbox 
+            If Globals.BkFgGIFDelay(ComboBoxBKFG.SelectedIndex) = 0 Then
+                cbGifDelay.Checked = False
+            Else
+                cbGifDelay.Checked = True
+            End If
+
+        End If   ' form3loading..
 
         Call Globals.fPic2Print.BackgroundHighlightDefault()  ' force background selection to #1 in case there's a change
 
@@ -872,5 +880,4 @@ Public Class Form3
     Dim print1CountUpdated As Boolean = False
     Dim print2CountUpdated As Boolean = False
 
- 
 End Class

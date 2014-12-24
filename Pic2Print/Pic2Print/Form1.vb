@@ -1101,7 +1101,7 @@ Public Class Pic2Print
             ' then move it to the 'orig' folder
 
             ' sleep for a second before looking for more .JPGs
-            Thread.Sleep(1000)
+            ''''Thread.Sleep(1000)
 
             ' state = 0, stop, state = 1, idle, state = 2, run
             If Globals.PrintProcessRun = 2 Then
@@ -1117,11 +1117,11 @@ Public Class Pic2Print
 
                     If Globals.PrintProcessRun = 2 Then
 
-                        Thread.Sleep(1000)
-
                         ext = fi.Extension.ToLower
 
                         If ((ext = ".jpg") Or (ext = ".jpeg")) Then
+
+                            Thread.Sleep(1000)
 
                             ' The file might not be accessable yet (nikon software, dropbox, thunderbird email attachment 
                             ' plugin still writing it so we will wait until the file is available. 
@@ -3473,7 +3473,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.07"    ' Version string
+    Public Shared Version As String = "Version 9.08"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3485,6 +3485,7 @@ Public Class Globals
     Public Shared fPreview As New Preview
     Public Shared fSendEmails As New SendEmails
     Public Shared fmmsForm As New mmsForm
+    Public Shared Form3Loading As Boolean
 
     Public Delegate Sub SetTextCallback(ByVal str As String)
     Public Delegate Sub SetPostViewCallback(ByRef pb As PictureBox, ByRef fnam As String, ByRef mask As Int16)
