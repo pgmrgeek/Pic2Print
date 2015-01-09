@@ -4,6 +4,8 @@ Imports System.Drawing.Imaging
 Module ExifStuff
     ' Orientations.
     Private Const OrientationId As Integer = &H112
+    Private Const DateTimeId As Integer = &H9003
+
     Public Enum ExifOrientations As Byte
         Unknown = 0
         TopLeft = 1
@@ -102,6 +104,40 @@ Module ExifStuff
 
         ' Set the image's orientation to TopLeft.
         SetImageOrientation(img, ExifOrientations.TopLeft)
+    End Sub
+
+    ' Orient the image properly.
+    Public Sub GetImageTakenDate(ByVal img As Image, ByRef trg As String, ByRef Year As Integer, ByRef Mon As Integer, ByRef day As Integer)
+        Dim propItems As PropertyItem() = img.PropertyItems
+        'Convert the value of the second property to a string, and display it. 
+        Dim encoding As New System.Text.ASCIIEncoding()
+        Dim propItem As PropertyItem
+
+        ' default to 1980
+        Year = 1980
+        Mon = 1
+        day = 1
+        trg = "1980:01:01 00:00:01"     ' default windows date YYYY:MM:DD HH:MM:SS
+
+        ' look through all elements to find the date, then extract the numbers
+        For Each propItem In propItems
+
+            If propItem.Id = DateTimeId Then
+
+                trg = encoding.GetString(propItem.Value)
+                Year = CInt(Mid(trg, 1, 4))
+                Mon = CInt(Mid(trg, 6, 2))
+                day = CInt(Mid(trg, 9, 2))
+
+                Exit For
+
+            End If
+
+        Next propItem
+
+        ' show what we found
+        'MsgBox(trg)
+
     End Sub
 
     ' Set the image's orientation.

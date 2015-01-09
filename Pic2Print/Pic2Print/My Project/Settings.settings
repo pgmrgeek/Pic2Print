@@ -191,5 +191,14 @@
     <Setting Name="AutoFollowRight" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="KIOSKdateQual" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="dtEarliestDateSelected" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">01/08/2015 22:46:18</Value>
+    </Setting>
+    <Setting Name="KioskPrintAnyway" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

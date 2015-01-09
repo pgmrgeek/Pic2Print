@@ -383,18 +383,21 @@ Public Class Pic2Print
     ' read in the .CVS file listing all the standard & custom backgrounds/foregrounds
     '
     Public Sub ReadBKFGFile()
-        Dim n As Integer
-        ' reset the list and attempt to read in 5 files of bk/fg combos
+        Dim files As New List(Of FileInfo)(New DirectoryInfo("C:\onsite\backgrounds\").GetFiles("bkfglayouts.*"))
+
+        ' reset the list and attempt to read in all bk/fg combos files
 
         Globals.BkFgMax = 0
         Globals.fForm3.ComboBoxBKFG.Items.Clear()
 
-        Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts.000.csv", True)
+        ' scan for all bkg/fg .csv files.  Special case the first - bkfglayouts.000.csv"
 
-        ' scan for some 40 additional user defined bkfg files
-
-        For n = 100 To 500 Step 10
-            Call _bkfgreader("C:\onsite\backgrounds\bkfglayouts." & n & ".csv", False)
+        For Each fi As FileInfo In files
+            If fi.FullName.Contains("000.csv") Then
+                Call _bkfgreader(fi.FullName, True)
+            Else
+                Call _bkfgreader(fi.FullName, False)
+            End If
         Next
 
     End Sub
@@ -1155,11 +1158,57 @@ Public Class Pic2Print
                                         ' increment/decrement all the print counters
                                         'IncrementPrintCounts(mode, count)
 
-                                    Else
+                                    Else ' use local printer
 
                                         mode = PRT_PRINT
                                         If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
                                             (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+
+                                        ' qualify the date to be within range to reject images that were not photographed at this event.
+
+                                        If ValidateImageEXIF(fi) = True Then
+
+                                            ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+                                            ' without going through the user controls, then this should be printed. We want to
+                                            ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+
+                                            count = ppDecorateName(fi.Name, newNam, mode)
+
+                                            ' process the files in the \onsite folder through photoshop
+                                            Call ppProcessFiles(newNam)
+
+                                            ' increment/decrement all the print counters
+                                            'IncrementPrintCounts(mode, count)
+
+                                            ' if enabled, copy the file from the printed folder to the cloud folder
+
+                                            If Globals.tmpEmailCloudEnabled Then
+
+                                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                                                    CopyFileToCloudDir(newNam)
+                                                End If
+
+                                                ' send out email..
+                                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+                                            End If
+                                        Else
+                                            ' just move it out of the way
+                                            ppMoveFiles(fi.Name, "unqualifed\")
+
+                                        End If
+
+                                    End If ' use local printer
+
+                                Else
+
+                                    mode = PRT_PRINT
+                                    If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
+                                        (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+
+                                    ' qualify the date to be within range to reject images that were not photographed at this event.
+                                    If ValidateImageEXIF(fi) = True Then
 
                                         ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
                                         ' without going through the user controls, then this should be printed. We want to
@@ -1187,43 +1236,15 @@ Public Class Pic2Print
 
                                         End If
 
-                                    End If
+                                    Else
+                                        ' just move it out of the way
+                                        ppMoveFiles(fi.Name, "unqualifed\")
 
-                                Else
+                                    End If ' valid exif
 
-                                    mode = PRT_PRINT
-                                    If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                        (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+                                End If ' print 2 is enabled
 
-                                    ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                    ' without going through the user controls, then this should be printed. We want to
-                                    ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
-
-                                    count = ppDecorateName(fi.Name, newNam, mode)
-
-                                    ' process the files in the \onsite folder through photoshop
-                                    Call ppProcessFiles(newNam)
-
-                                    ' increment/decrement all the print counters
-                                    'IncrementPrintCounts(mode, count)
-
-                                    ' if enabled, copy the file from the printed folder to the cloud folder
-
-                                    If Globals.tmpEmailCloudEnabled Then
-
-                                        ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                        If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                            CopyFileToCloudDir(newNam)
-                                        End If
-
-                                        ' send out email..
-                                        PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                                    End If
-
-                                End If
-
-                            End If ' locked file 
+                            End If ' locked file or outdated file
 
                         End If ' file extension
 
@@ -1237,7 +1258,60 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Function ValidateFileAccess(ByRef fi As FileInfo)
+    ' this function will check certain data values in EXIF.  Best to do it all at once in order to limit the number
+    ' of times the image is loaded from the disk.  We do it here once, then dispose of it.
+    Private Function ValidateImageEXIF(ByRef fi As FileInfo) As Boolean
+        Dim year As Integer
+        Dim mon As Integer
+        Dim day As Integer
+        Dim trg As String = ""
+        Dim img As Image
+        Dim pass As Boolean = True
+
+        ' if we must look at the exif, we have to read the file slowing things down a bit
+
+        If Globals.fForm3.cbDateQualifed.Checked = True Then
+
+            ' load the image from disk
+            img = Image.FromFile(fi.FullName)
+
+            ' extract the date
+            GetImageTakenDate(img, trg, year, mon, day)
+
+            ' if we get 1980, then this image doesn't have an internal date
+            If year = 1980 Then
+
+                ' we must get permission to print non-dated images
+                If Globals.fForm3.cbPrintNoDates.Checked = True Then
+                    pass = True
+                Else
+                    pass = False
+                End If
+
+            Else
+                ' make sure the date is in range
+                pass = False
+                If year >= Globals.fForm3.dtEarliestDate.Value.Year Then
+                    If mon >= Globals.fForm3.dtEarliestDate.Value.Month Then
+                        If mon >= Globals.fForm3.dtEarliestDate.Value.Month Then
+                            pass = True
+                        End If
+                    End If
+                End If
+
+            End If
+
+            ' all done with poking at the image, free it up and go home
+            img.Dispose()
+
+        End If
+
+        Return pass
+
+    End Function
+
+
+    Private Function ValidateFileAccess(ByRef fi As FileInfo) As Boolean
         Dim count = 5
         Dim itWorked = True
 
@@ -1599,14 +1673,14 @@ Public Class Pic2Print
 
         Globals.fDebug.txtPrintLn("Photoshop Complete")
 
-        ppMoveFiles(fName)
+        ppMoveFiles(fName, "")
 
     End Sub
 
-    Private Sub ppMoveFiles(ByRef fName As String)
+    Private Sub ppMoveFiles(ByRef fName As String, ByRef subdir As String)
         Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jp", CompareMethod.Text) - 1) & ".txt"
-        Dim trgnamtxt As String = "c:\onsite\orig\" & fNameTxt
-        Dim trgnam As String = "c:\onsite\orig\" & fName
+        Dim trgnamtxt As String = "c:\onsite\orig\" & subdir & fNameTxt
+        Dim trgnam As String = "c:\onsite\orig\" & subdir & fName
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
         Dim fnamtxt As String = Globals.tmpPrint1_Folder & fNameTxt
 
@@ -2415,7 +2489,7 @@ Public Class Pic2Print
             Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
             Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
 
-        ppMoveFiles(src)
+        ppMoveFiles(src, "")
 
         Return trgf
 
@@ -3473,7 +3547,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.08"    ' Version string
+    Public Shared Version As String = "Version 9.10"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

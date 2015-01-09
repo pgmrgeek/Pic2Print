@@ -809,6 +809,42 @@ Namespace My
                 Me("AutoFollowRight") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property KIOSKdateQual() As Boolean
+            Get
+                Return CType(Me("KIOSKdateQual"),Boolean)
+            End Get
+            Set
+                Me("KIOSKdateQual") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("01/08/2015 22:46:18")>  _
+        Public Property dtEarliestDateSelected() As Date
+            Get
+                Return CType(Me("dtEarliestDateSelected"),Date)
+            End Get
+            Set
+                Me("dtEarliestDateSelected") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property KioskPrintAnyway() As Boolean
+            Get
+                Return CType(Me("KioskPrintAnyway"),Boolean)
+            End Get
+            Set
+                Me("KioskPrintAnyway") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
