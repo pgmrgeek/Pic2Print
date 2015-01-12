@@ -1092,16 +1092,12 @@ Public Class Pic2Print
     ' them out to Photoshop
     '
     Private Sub PrintProcessorThread(ByVal i As Integer)
-        Dim newNam As String = ""
         Dim ext As String
         Dim mode As Integer
-        Dim count As Integer
+
+        ' this is set on the load function and cleared on the exit function
 
         Do While Globals.PrintProcessRun > 0
-
-            ' check the print folder for .jpgs
-            ' if found, feed each one into photoshop
-            ' then move it to the 'orig' folder
 
             ' sleep for a second before looking for more .JPGs
             ''''Thread.Sleep(1000)
@@ -1118,129 +1114,48 @@ Public Class Pic2Print
 
                 For Each fi As FileInfo In files
 
+                    ' we have to check now because the control panel might have opened and paused us while processing the current list.
+
                     If Globals.PrintProcessRun = 2 Then
 
-                        ext = fi.Extension.ToLower
+                        ' make sure we look at all jpgs regardless of extension
 
+                        ext = fi.Extension.ToLower
                         If ((ext = ".jpg") Or (ext = ".jpeg")) Then
 
-                            Thread.Sleep(1000)
+                            ' its either going to be a print or a GIF
 
+                            mode = PRT_PRINT
+                            If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
+                                (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
+
+                            ' Give the file time to settle into Windows file system.  Nikon s/w might still have exclusive hold on it.
                             ' The file might not be accessable yet (nikon software, dropbox, thunderbird email attachment 
                             ' plugin still writing it so we will wait until the file is available. 
 
+                            Thread.Sleep(1000)
+
                             If (ValidateFileAccess(fi)) Then
 
-                                ' Special Case - if the 2nd printer path is enabled, and the user has the 2nd print checked, kiosk 
-                                ' mode will send all images automatically to the 2nd printer in a fwd'ing action rather than use
-                                ' photoshop locally.
+                                ' Special Case - In KIOSK mode, if the 2nd printer path is enabled, and the user has the 2nd print 
+                                ' checked, kiosk mode will send all images automatically to the 2nd printer in a fwd'ing action rather 
+                                ' than use photoshop locally.
 
                                 If Globals.fForm3.Print2Enabled.Checked = True Then
 
                                     If PrinterSelect2.Checked = True Then
 
-                                        mode = PRT_PRINT
-                                        If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
-                                            (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
-
-                                        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                        ' without going through the user controls, then this should be printed. We want to
-                                        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
-
-                                        count = ppDecorateName(fi.Name, newNam, mode)
-
-                                        ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
-                                        ' the file print/gif.  So we now need to examine the decorated name for the mode 
-
-                                        ' yep, this is a forced case of sending the image directly to printer #2
-                                        CopyFileToPrint2Dir(newNam)
-
-                                        ' increment/decrement all the print counters
-                                        'IncrementPrintCounts(mode, count)
+                                        Call _SendToRemotePrinter(fi, mode)
 
                                     Else ' use local printer
 
-                                        mode = PRT_PRINT
-                                        If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                            (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
+                                        Call _SendToLocalPrinter(fi, mode)
 
-                                        ' qualify the date to be within range to reject images that were not photographed at this event.
-
-                                        If ValidateImageEXIF(fi) = True Then
-
-                                            ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                            ' without going through the user controls, then this should be printed. We want to
-                                            ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
-
-                                            count = ppDecorateName(fi.Name, newNam, mode)
-
-                                            ' process the files in the \onsite folder through photoshop
-                                            Call ppProcessFiles(newNam)
-
-                                            ' increment/decrement all the print counters
-                                            'IncrementPrintCounts(mode, count)
-
-                                            ' if enabled, copy the file from the printed folder to the cloud folder
-
-                                            If Globals.tmpEmailCloudEnabled Then
-
-                                                ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                                If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                                    CopyFileToCloudDir(newNam)
-                                                End If
-
-                                                ' send out email..
-                                                PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                                            End If
-                                        Else
-                                            ' just move it out of the way
-                                            ppMoveFiles(fi.Name, "unqualifed\")
-
-                                        End If
-
-                                    End If ' use local printer
+                                    End If
 
                                 Else
 
-                                    mode = PRT_PRINT
-                                    If ((Globals.prtrSize(Globals.prtr1Selector) >= 9) And _
-                                        (Globals.prtrSize(Globals.prtr1Selector) <= 13)) Then mode = PRT_GIF
-
-                                    ' qualify the date to be within range to reject images that were not photographed at this event.
-                                    If ValidateImageEXIF(fi) = True Then
-
-                                        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
-                                        ' without going through the user controls, then this should be printed. We want to
-                                        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
-
-                                        count = ppDecorateName(fi.Name, newNam, mode)
-
-                                        ' process the files in the \onsite folder through photoshop
-                                        Call ppProcessFiles(newNam)
-
-                                        ' increment/decrement all the print counters
-                                        'IncrementPrintCounts(mode, count)
-
-                                        ' if enabled, copy the file from the printed folder to the cloud folder
-
-                                        If Globals.tmpEmailCloudEnabled Then
-
-                                            ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                                            If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                                                CopyFileToCloudDir(newNam)
-                                            End If
-
-                                            ' send out email..
-                                            PostProcessEmail(Globals.PrintCache.filePath & newNam)
-
-                                        End If
-
-                                    Else
-                                        ' just move it out of the way
-                                        ppMoveFiles(fi.Name, "unqualifed\")
-
-                                    End If ' valid exif
+                                    Call _SendToLocalPrinter(fi, mode)
 
                                 End If ' print 2 is enabled
 
@@ -1258,6 +1173,69 @@ Public Class Pic2Print
 
     End Sub
 
+    Private Sub _SendToRemotePrinter(ByRef fi As FileInfo, ByVal mode As Integer)
+        Dim newNam As String = ""
+        Dim count As Integer
+
+        ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+        ' without going through the user controls, then this should be printed. We want to
+        ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+
+        count = ppDecorateName(fi.Name, newNam, mode)
+
+        ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
+        ' the file print/gif.  So we now need to examine the decorated name for the mode 
+
+        ' yep, this is a forced case of sending the image directly to printer #2
+        CopyFileToPrint2Dir(newNam)
+
+        ' increment/decrement all the print counters
+        IncrementPrintCounts(mode, count, 2)
+
+    End Sub
+
+    Private Sub _SendToLocalPrinter(ByRef fi As FileInfo, ByVal mode As Integer)
+        Dim newNam As String = ""
+        Dim count As Integer
+
+        ' qualify the date to be within range to reject images that were not photographed at this event.
+
+        If ValidateImageEXIF(fi) = True Then
+
+            ' if this is an automatic print operation, i.e., images land in the c:\onsite folder
+            ' without going through the user controls, then this should be printed. We want to
+            ' decorate the name with _pX, _mX, _bkX,  ( dropped _cntX )
+
+            count = ppDecorateName(fi.Name, newNam, mode)
+
+            ' process the files in the \onsite folder through photoshop
+            Call ppProcessFiles(newNam)
+
+            ' increment/decrement all the print counters
+            IncrementPrintCounts(mode, count, 1)
+
+            ' if enabled, copy the file from the printed folder to the cloud folder
+
+            If Globals.tmpEmailCloudEnabled Then
+
+                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                If Globals.fForm4.SyncFolderPath.Text <> "" Then
+                    CopyFileToCloudDir(newNam)
+                End If
+
+                ' send out email..
+                PostProcessEmail(Globals.PrintCache.filePath & newNam)
+
+            End If
+        Else
+            ' just move it out of the way
+            ppMoveFiles(fi.Name, "unqualified\")
+
+        End If
+
+    End Sub
+
+
     ' this function will check certain data values in EXIF.  Best to do it all at once in order to limit the number
     ' of times the image is loaded from the disk.  We do it here once, then dispose of it.
     Private Function ValidateImageEXIF(ByRef fi As FileInfo) As Boolean
@@ -1270,7 +1248,7 @@ Public Class Pic2Print
 
         ' if we must look at the exif, we have to read the file slowing things down a bit
 
-        If Globals.fForm3.cbDateQualifed.Checked = True Then
+        If Globals.fForm3.cbDateQualified.Checked = True Then
 
             ' load the image from disk
             img = Image.FromFile(fi.FullName)
@@ -1304,6 +1282,11 @@ Public Class Pic2Print
             ' all done with poking at the image, free it up and go home
             img.Dispose()
 
+        End If
+
+        ' let debugging know so the user has some way to know these images are not printing
+        If pass = False Then
+            Globals.fDebug.txtPrintLn(fi.Name & " Image rejected due to date" & vbCrLf)
         End If
 
         Return pass
@@ -1443,34 +1426,58 @@ Public Class Pic2Print
         Dim email1 As String = ""
         Dim phone1 As String = ""
         Dim sel As Integer
+        Dim gifnam As String
+        Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
+        Dim trgp As String = Globals.fForm4.SyncFolderPath.Text
 
-        ' if email is enabled, place the email in the outbound FIFO
-        If Globals.tmpEmailCloudEnabled Then
+        ' special case .GIFs due to the photoshop CS2 bug of truncating file names
+        gifnam = Microsoft.VisualBasic.Mid(fnam, srcp.Length + 1, 6) & "*.gif"
+        Dim di As New System.IO.DirectoryInfo(srcp)
+        Dim fi() As System.IO.FileInfo = di.GetFiles(gifnam)
+        gifnam = ""
+        For Each f In fi
+            gifnam = f.Name
+        Next
 
-            ' get the personal email address
+        ' only email on final images, not on PRT_LOAD or PRT_REPRINTs
 
-            If LoadPrintedTxtFile(fnam, email1, phone1, sel) = True Then
+        If (fnam.Contains("_m1_") Or fnam.Contains("_m2_")) Then
 
-                Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
+            ' if email is enabled, place the email in the outbound FIFO
+            If Globals.tmpEmailCloudEnabled Then
 
-                ReBuildUserEmails(email1, phone1, sel)
-                EmailSendRequest(email1, fnam, Globals.tmpSubject)
+                ' get the personal email address
+
+                If LoadPrintedTxtFile(fnam, email1, phone1, sel) = True Then
+
+                    Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
+
+                    ReBuildUserEmails(email1, phone1, sel)
+                    EmailSendRequest(email1, fnam, Globals.tmpSubject)          ' the jpg
+                    If gifnam <> "" Then
+                        EmailSendRequest(email1, srcp & gifnam, Globals.tmpSubject)        ' the .GIF
+                    End If
+
+                End If
+
+                ' if there is a facebook/client email recipient, send email to them as well..
+
+                If Globals.tmpEmailRecipient <> "" Then
+                    EmailSendRequest(Globals.tmpEmailRecipient, fnam, Globals.tmpSubject)   ' the jpg
+                    If gifnam <> "" Then
+                        EmailSendRequest(Globals.tmpEmailRecipient, srcp & gifnam, Globals.tmpSubject) ' the .GIF
+                    End If
+
+                End If
 
             End If
-
-            ' if there is a facebook/client email recipient, send email to them as well..
-
-            If Globals.tmpEmailRecipient <> "" Then
-                EmailSendRequest(Globals.tmpEmailRecipient, fnam, Globals.tmpSubject)
-            End If
-
         End If
+
 
     End Sub
 
     Private Function LoadPrintedTxtFile(ByRef fnam As String, ByRef email1 As String, ByRef phone1 As String, ByRef selector As Integer)
         Dim txtf As String
-        'Dim path As String = Globals.tmpPrint1_Folder & "orig\"
         Dim cnt As Integer
         Dim p1cnt As Integer
         Dim p2cnt As Integer
@@ -1710,7 +1717,6 @@ Public Class Pic2Print
     Private Sub EmailProcessorThread(ByVal i As Int16)
         Dim cmdln As String
         Dim fname As String
-        Dim gifFname As String
         Dim recip As String
         Dim ttl = 120        ' time to live for waiting on incoming files to the print folder
 
@@ -1731,17 +1737,11 @@ Public Class Pic2Print
                     fname = Globals.EmailToFile(Globals.EmailFifoOut)
                     recip = Globals.EmailToAddr(Globals.EmailFifoOut)
 
-                    '-------------------------------------------
-                    ' for animated .gifs, we will send those rather than a .jpg since the .jpg would
-                    ' be one of 4 or more frames, thus incomplete.  We'll handle the case here by first 
-                    ' seeing if the .gif exists, and if so, use it. if not, then we'll check for 
-                    ' the .jpg(Version)
-                    '
-                    fname = Strings.LCase(fname)            ' lower case works in windows..
-                    gifFname = Microsoft.VisualBasic.Left(fname, InStr(fname, ".jp", CompareMethod.Text) - 1) & ".gif"
+                    'fname = Strings.LCase(fname)            ' lower case works in windows..
 
-                    ' if neither file exists, we keep waiting..
-                    If (My.Computer.FileSystem.FileExists(fname) Or My.Computer.FileSystem.FileExists(gifFname)) = False Then
+                    ' we will wait 
+
+                    If (My.Computer.FileSystem.FileExists(fname)) = False Then
 
                         ttl -= 1            ' file arrival in the printed folder time-to-live: 120 seconds
                         If ttl <= 0 Then
@@ -1763,9 +1763,6 @@ Public Class Pic2Print
                         End If
 
                     Else
-
-                        ' swapper roo!  sneak in the .gif if it exists
-                        If My.Computer.FileSystem.FileExists(gifFname) Then fname = gifFname
 
                         ' we know what file to send.  Wait 10 seconds for it to appear in the printed folder
 
@@ -2036,6 +2033,14 @@ Public Class Pic2Print
                 ' Call this just once for a print/gif. This selects the printer.
                 Call SelectThePrinter(Globals.ImageCache.fileName(idx), mode)
 
+                If Globals.ToPrinter = 1 Then
+                    ' save target printer path here for emails
+                    printpath = Globals.tmpPrint1_Folder
+                Else
+                    ' save target printer path here for emails
+                    printpath = Globals.tmpPrint2_Folder
+                End If
+
                 'MsgBox("move following code to class")
                 ' if now the highest/latest image printed, set that - used for the centering button
                 'If Globals.ImageCache.maxPrintedIndex < idx Then
@@ -2092,23 +2097,17 @@ Public Class Pic2Print
                     bkgd = Globals.BackgroundSelected
                 End If
 
-                If Globals.ToPrinter = 1 Then
-                    ' save target printer path here for emails
-                    printpath = Globals.tmpPrint1_Folder
-                Else
-                    ' save target printer path here for emails
-                    printpath = Globals.tmpPrint2_Folder
-                End If
-
                 ' copy the file to the onsite folder for the background thread
 
                 prtfnam = CopyFileToPrintDir(mode, idx, count, Globals.FileNamePrefix, bkgd) ' copy the file and receive the copied file name
                 AdvancePrefixCount()
 
-                ' advance our counters even though the 2nd printer is on another machine..
-                'If Globals.ToPrinter = 2 Then
-                IncrementPrintCounts(mode, count)
-                'End If
+                ' advance our counters for the second machine, the KIOSK mode will increment it for our machine.  This is done here
+                ' so this machine's operator sees the effects of both printers here.
+
+                If Globals.ToPrinter = 2 Then
+                    IncrementPrintCounts(mode, count, 2)
+                End If
 
                 ' increment the image printed count for GIF & Prints
 
@@ -2140,21 +2139,18 @@ Public Class Pic2Print
     End Function
 
 
-    Public Sub IncrementPrintCounts(ByVal mode As Integer, ByVal count As Integer)
+    Public Sub IncrementPrintCounts(ByVal mode As Integer, ByVal count As Integer, ByVal printer As Integer)
 
-        ' incr total global print count, ignore gifs
+        ' if printing (vs not GIF) we decrement the paper count on the appropriate printer.
 
-        If mode = PRT_PRINT Then
-            Globals.TotalPrinted += count                       ' and to the total print count.
-        End If
-
-        ' if printing (vs not GIF) we decrement the paper count
         ''''''''' dsc - For debugging load balancing, use the simple if statement; don't check for NoPrint or you'll never see it..
+
+        'Globals.fDebug.txtPrintLn("DEBUG ONLY - RESTORE THIS IF STATEMENT!")
         If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
             'If (mode = PRT_PRINT) Then
 
             ' Decrement the selected printer downcounters 
-            If Globals.ToPrinter = 1 Then
+            If printer = 1 Then
 
                 ' printer 1 has one less sheet. Turn the button yellow for the duration
                 Globals.Printer1DownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text * count
@@ -2190,11 +2186,17 @@ Public Class Pic2Print
 
         End If
 
-        ' Update the printer text boxes with the remaining count
-        UpdatePrinterCountBoxes(Globals.Printer1Remaining, Globals.Printer2Remaining)
+        ' in either case of printer1 & printer2, increment the total global print count, ignore gifs
 
-        'PrintCount1.Text = Globals.Printer1Remaining
-        'PrintCount2.Text = 
+        If mode = PRT_PRINT Then
+
+            ' the total printed count on the main panel
+            Globals.TotalPrinted += count
+
+            ' Update the printer text boxes with the remaining count
+            UpdatePrinterCountBoxes(Globals.Printer1Remaining, Globals.Printer2Remaining)
+
+        End If
 
     End Sub
 
@@ -2207,6 +2209,8 @@ Public Class Pic2Print
         Else
             PrintCount1.Text = Globals.Printer1Remaining
             PrintCount2.Text = Globals.Printer2Remaining
+            ' display the total print count
+            TotalPrinted.Text = Globals.TotalPrinted & " Printed"
         End If
 
     End Sub
@@ -2282,10 +2286,9 @@ Public Class Pic2Print
         If idx < Globals.ImageCache.maxIndex Then
 
             ' get just the file name separate from the extension
-            ' srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), Microsoft.VisualBasic.Len(Globals.ImageCache.fileName(idx)) - 4)
             srcf = Microsoft.VisualBasic.Left(Globals.ImageCache.fileName(idx), InStr(Globals.ImageCache.fileName(idx), ".jp", CompareMethod.Text) - 1)
 
-            ' use selected printer path
+            ' use selected printer path 
             If Globals.ToPrinter = 1 Then
                 PrinterPath = Globals.tmpPrint1_Folder
             Else
@@ -2323,7 +2326,7 @@ Public Class Pic2Print
 
         End If
 
-        Return trgf
+            Return trgf
 
     End Function
 
@@ -2345,6 +2348,7 @@ Public Class Pic2Print
             If Globals.PrintCache.fileName(idx).Contains(".gif") Then
                 Return
             End If
+
             ' get just the file name separate from the extension
             srcf = Microsoft.VisualBasic.Left(Globals.PrintCache.fileName(idx), InStr(Globals.PrintCache.fileName(idx), ".jp", CompareMethod.Text) - 1)
 
@@ -2509,40 +2513,82 @@ Public Class Pic2Print
             Return
         End If
 
-        If My.Computer.FileSystem.FileExists(srcp & fnam) Then
+        srcnam = Microsoft.VisualBasic.Left(fnam, 6) & "*.*"
+
+        Dim di As New System.IO.DirectoryInfo(srcp)
+        Dim fi() As System.IO.FileInfo = di.GetFiles(srcnam)
+
+        For Each f In fi
 
             ' debug msg
-            Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & fnam & " to " & trgp)
+            Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & f.Name & " to " & trgp)
 
             My.Computer.FileSystem.CopyFile(
-               srcp & fnam, _
-               trgp & fnam, _
+               srcp & f.Name, _
+               trgp & f.Name, _
                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing
             )
 
-        End If
+        Next
 
+        '
+        'If My.Computer.FileSystem.FileExists(srcp & fnam) Then
+        '
+        '' debug msg
+        ' Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & fnam & " to " & trgp)
+        '
+        'My.Computer.FileSystem.CopyFile(
+        '   srcp & fnam, _
+        '   trgp & fnam, _
+        'Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
+        'Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
+        ')
+        '
+        'End If
+        '
         ' trim the file name of the .jpg for a .gif search/copy
-
-        i = InStr(fnam, ".jp", CompareMethod.Text)
-        srcnam = Microsoft.VisualBasic.Left(fnam, i)
-
+        '
+        'i = InStr(fnam, ".jp", CompareMethod.Text)
+        'srcnam = Microsoft.VisualBasic.Left(fnam, i)
+        '
         ' if photoshop saved the .GIF file, copy it to the cloud
-
-        If My.Computer.FileSystem.FileExists(srcp & srcnam & "gif") Then
-
-            ' debug msg
-            Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & "gif" & " to " & trgp)
-
-            My.Computer.FileSystem.CopyFile(
-               srcp & srcnam & "gif", _
-               trgp & srcnam & "gif", _
-               Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
-               Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing
-            )
-
-        End If
+        '
+        ' If My.Computer.FileSystem.FileExists(srcp & srcnam & "gif") Then
+        '
+        ' debug msg
+        'Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & "gif" & " to " & trgp)
+        '
+        ' My.Computer.FileSystem.CopyFile(
+        '    srcp & srcnam & "gif", _
+        '   trgp & srcnam & "gif", _
+        '  Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
+        '  Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
+        ')
+        '
+        'End If
+        '
+        '
+        ' trim the file name of the .jpg for a .gif search/copy
+        '
+        'i = InStr(fnam, ".jp", CompareMethod.Text)
+        'srcnam = Microsoft.VisualBasic.Left(fnam, 6) & "*.gif"
+        '
+        ' if photoshop saved the .GIF file, copy it to the cloud
+        '
+        'If My.Computer.FileSystem.FileExists(srcp & srcnam) Then
+        '
+        ' debug msg
+        'Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & " to " & trgp)
+        '
+        'My.Computer.FileSystem.CopyFile(
+        '   srcp & srcnam, _
+        'trgp, _
+        'Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
+        'Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
+        ')
+        '
+        'End If
 
     End Sub
 
@@ -2563,7 +2609,7 @@ Public Class Pic2Print
         ' load balancing enabled only if 2nd printer is enabled
         If Globals.fForm3.LoadBalancing.Checked Then
 
-            ' if its just a load or GIF, split the processing power
+            ' if its just a load or GIF, split the processing power (MISTAKE! GIFS w/multiple images might be set to both printers...)
             If ((mode = PRT_LOAD) Or (mode = PRT_GIF)) Then
 
                 ' just toggle to share the processing load. No printing, just CPU cycles..
@@ -3547,7 +3593,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.10"    ' Version string
+    Public Shared Version As String = "Version 9.11"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

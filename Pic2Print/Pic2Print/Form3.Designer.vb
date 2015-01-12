@@ -108,7 +108,7 @@ Partial Class Form3
         Me.txtLayoutTxTLen = New System.Windows.Forms.TextBox()
         Me.cbGifDelay = New System.Windows.Forms.CheckBox()
         Me.Label18 = New System.Windows.Forms.Label()
-        Me.cbDateQualifed = New System.Windows.Forms.CheckBox()
+        Me.cbDateQualified = New System.Windows.Forms.CheckBox()
         Me.gbDateQuals = New System.Windows.Forms.GroupBox()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.cbPrintNoDates = New System.Windows.Forms.CheckBox()
@@ -998,24 +998,24 @@ Partial Class Form3
         Me.Label18.TabIndex = 118
         Me.Label18.Text = "Check to add a 1 second delay to end of GIFs"
         '
-        'cbDateQualifed
+        'cbDateQualified
         '
-        Me.cbDateQualifed.AutoSize = True
-        Me.cbDateQualifed.Checked = Global.WindowsApplication1.My.MySettings.Default.KIOSKdateQual
-        Me.cbDateQualifed.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KIOSKdateQual", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbDateQualifed.Location = New System.Drawing.Point(5, 32)
-        Me.cbDateQualifed.Name = "cbDateQualifed"
-        Me.cbDateQualifed.Size = New System.Drawing.Size(197, 17)
-        Me.cbDateQualifed.TabIndex = 119
-        Me.cbDateQualifed.Text = "KIOSK mode will date qualify images"
-        Me.cbDateQualifed.UseVisualStyleBackColor = True
+        Me.cbDateQualified.AutoSize = True
+        Me.cbDateQualified.Checked = Global.WindowsApplication1.My.MySettings.Default.KIOSKdateQual
+        Me.cbDateQualified.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KIOSKdateQual", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbDateQualified.Location = New System.Drawing.Point(5, 32)
+        Me.cbDateQualified.Name = "cbDateQualified"
+        Me.cbDateQualified.Size = New System.Drawing.Size(197, 17)
+        Me.cbDateQualified.TabIndex = 119
+        Me.cbDateQualified.Text = "KIOSK mode will date qualify images"
+        Me.cbDateQualified.UseVisualStyleBackColor = True
         '
         'gbDateQuals
         '
         Me.gbDateQuals.Controls.Add(Me.Label19)
         Me.gbDateQuals.Controls.Add(Me.cbPrintNoDates)
         Me.gbDateQuals.Controls.Add(Me.lblImageNewer)
-        Me.gbDateQuals.Controls.Add(Me.cbDateQualifed)
+        Me.gbDateQuals.Controls.Add(Me.cbDateQualified)
         Me.gbDateQuals.Controls.Add(Me.dtEarliestDate)
         Me.gbDateQuals.Location = New System.Drawing.Point(382, 347)
         Me.gbDateQuals.Name = "gbDateQuals"
@@ -1029,9 +1029,9 @@ Partial Class Form3
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.Label19.Location = New System.Drawing.Point(8, 13)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(185, 13)
+        Me.Label19.Size = New System.Drawing.Size(173, 13)
         Me.Label19.TabIndex = 121
-        Me.Label19.Text = "KIOSK mode processes only new files"
+        Me.Label19.Text = "Check this to print only new images"
         '
         'cbPrintNoDates
         '
@@ -1246,7 +1246,7 @@ Partial Class Form3
     Friend WithEvents txtLayoutTxTLen As System.Windows.Forms.TextBox
     Friend WithEvents cbGifDelay As System.Windows.Forms.CheckBox
     Friend WithEvents Label18 As System.Windows.Forms.Label
-    Friend WithEvents cbDateQualifed As System.Windows.Forms.CheckBox
+    Friend WithEvents cbDateQualified As System.Windows.Forms.CheckBox
     Friend WithEvents gbDateQuals As System.Windows.Forms.GroupBox
     Friend WithEvents lblImageNewer As System.Windows.Forms.Label
     Friend WithEvents dtEarliestDate As System.Windows.Forms.DateTimePicker

@@ -199,6 +199,20 @@ Public Class Form3
                 Globals.fPic2Print.cbFilesOnly.Checked = False
             End If
 
+            ' load balancing overrides any printer selection
+
+            If LoadBalancing.Checked = True Then
+                Globals.fPic2Print.PrinterSelect1.Text = "AutoSel P1"
+                Globals.fPic2Print.PrinterSelect2.Text = "AutoSel P2"
+                Globals.fPic2Print.PrinterSelect1.Enabled = False
+                Globals.fPic2Print.PrinterSelect2.Enabled = False
+            Else
+                Globals.fPic2Print.PrinterSelect1.Text = "Printer #1"
+                Globals.fPic2Print.PrinterSelect2.Text = "Printer #2"
+                Globals.fPic2Print.PrinterSelect1.Enabled = True
+                Globals.fPic2Print.PrinterSelect2.Enabled = True
+            End If
+
             ' hide this dialog, never close it..
             Me.Hide()
 
@@ -880,4 +894,15 @@ Public Class Form3
     Dim print1CountUpdated As Boolean = False
     Dim print2CountUpdated As Boolean = False
 
+    Private Sub cbDateQualified_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbDateQualified.CheckedChanged
+        If cbDateQualified.Checked = False Then
+            lblImageNewer.ForeColor = SystemColors.ControlDark
+            dtEarliestDate.Enabled = False
+            cbPrintNoDates.Enabled = False
+        Else
+            lblImageNewer.ForeColor = Color.Black
+            dtEarliestDate.Enabled = True
+            cbPrintNoDates.Enabled = True
+        End If
+    End Sub
 End Class

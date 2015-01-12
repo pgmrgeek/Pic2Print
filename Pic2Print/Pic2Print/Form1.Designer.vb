@@ -467,9 +467,9 @@ Partial Class Pic2Print
         '
         'TotalPrinted
         '
-        Me.TotalPrinted.Location = New System.Drawing.Point(24, 80)
+        Me.TotalPrinted.Location = New System.Drawing.Point(6, 80)
         Me.TotalPrinted.Name = "TotalPrinted"
-        Me.TotalPrinted.Size = New System.Drawing.Size(66, 21)
+        Me.TotalPrinted.Size = New System.Drawing.Size(107, 21)
         Me.TotalPrinted.TabIndex = 53
         Me.TotalPrinted.Text = "0 Printed"
         Me.TotalPrinted.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -527,7 +527,7 @@ Partial Class Pic2Print
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 63)
+        Me.Label1.Location = New System.Drawing.Point(3, 63)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(78, 13)
         Me.Label1.TabIndex = 51
@@ -538,9 +538,9 @@ Partial Class Pic2Print
         Me.PrintCount2.BackColor = System.Drawing.SystemColors.MenuBar
         Me.PrintCount2.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.PrintCount2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2DownCount", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.PrintCount2.Location = New System.Drawing.Point(81, 44)
+        Me.PrintCount2.Location = New System.Drawing.Point(83, 44)
         Me.PrintCount2.Name = "PrintCount2"
-        Me.PrintCount2.Size = New System.Drawing.Size(32, 13)
+        Me.PrintCount2.Size = New System.Drawing.Size(30, 13)
         Me.PrintCount2.TabIndex = 50
         Me.PrintCount2.Text = Global.WindowsApplication1.My.MySettings.Default.Print2DownCount
         Me.PrintCount2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -550,9 +550,9 @@ Partial Class Pic2Print
         Me.PrintCount1.BackColor = System.Drawing.SystemColors.MenuBar
         Me.PrintCount1.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.PrintCount1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1DownCount", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.PrintCount1.Location = New System.Drawing.Point(81, 24)
+        Me.PrintCount1.Location = New System.Drawing.Point(83, 24)
         Me.PrintCount1.Name = "PrintCount1"
-        Me.PrintCount1.Size = New System.Drawing.Size(32, 13)
+        Me.PrintCount1.Size = New System.Drawing.Size(30, 13)
         Me.PrintCount1.TabIndex = 49
         Me.PrintCount1.Text = Global.WindowsApplication1.My.MySettings.Default.Print1DownCount
         Me.PrintCount1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
