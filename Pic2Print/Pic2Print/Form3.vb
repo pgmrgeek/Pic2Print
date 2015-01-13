@@ -33,6 +33,9 @@ Public Class Form3
         ' grays out printer2 if not checked
         Call Print2Status()
 
+        ' grays out KIOSK date options if disabled.
+        Call _KioskDates()
+
         ' pick up the selected printers, fonts, and layer set, from application storage
         If prtrSelect1.Text = "" Then prtrSelect1.Text = "0"
         If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
@@ -895,6 +898,10 @@ Public Class Form3
     Dim print2CountUpdated As Boolean = False
 
     Private Sub cbDateQualified_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbDateQualified.CheckedChanged
+        Call _KioskDates()
+    End Sub
+
+    Private Sub _KioskDates()
         If cbDateQualified.Checked = False Then
             lblImageNewer.ForeColor = SystemColors.ControlDark
             dtEarliestDate.Enabled = False
@@ -905,4 +912,5 @@ Public Class Form3
             cbPrintNoDates.Enabled = True
         End If
     End Sub
+
 End Class
