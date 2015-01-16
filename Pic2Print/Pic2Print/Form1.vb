@@ -1565,7 +1565,7 @@ Public Class Pic2Print
         outNam = inNam  ' just in case we don't need to do anything..
 
         ' bail if the name is decorated..
-        If (inNam.Contains("_m") And inNam.Contains("_bk")) Then
+        If (inNam.Contains("_m") And inNam.Contains("_p") And inNam.Contains("_bk")) Then
 
             ' since its decorated, we must extract the print count
             count = InStr(inNam, "_p", CompareMethod.Text)
@@ -1623,12 +1623,12 @@ Public Class Pic2Print
         '
         outNam = Microsoft.VisualBasic.Left(inNam, InStr(inNam, ".jp", CompareMethod.Text) - 1)
         inTxt = outNam & ".txt"
-        outTxt = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".txt"
-        outNam = sPrefix & "-" & outNam & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & ".jpg"
+        outTxt = sPrefix & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & "_f" & outNam & ".txt"
+        outNam = sPrefix & "_p" & Globals.tmpAutoPrints & sMode & bkg & "_n" & Globals.tmpMachineName & "_f" & outNam & ".jpg"
 
         ' replace spaces with underscores
-        outTxt = outTxt.Replace(" ", "_")
-        outNam = outNam.Replace(" ", "_")
+        outTxt = outTxt.Replace(" ", "-")
+        outNam = outNam.Replace(" ", "-")
 
         If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & inTxt) Then
             My.Computer.FileSystem.RenameFile(Globals.tmpPrint1_Folder & inTxt, outTxt)
@@ -2296,13 +2296,13 @@ Public Class Pic2Print
             End If
 
             ' build the whole file name: printcnt+mode+background #+counter
-            trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
+            trgf = sPrefix & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName & "_f" & srcf
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
 
-            ' replace spaces with underscores
-            trgtxt = trgtxt.Replace(" ", "_")
-            trgf = trgf.Replace(" ", "_")
+            ' replace spaces with dashes
+            trgtxt = trgtxt.Replace(" ", "-")
+            trgf = trgf.Replace(" ", "-")
 
             ' send the file name to debug 
             Globals.fDebug.txtPrintLn("CopyFileToPrintDir:" & trgf & " to " & PrinterPath)
@@ -3593,7 +3593,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.11"    ' Version string
+    Public Shared Version As String = "Version 9.12"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

@@ -138,6 +138,15 @@ Public Class Form3
                 Return
             End If
 
+            ' make sure the MachineID is 3 characters in length
+
+            If txtMachineName.Text.Length <> 3 Then
+                MessageBox.Show( _
+                "Warning - Machine Name is not 3 chars" & _
+                vbCrLf & "in length. Please correct to continue.")
+                Return 
+            End If
+
             ' make sure the numbers are valid
             Call ValidatePrintCounts()
 
