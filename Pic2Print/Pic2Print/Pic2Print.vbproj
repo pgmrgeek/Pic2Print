@@ -166,9 +166,11 @@
   <ItemGroup>
     <EmbeddedResource Include="debug.resx">
       <DependentUpon>debug.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="mmsForm.resx">
       <DependentUpon>mmsForm.vb</DependentUpon>

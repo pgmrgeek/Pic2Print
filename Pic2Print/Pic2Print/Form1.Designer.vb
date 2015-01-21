@@ -95,6 +95,10 @@ Partial Class Pic2Print
         Me.btnTestRun = New System.Windows.Forms.Button()
         Me.gbPreview = New System.Windows.Forms.GroupBox()
         Me.pbPreview = New System.Windows.Forms.PictureBox()
+        Me.lblBkFgSel1 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel2 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel3 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel4 = New System.Windows.Forms.Label()
         Me.PrinterGroupBoxPrinterGroupBox.SuspendLayout()
         Me.BackGroundGroupBox.SuspendLayout()
         CType(Me.Background4PB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -559,13 +563,17 @@ Partial Class Pic2Print
         '
         'BackGroundGroupBox
         '
+        Me.BackGroundGroupBox.Controls.Add(Me.lblBkFgSel4)
+        Me.BackGroundGroupBox.Controls.Add(Me.lblBkFgSel3)
+        Me.BackGroundGroupBox.Controls.Add(Me.lblBkFgSel2)
+        Me.BackGroundGroupBox.Controls.Add(Me.lblBkFgSel1)
         Me.BackGroundGroupBox.Controls.Add(Me.Background4PB)
         Me.BackGroundGroupBox.Controls.Add(Me.Background3PB)
         Me.BackGroundGroupBox.Controls.Add(Me.Background2PB)
         Me.BackGroundGroupBox.Controls.Add(Me.Background1PB)
         Me.BackGroundGroupBox.Location = New System.Drawing.Point(141, 622)
         Me.BackGroundGroupBox.Name = "BackGroundGroupBox"
-        Me.BackGroundGroupBox.Size = New System.Drawing.Size(578, 102)
+        Me.BackGroundGroupBox.Size = New System.Drawing.Size(578, 108)
         Me.BackGroundGroupBox.TabIndex = 56
         Me.BackGroundGroupBox.TabStop = False
         Me.BackGroundGroupBox.Text = "Backgrounds"
@@ -576,7 +584,7 @@ Partial Class Pic2Print
         Me.Background4PB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Background4PB.Image = Global.WindowsApplication1.My.Resources.Resources.nobk
         Me.Background4PB.InitialImage = CType(resources.GetObject("Background4PB.InitialImage"), System.Drawing.Image)
-        Me.Background4PB.Location = New System.Drawing.Point(412, 14)
+        Me.Background4PB.Location = New System.Drawing.Point(412, 13)
         Me.Background4PB.Name = "Background4PB"
         Me.Background4PB.Size = New System.Drawing.Size(113, 80)
         Me.Background4PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -589,7 +597,7 @@ Partial Class Pic2Print
         Me.Background3PB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Background3PB.Image = Global.WindowsApplication1.My.Resources.Resources.nobk
         Me.Background3PB.InitialImage = CType(resources.GetObject("Background3PB.InitialImage"), System.Drawing.Image)
-        Me.Background3PB.Location = New System.Drawing.Point(293, 14)
+        Me.Background3PB.Location = New System.Drawing.Point(293, 13)
         Me.Background3PB.Name = "Background3PB"
         Me.Background3PB.Size = New System.Drawing.Size(113, 80)
         Me.Background3PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -602,7 +610,7 @@ Partial Class Pic2Print
         Me.Background2PB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Background2PB.Image = Global.WindowsApplication1.My.Resources.Resources.nobk
         Me.Background2PB.InitialImage = CType(resources.GetObject("Background2PB.InitialImage"), System.Drawing.Image)
-        Me.Background2PB.Location = New System.Drawing.Point(174, 14)
+        Me.Background2PB.Location = New System.Drawing.Point(174, 13)
         Me.Background2PB.Name = "Background2PB"
         Me.Background2PB.Size = New System.Drawing.Size(113, 80)
         Me.Background2PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -615,7 +623,7 @@ Partial Class Pic2Print
         Me.Background1PB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Background1PB.Image = Global.WindowsApplication1.My.Resources.Resources.nobk
         Me.Background1PB.InitialImage = CType(resources.GetObject("Background1PB.InitialImage"), System.Drawing.Image)
-        Me.Background1PB.Location = New System.Drawing.Point(56, 14)
+        Me.Background1PB.Location = New System.Drawing.Point(56, 13)
         Me.Background1PB.Name = "Background1PB"
         Me.Background1PB.Size = New System.Drawing.Size(113, 80)
         Me.Background1PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -886,12 +894,40 @@ Partial Class Pic2Print
         Me.pbPreview.TabStop = False
         Me.pbPreview.Tag = ""
         '
+        'lblBkFgSel1
+        '
+        Me.lblBkFgSel1.Location = New System.Drawing.Point(57, 96)
+        Me.lblBkFgSel1.Name = "lblBkFgSel1"
+        Me.lblBkFgSel1.Size = New System.Drawing.Size(108, 6)
+        Me.lblBkFgSel1.TabIndex = 61
+        '
+        'lblBkFgSel2
+        '
+        Me.lblBkFgSel2.Location = New System.Drawing.Point(175, 96)
+        Me.lblBkFgSel2.Name = "lblBkFgSel2"
+        Me.lblBkFgSel2.Size = New System.Drawing.Size(108, 6)
+        Me.lblBkFgSel2.TabIndex = 62
+        '
+        'lblBkFgSel3
+        '
+        Me.lblBkFgSel3.Location = New System.Drawing.Point(293, 96)
+        Me.lblBkFgSel3.Name = "lblBkFgSel3"
+        Me.lblBkFgSel3.Size = New System.Drawing.Size(108, 6)
+        Me.lblBkFgSel3.TabIndex = 63
+        '
+        'lblBkFgSel4
+        '
+        Me.lblBkFgSel4.Location = New System.Drawing.Point(415, 96)
+        Me.lblBkFgSel4.Name = "lblBkFgSel4"
+        Me.lblBkFgSel4.Size = New System.Drawing.Size(108, 6)
+        Me.lblBkFgSel4.TabIndex = 64
+        '
         'Pic2Print
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(947, 713)
+        Me.ClientSize = New System.Drawing.Size(947, 730)
         Me.ControlBox = False
         Me.Controls.Add(Me.gbPreview)
         Me.Controls.Add(Me.btnTestRun)
@@ -1026,5 +1062,9 @@ Partial Class Pic2Print
     Friend WithEvents gbPreview As System.Windows.Forms.GroupBox
     Friend WithEvents pbPreview As System.Windows.Forms.PictureBox
     Friend WithEvents cbFilesOnly As System.Windows.Forms.CheckBox
+    Friend WithEvents lblBkFgSel4 As System.Windows.Forms.Label
+    Friend WithEvents lblBkFgSel3 As System.Windows.Forms.Label
+    Friend WithEvents lblBkFgSel2 As System.Windows.Forms.Label
+    Friend WithEvents lblBkFgSel1 As System.Windows.Forms.Label
 
 End Class

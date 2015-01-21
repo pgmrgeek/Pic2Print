@@ -792,32 +792,48 @@ Public Class Pic2Print
     ' User clicked one of the 4 backgrounds so give the selected background picturebox a 3D beveled edge
     '
     Private Sub Background1PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background1PB.Click
-        Call BackgroundHighlight(Background1PB, 1)
+        Call BackgroundHighlight(Background1PB, lblBkFgSel1, 1)
     End Sub
     Private Sub Background2PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background2PB.Click
-        Call BackgroundHighlight(Background2PB, 2)
+        Call BackgroundHighlight(Background2PB, lblBkFgSel2, 2)
     End Sub
     Private Sub Background3PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background3PB.Click
-        Call BackgroundHighlight(Background3PB, 3)
+        Call BackgroundHighlight(Background3PB, lblBkFgSel3, 3)
     End Sub
     Private Sub Background4PB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Background4PB.Click
-        Call BackgroundHighlight(Background4PB, 4)
+        Call BackgroundHighlight(Background4PB, lblBkFgSel4, 4)
     End Sub
     Public Sub BackgroundHighlightDefault()
-        Call BackgroundHighlight(Background1PB, 1)
+        Call BackgroundHighlight(Background1PB, lblBkFgSel1, 1)
     End Sub
 
-    Public Sub BackgroundHighlight(ByRef pb As PictureBox, ByVal bk As Int16)
+    Public Sub BackgroundHighlight(ByRef pb As PictureBox, ByRef lbl As Label, ByVal bk As Int16)
 
         ' turn off 3d on all the pictureboxes
-        Background1PB.BorderStyle = BorderStyle.FixedSingle
-        Background2PB.BorderStyle = BorderStyle.FixedSingle
-        Background3PB.BorderStyle = BorderStyle.FixedSingle
-        Background4PB.BorderStyle = BorderStyle.FixedSingle
-
+        'Background1PB.BorderStyle = BorderStyle.FixedSingle
+        'Background2PB.BorderStyle = BorderStyle.FixedSingle
+        'Background3PB.BorderStyle = BorderStyle.FixedSingle
+        'Background4PB.BorderStyle = BorderStyle.FixedSingle
         ' now turn on the border of the selected picturebox, save the index
-        pb.BorderStyle = BorderStyle.Fixed3D
-        Globals.BackgroundSelected = bk
+        'pb.BorderStyle = BorderStyle.Fixed3D
+
+        ' -1 means don't change it, else save the index and highlight the box
+
+        If bk <> -1 Then
+
+            ' wipe the color on all 4 controls 
+
+            lblBkFgSel1.BackColor = pb.BackColor
+            lblBkFgSel2.BackColor = pb.BackColor
+            lblBkFgSel3.BackColor = pb.BackColor
+            lblBkFgSel4.BackColor = pb.BackColor
+
+            ' Save the selection, turn on the hightlight.
+
+            Globals.BackgroundSelected = bk
+            lbl.BackColor = Color.LightGreen
+
+        End If
 
     End Sub
 
@@ -865,6 +881,11 @@ Public Class Pic2Print
 
             ' send to photoshop..
             Process.Start(exe, fil)
+
+            MessageBox.Show("Now, go to Photoshop. Edit, Save " & vbCrLf & _
+                 "and Close the image before clicking OKAY." & vbCrLf & vbCrLf & _
+                 "Once done, click [Refresh] to reload the image." _
+                 )
 
             ' we don't wait, just clear out the picturebox and wait for the operator to save the image in PS.
             ' Once saved, we get the green light on "refresh" to reload the image.
@@ -1923,8 +1944,8 @@ Public Class Pic2Print
     Public Sub ModifyForm(ByVal TurnOn As Boolean)
 
         Dim topPt As New Point(141, 159)
-        Dim btmPt As New Point(141, 264)
-        Dim btmPt2 As New Point(141, 368)
+        Dim btmPt As New Point(141, 268)
+        Dim btmPt2 As New Point(141, 372)
 
         If TurnOn Then
 
@@ -1938,7 +1959,7 @@ Public Class Pic2Print
 
         Else
             BackGroundGroupBox.Visible = False
-            Call BackgroundHighlight(Background1PB, 1)
+            Call BackgroundHighlight(Background1PB, lblBkFgSel1, 1)
 
             ButtonsGroup.Location = topPt
             gbPreview.Location = btmPt
@@ -3233,7 +3254,7 @@ Public Class Pic2Print
 
             End If
 
-            Call BackgroundHighlight(Background1PB, 1)
+            Call BackgroundHighlight(Background1PB, Nothing, -1)
 
         End If
 
@@ -3593,7 +3614,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.12"    ' Version string
+    Public Shared Version As String = "Version 9.13"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
