@@ -386,6 +386,10 @@ Public Class Form3
         Dim colorG As Integer
         Dim colorB As Integer
         Dim GifDelay As Integer
+        Dim prtrHpct As Integer
+        Dim prtrVpct As Integer
+        Dim prtrHoff As Integer
+        Dim prtrVoff As Integer
 
         ' ====================== the first target config file ============================
 
@@ -477,9 +481,17 @@ Public Class Form3
             GifDelay = 0
             If cbGifDelay.Checked Then GifDelay = 1
 
+            ' ------------- #16, #17, #18, #19
+
+            prtrHpct = Globals.prtrHorzPCT(Printer1LB.SelectedIndex)
+            prtrVpct = Globals.prtrVertPCT(Printer1LB.SelectedIndex)
+            prtrHoff = Globals.prtrHorzOFF(Printer1LB.SelectedIndex)
+            prtrVoff = Globals.prtrVertOFF(Printer1LB.SelectedIndex)
+
             ' -------- write  lines of text out to the file ------------
 
-            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB, GifDelay)
+            Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
+                                  actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff)
 
         End If
 
@@ -577,7 +589,8 @@ Public Class Form3
                 'colorB = rgb And 255
 
                 ' -------- write lines of text out to the file ------------
-                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, actionset, savepsd, colorR, colorG, colorB, GifDelay)
+                Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
+                                      actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff)
 
             End If
 
@@ -603,9 +616,13 @@ Public Class Form3
         ByVal colorR As Integer, _
         ByVal colorG As Integer, _
         ByVal colorB As Integer, _
-        ByVal GifDelay As Integer)
+        ByVal GifDelay As Integer, _
+        ByVal prtrHpct As Integer, _
+        ByVal prtrVpct As Integer, _
+        ByVal prtrHoff As Integer, _
+        ByVal prtrVoff As Integer)
 
-        Dim s(18) As String
+        Dim s(21) As String
 
         'My.Computer.FileSystem.WriteAllText(fconfig, "bad...", encoding:=utf8)
 
@@ -659,6 +676,12 @@ Public Class Form3
 
         ' pause the gif at the end 
         s(17) = GifDelay
+
+        ' printer Horz/Vert formatting controls
+        s(18) = prtrHpct
+        s(19) = prtrVpct
+        s(20) = prtrHoff
+        s(21) = prtrVoff
 
         ' dump all strings at once
         File.WriteAllLines(fconfig, s, System.Text.Encoding.ASCII)

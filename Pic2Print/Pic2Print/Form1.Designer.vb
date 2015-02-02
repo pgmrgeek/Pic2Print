@@ -68,6 +68,10 @@ Partial Class Pic2Print
         Me.PrintCount2 = New System.Windows.Forms.TextBox()
         Me.PrintCount1 = New System.Windows.Forms.TextBox()
         Me.BackGroundGroupBox = New System.Windows.Forms.GroupBox()
+        Me.lblBkFgSel4 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel3 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel2 = New System.Windows.Forms.Label()
+        Me.lblBkFgSel1 = New System.Windows.Forms.Label()
         Me.Background4PB = New System.Windows.Forms.PictureBox()
         Me.Background3PB = New System.Windows.Forms.PictureBox()
         Me.Background2PB = New System.Windows.Forms.PictureBox()
@@ -95,10 +99,6 @@ Partial Class Pic2Print
         Me.btnTestRun = New System.Windows.Forms.Button()
         Me.gbPreview = New System.Windows.Forms.GroupBox()
         Me.pbPreview = New System.Windows.Forms.PictureBox()
-        Me.lblBkFgSel1 = New System.Windows.Forms.Label()
-        Me.lblBkFgSel2 = New System.Windows.Forms.Label()
-        Me.lblBkFgSel3 = New System.Windows.Forms.Label()
-        Me.lblBkFgSel4 = New System.Windows.Forms.Label()
         Me.PrinterGroupBoxPrinterGroupBox.SuspendLayout()
         Me.BackGroundGroupBox.SuspendLayout()
         CType(Me.Background4PB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -579,6 +579,34 @@ Partial Class Pic2Print
         Me.BackGroundGroupBox.Text = "Backgrounds"
         Me.BackGroundGroupBox.Visible = False
         '
+        'lblBkFgSel4
+        '
+        Me.lblBkFgSel4.Location = New System.Drawing.Point(412, 95)
+        Me.lblBkFgSel4.Name = "lblBkFgSel4"
+        Me.lblBkFgSel4.Size = New System.Drawing.Size(113, 8)
+        Me.lblBkFgSel4.TabIndex = 64
+        '
+        'lblBkFgSel3
+        '
+        Me.lblBkFgSel3.Location = New System.Drawing.Point(293, 95)
+        Me.lblBkFgSel3.Name = "lblBkFgSel3"
+        Me.lblBkFgSel3.Size = New System.Drawing.Size(113, 8)
+        Me.lblBkFgSel3.TabIndex = 63
+        '
+        'lblBkFgSel2
+        '
+        Me.lblBkFgSel2.Location = New System.Drawing.Point(174, 95)
+        Me.lblBkFgSel2.Name = "lblBkFgSel2"
+        Me.lblBkFgSel2.Size = New System.Drawing.Size(113, 8)
+        Me.lblBkFgSel2.TabIndex = 62
+        '
+        'lblBkFgSel1
+        '
+        Me.lblBkFgSel1.Location = New System.Drawing.Point(56, 95)
+        Me.lblBkFgSel1.Name = "lblBkFgSel1"
+        Me.lblBkFgSel1.Size = New System.Drawing.Size(113, 8)
+        Me.lblBkFgSel1.TabIndex = 61
+        '
         'Background4PB
         '
         Me.Background4PB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
@@ -856,10 +884,10 @@ Partial Class Pic2Print
         '
         Me.tbFilesToLoad.BackColor = System.Drawing.SystemColors.MenuBar
         Me.tbFilesToLoad.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.tbFilesToLoad.Location = New System.Drawing.Point(7, 16)
+        Me.tbFilesToLoad.Location = New System.Drawing.Point(7, 14)
         Me.tbFilesToLoad.Multiline = True
         Me.tbFilesToLoad.Name = "tbFilesToLoad"
-        Me.tbFilesToLoad.Size = New System.Drawing.Size(109, 53)
+        Me.tbFilesToLoad.Size = New System.Drawing.Size(109, 56)
         Me.tbFilesToLoad.TabIndex = 0
         Me.tbFilesToLoad.WordWrap = False
         '
@@ -893,34 +921,6 @@ Partial Class Pic2Print
         Me.pbPreview.TabIndex = 57
         Me.pbPreview.TabStop = False
         Me.pbPreview.Tag = ""
-        '
-        'lblBkFgSel1
-        '
-        Me.lblBkFgSel1.Location = New System.Drawing.Point(57, 96)
-        Me.lblBkFgSel1.Name = "lblBkFgSel1"
-        Me.lblBkFgSel1.Size = New System.Drawing.Size(108, 6)
-        Me.lblBkFgSel1.TabIndex = 61
-        '
-        'lblBkFgSel2
-        '
-        Me.lblBkFgSel2.Location = New System.Drawing.Point(175, 96)
-        Me.lblBkFgSel2.Name = "lblBkFgSel2"
-        Me.lblBkFgSel2.Size = New System.Drawing.Size(108, 6)
-        Me.lblBkFgSel2.TabIndex = 62
-        '
-        'lblBkFgSel3
-        '
-        Me.lblBkFgSel3.Location = New System.Drawing.Point(293, 96)
-        Me.lblBkFgSel3.Name = "lblBkFgSel3"
-        Me.lblBkFgSel3.Size = New System.Drawing.Size(108, 6)
-        Me.lblBkFgSel3.TabIndex = 63
-        '
-        'lblBkFgSel4
-        '
-        Me.lblBkFgSel4.Location = New System.Drawing.Point(415, 96)
-        Me.lblBkFgSel4.Name = "lblBkFgSel4"
-        Me.lblBkFgSel4.Size = New System.Drawing.Size(108, 6)
-        Me.lblBkFgSel4.TabIndex = 64
         '
         'Pic2Print
         '

@@ -51,9 +51,9 @@ Partial Class PostView
         '
         'pbPostView
         '
-        Me.pbPostView.Location = New System.Drawing.Point(92, 84)
+        Me.pbPostView.Location = New System.Drawing.Point(116, 108)
         Me.pbPostView.Name = "pbPostView"
-        Me.pbPostView.Size = New System.Drawing.Size(441, 294)
+        Me.pbPostView.Size = New System.Drawing.Size(480, 320)
         Me.pbPostView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.pbPostView.TabIndex = 0
         Me.pbPostView.TabStop = False
@@ -67,7 +67,7 @@ Partial Class PostView
         Me.PostGroup.Controls.Add(Me.btnPostSend)
         Me.PostGroup.Controls.Add(Me.usrEmail2)
         Me.PostGroup.Controls.Add(Me.emaillabel)
-        Me.PostGroup.Location = New System.Drawing.Point(92, 384)
+        Me.PostGroup.Location = New System.Drawing.Point(138, 435)
         Me.PostGroup.Name = "PostGroup"
         Me.PostGroup.Size = New System.Drawing.Size(443, 93)
         Me.PostGroup.TabIndex = 7
@@ -128,7 +128,7 @@ Partial Class PostView
         '
         'PostCloseButton1
         '
-        Me.PostCloseButton1.Location = New System.Drawing.Point(551, 447)
+        Me.PostCloseButton1.Location = New System.Drawing.Point(614, 505)
         Me.PostCloseButton1.Name = "PostCloseButton1"
         Me.PostCloseButton1.Size = New System.Drawing.Size(75, 23)
         Me.PostCloseButton1.TabIndex = 11
@@ -137,43 +137,43 @@ Partial Class PostView
         '
         'pbThumb1
         '
-        Me.pbThumb1.Location = New System.Drawing.Point(92, 12)
+        Me.pbThumb1.Location = New System.Drawing.Point(72, 12)
         Me.pbThumb1.Name = "pbThumb1"
-        Me.pbThumb1.Size = New System.Drawing.Size(100, 66)
+        Me.pbThumb1.Size = New System.Drawing.Size(135, 90)
         Me.pbThumb1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.pbThumb1.TabIndex = 8
         Me.pbThumb1.TabStop = False
         '
         'pbThumb2
         '
-        Me.pbThumb2.Location = New System.Drawing.Point(205, 12)
+        Me.pbThumb2.Location = New System.Drawing.Point(214, 12)
         Me.pbThumb2.Name = "pbThumb2"
-        Me.pbThumb2.Size = New System.Drawing.Size(100, 66)
+        Me.pbThumb2.Size = New System.Drawing.Size(135, 90)
         Me.pbThumb2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.pbThumb2.TabIndex = 9
         Me.pbThumb2.TabStop = False
         '
         'PbThumb3
         '
-        Me.PbThumb3.Location = New System.Drawing.Point(318, 12)
+        Me.PbThumb3.Location = New System.Drawing.Point(356, 12)
         Me.PbThumb3.Name = "PbThumb3"
-        Me.PbThumb3.Size = New System.Drawing.Size(100, 66)
+        Me.PbThumb3.Size = New System.Drawing.Size(135, 90)
         Me.PbThumb3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PbThumb3.TabIndex = 10
         Me.PbThumb3.TabStop = False
         '
         'pbThumb4
         '
-        Me.pbThumb4.Location = New System.Drawing.Point(433, 12)
+        Me.pbThumb4.Location = New System.Drawing.Point(497, 12)
         Me.pbThumb4.Name = "pbThumb4"
-        Me.pbThumb4.Size = New System.Drawing.Size(100, 66)
+        Me.pbThumb4.Size = New System.Drawing.Size(135, 90)
         Me.pbThumb4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.pbThumb4.TabIndex = 11
         Me.pbThumb4.TabStop = False
         '
         'btnLeft
         '
-        Me.btnLeft.Location = New System.Drawing.Point(67, 34)
+        Me.btnLeft.Location = New System.Drawing.Point(45, 34)
         Me.btnLeft.Name = "btnLeft"
         Me.btnLeft.Size = New System.Drawing.Size(17, 23)
         Me.btnLeft.TabIndex = 12
@@ -182,7 +182,7 @@ Partial Class PostView
         '
         'btnRight
         '
-        Me.btnRight.Location = New System.Drawing.Point(539, 34)
+        Me.btnRight.Location = New System.Drawing.Point(639, 34)
         Me.btnRight.Name = "btnRight"
         Me.btnRight.Size = New System.Drawing.Size(17, 23)
         Me.btnRight.TabIndex = 13
@@ -191,7 +191,7 @@ Partial Class PostView
         '
         'btnButtonRtEnd
         '
-        Me.btnButtonRtEnd.Location = New System.Drawing.Point(562, 34)
+        Me.btnButtonRtEnd.Location = New System.Drawing.Point(662, 34)
         Me.btnButtonRtEnd.Name = "btnButtonRtEnd"
         Me.btnButtonRtEnd.Size = New System.Drawing.Size(27, 23)
         Me.btnButtonRtEnd.TabIndex = 14
@@ -200,7 +200,7 @@ Partial Class PostView
         '
         'btnLeftEnd
         '
-        Me.btnLeftEnd.Location = New System.Drawing.Point(34, 34)
+        Me.btnLeftEnd.Location = New System.Drawing.Point(12, 34)
         Me.btnLeftEnd.Name = "btnLeftEnd"
         Me.btnLeftEnd.Size = New System.Drawing.Size(27, 23)
         Me.btnLeftEnd.TabIndex = 15
@@ -210,7 +210,7 @@ Partial Class PostView
         'chkAutoScroll
         '
         Me.chkAutoScroll.AutoSize = True
-        Me.chkAutoScroll.Location = New System.Drawing.Point(552, 424)
+        Me.chkAutoScroll.Location = New System.Drawing.Point(615, 482)
         Me.chkAutoScroll.Name = "chkAutoScroll"
         Me.chkAutoScroll.Size = New System.Drawing.Size(74, 17)
         Me.chkAutoScroll.TabIndex = 16
@@ -220,7 +220,7 @@ Partial Class PostView
         '
         'btnReprint
         '
-        Me.btnReprint.Location = New System.Drawing.Point(551, 395)
+        Me.btnReprint.Location = New System.Drawing.Point(614, 453)
         Me.btnReprint.Name = "btnReprint"
         Me.btnReprint.Size = New System.Drawing.Size(75, 23)
         Me.btnReprint.TabIndex = 17
@@ -232,7 +232,7 @@ Partial Class PostView
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveBorder
-        Me.ClientSize = New System.Drawing.Size(638, 481)
+        Me.ClientSize = New System.Drawing.Size(696, 534)
         Me.ControlBox = False
         Me.Controls.Add(Me.btnReprint)
         Me.Controls.Add(Me.PostCloseButton1)

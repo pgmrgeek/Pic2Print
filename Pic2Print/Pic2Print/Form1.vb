@@ -291,6 +291,7 @@ Public Class Pic2Print
     Public Sub ReadPrinterFile()
         Dim str As String
         Dim quot As String = Chr(34)
+        Dim sz As Integer
 
         Dim ioReader As New Microsoft.VisualBasic.FileIO.TextFieldParser("C:\onsite\software\printers.csv")
 
@@ -301,6 +302,8 @@ Public Class Pic2Print
         While Not ioReader.EndOfData
 
             Dim arrCurrentRow As String() = ioReader.ReadFields()
+            sz = arrCurrentRow.Length
+
             str = arrCurrentRow(0)
             If Microsoft.VisualBasic.Left(str, 1) <> ":" Then
 
@@ -315,6 +318,20 @@ Public Class Pic2Print
                     Globals.prtrRatio(Globals.prtrMax) = arrCurrentRow(6)
                     Globals.prtrSeconds(Globals.prtrMax) = arrCurrentRow(7)
 
+                    ' version 10 change.  Added 4 fields to the printer file. Use defaults on older files..
+
+                    If sz > 8 Then
+                        Globals.prtrHorzPCT(Globals.prtrMax) = arrCurrentRow(8)
+                        Globals.prtrVertPCT(Globals.prtrMax) = arrCurrentRow(9)
+                        Globals.prtrHorzOFF(Globals.prtrMax) = arrCurrentRow(10)
+                        Globals.prtrVertOFF(Globals.prtrMax) = arrCurrentRow(11)
+                    Else ' use these defaults
+                        Globals.prtrHorzPCT(Globals.prtrMax) = 100
+                        Globals.prtrVertPCT(Globals.prtrMax) = 100
+                        Globals.prtrHorzOFF(Globals.prtrMax) = 0
+                        Globals.prtrVertOFF(Globals.prtrMax) = 0
+                    End If
+
                     Globals.fForm3.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
                     Globals.fForm3.Printer2LB.Items.Add(Globals.prtrName(Globals.prtrMax))
 
@@ -322,7 +339,7 @@ Public Class Pic2Print
 
                 End If
 
-            End If
+                End If
 
         End While
 
@@ -547,7 +564,7 @@ Public Class Pic2Print
         If Validate_and_PrintThisCount(0, PRT_LOAD) Then
 
             ' file is valid, append it to the text box.
-            tbFilesToLoad.AppendText(vbCrLf + Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected))
+            tbFilesToLoad.AppendText(Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) + vbCrLf)
 
             ' save the index for the print routine
             Globals.FileLoadIndexes(Globals.FileLoadCounter) = Globals.ScreenBase + Globals.PictureBoxSelected
@@ -828,10 +845,16 @@ Public Class Pic2Print
             lblBkFgSel3.BackColor = pb.BackColor
             lblBkFgSel4.BackColor = pb.BackColor
 
+            lblBkFgSel1.BorderStyle = BorderStyle.None
+            lblBkFgSel2.BorderStyle = BorderStyle.None
+            lblBkFgSel3.BorderStyle = BorderStyle.None
+            lblBkFgSel4.BorderStyle = BorderStyle.None
+
             ' Save the selection, turn on the hightlight.
 
             Globals.BackgroundSelected = bk
             lbl.BackColor = Color.LightGreen
+            lbl.BorderStyle = BorderStyle.Fixed3D
 
         End If
 
@@ -3614,7 +3637,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 9.13"    ' Version string
+    Public Shared Version As String = "Version 10.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3712,6 +3735,10 @@ Public Class Globals
     Public Shared prtrDPI(128) As Int16
     Public Shared prtrRatio(128) As Int16
     Public Shared prtrSeconds(128) As Int16
+    Public Shared prtrHorzPCT(128) As Int16
+    Public Shared prtrVertPCT(128) As Int16
+    Public Shared prtrHorzOFF(128) As Int16
+    Public Shared prtrVertOFF(128) As Int16
 
     ' Array of phone MMS carriers from the CSV file
     Public Shared carrierMax As Int16 = 0

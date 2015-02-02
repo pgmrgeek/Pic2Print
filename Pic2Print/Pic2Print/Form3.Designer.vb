@@ -269,9 +269,9 @@ Partial Class Form3
         'VersionBox
         '
         Me.VersionBox.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.VersionBox.Location = New System.Drawing.Point(335, 513)
+        Me.VersionBox.Location = New System.Drawing.Point(335, 514)
         Me.VersionBox.Name = "VersionBox"
-        Me.VersionBox.Size = New System.Drawing.Size(68, 18)
+        Me.VersionBox.Size = New System.Drawing.Size(97, 18)
         Me.VersionBox.TabIndex = 38
         Me.VersionBox.Text = "Version"
         Me.VersionBox.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
