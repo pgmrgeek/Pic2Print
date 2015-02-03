@@ -188,6 +188,7 @@ Public Class Pic2Print
         ' read all the possible printers into the combobox
 
         Call ReadPrinterFile()
+        Call ReadFilterFile()
         Call ReadCarrierFile()
 
         If Globals.fForm3.tbBKFG.Text = "" Then
@@ -346,6 +347,59 @@ Public Class Pic2Print
         ioReader.Close()
 
     End Sub
+    '
+    '-----------------------====< ReadFilterFile() >====---------------------------
+    ' read in the .CSV file listing all the Filter Actions
+    '
+    Public Sub ReadFilterFile()
+        Dim str As String
+        Dim quot As String = Chr(34)
+        Dim max As Integer = 0
+
+        Dim ioReader As New Microsoft.VisualBasic.FileIO.TextFieldParser("C:\onsite\software\filters.csv")
+
+        ioReader.TextFieldType = FileIO.FieldType.Delimited
+        ioReader.SetDelimiters(",")
+
+
+        While Not ioReader.EndOfData
+
+            Dim arrCurrentRow As String() = ioReader.ReadFields()
+
+            str = arrCurrentRow(0)
+            If Microsoft.VisualBasic.Left(str, 1) <> ":" Then
+
+                If Microsoft.VisualBasic.Len(str) > 1 Then      ' avoid cr/lf blank lines
+
+                    Globals.FilterName(max) = arrCurrentRow(0)
+                    Globals.FilterSetName(max) = arrCurrentRow(1)
+                    Globals.FilterActionName(max) = arrCurrentRow(2)
+                    Globals.FilterRes1(max) = arrCurrentRow(3)
+                    Globals.FilterRes2(max) = arrCurrentRow(4)
+                    Globals.FilterRes3(max) = arrCurrentRow(5)
+                    Globals.FilterRes4(max) = arrCurrentRow(6)
+
+                    Globals.fForm3.cbFilter1.Items.Add(Globals.FilterName(max))
+                    Globals.fForm3.cbFilter2.Items.Add(Globals.FilterName(max))
+                    Globals.fForm3.cbFilter3.Items.Add(Globals.FilterName(max))
+
+                    max += 1
+                    If max = 64 Then
+                        Exit While
+                    End If
+
+                End If
+
+            End If
+
+        End While
+
+        Globals.FilterMax = max
+        ioReader.Close()
+
+    End Sub
+
+
 
     '-----------------------====< ReadCarrierFile() >====---------------------------
     ' read in the .CSV file listing all the phone MMS carriers
@@ -3637,7 +3691,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 10.01"    ' Version string
+    Public Shared Version As String = "Version 11.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3783,6 +3837,15 @@ Public Class Globals
     ' 00100000 00000000 - horizontal Bg/Fg are unique, and need custom actions
     ' 01000000 00000000 - horizontal Print sizes and need custom actions
     '
+    Public Shared FilterMax As Integer = 64         ' maximum number supported now..
+    Public Shared FilterName(64) As String          ' name of the layout
+    Public Shared FilterSetName(64) As String      ' action set name
+    Public Shared FilterActionName(64) As String   ' top level layout folder
+    Public Shared FilterRes1(64) As Integer        ' reserved #1
+    Public Shared FilterRes2(64) As Integer        ' reserved #2
+    Public Shared FilterRes3(64) As Integer        ' reserved #3
+    Public Shared FilterRes4(64) As Integer        ' reserved #4
+
     ' this is ugly but to avoid delegates, we copy data out of controls to global variables for read-only access..
     Public Shared tmpIncoming_Folder As String
     Public Shared tmpPrint1_Folder As String

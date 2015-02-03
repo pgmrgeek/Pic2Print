@@ -114,6 +114,16 @@ Partial Class Form3
         Me.cbPrintNoDates = New System.Windows.Forms.CheckBox()
         Me.lblImageNewer = New System.Windows.Forms.Label()
         Me.dtEarliestDate = New System.Windows.Forms.DateTimePicker()
+        Me.gbFilter1 = New System.Windows.Forms.GroupBox()
+        Me.tbFilter1 = New System.Windows.Forms.TextBox()
+        Me.cbFilter1 = New System.Windows.Forms.ComboBox()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.tbFilter2 = New System.Windows.Forms.TextBox()
+        Me.cbFilter2 = New System.Windows.Forms.ComboBox()
+        Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.tbFilter3 = New System.Windows.Forms.TextBox()
+        Me.cbFilter3 = New System.Windows.Forms.ComboBox()
+        Me.FilterDescription = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -124,6 +134,9 @@ Partial Class Form3
         Me.gbFonts.SuspendLayout()
         CType(Me.pbHueWheel, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbDateQuals.SuspendLayout()
+        Me.gbFilter1.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
+        Me.GroupBox4.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
@@ -1065,12 +1078,110 @@ Partial Class Form3
         Me.dtEarliestDate.TabIndex = 0
         Me.dtEarliestDate.Value = Global.WindowsApplication1.My.MySettings.Default.dtEarliestDateSelected
         '
+        'gbFilter1
+        '
+        Me.gbFilter1.Controls.Add(Me.tbFilter1)
+        Me.gbFilter1.Controls.Add(Me.cbFilter1)
+        Me.gbFilter1.Location = New System.Drawing.Point(934, 275)
+        Me.gbFilter1.Name = "gbFilter1"
+        Me.gbFilter1.Size = New System.Drawing.Size(254, 50)
+        Me.gbFilter1.TabIndex = 121
+        Me.gbFilter1.TabStop = False
+        Me.gbFilter1.Text = "Filter #1"
+        '
+        'tbFilter1
+        '
+        Me.tbFilter1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtboxFilter1", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbFilter1.Location = New System.Drawing.Point(212, 16)
+        Me.tbFilter1.Name = "tbFilter1"
+        Me.tbFilter1.Size = New System.Drawing.Size(35, 20)
+        Me.tbFilter1.TabIndex = 1
+        Me.tbFilter1.Text = Global.WindowsApplication1.My.MySettings.Default.txtboxFilter1
+        '
+        'cbFilter1
+        '
+        Me.cbFilter1.FormattingEnabled = True
+        Me.cbFilter1.Location = New System.Drawing.Point(7, 16)
+        Me.cbFilter1.Name = "cbFilter1"
+        Me.cbFilter1.Size = New System.Drawing.Size(199, 21)
+        Me.cbFilter1.TabIndex = 0
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.tbFilter2)
+        Me.GroupBox3.Controls.Add(Me.cbFilter2)
+        Me.GroupBox3.Location = New System.Drawing.Point(934, 332)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(254, 50)
+        Me.GroupBox3.TabIndex = 122
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Filter #2"
+        '
+        'tbFilter2
+        '
+        Me.tbFilter2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtboxFilter2", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbFilter2.Location = New System.Drawing.Point(212, 16)
+        Me.tbFilter2.Name = "tbFilter2"
+        Me.tbFilter2.Size = New System.Drawing.Size(35, 20)
+        Me.tbFilter2.TabIndex = 1
+        Me.tbFilter2.Text = Global.WindowsApplication1.My.MySettings.Default.txtboxFilter2
+        '
+        'cbFilter2
+        '
+        Me.cbFilter2.FormattingEnabled = True
+        Me.cbFilter2.Location = New System.Drawing.Point(7, 16)
+        Me.cbFilter2.Name = "cbFilter2"
+        Me.cbFilter2.Size = New System.Drawing.Size(199, 21)
+        Me.cbFilter2.TabIndex = 0
+        '
+        'GroupBox4
+        '
+        Me.GroupBox4.Controls.Add(Me.tbFilter3)
+        Me.GroupBox4.Controls.Add(Me.cbFilter3)
+        Me.GroupBox4.Location = New System.Drawing.Point(934, 388)
+        Me.GroupBox4.Name = "GroupBox4"
+        Me.GroupBox4.Size = New System.Drawing.Size(254, 50)
+        Me.GroupBox4.TabIndex = 122
+        Me.GroupBox4.TabStop = False
+        Me.GroupBox4.Text = "Filter #3"
+        '
+        'tbFilter3
+        '
+        Me.tbFilter3.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtboxFilter3", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbFilter3.Location = New System.Drawing.Point(212, 16)
+        Me.tbFilter3.Name = "tbFilter3"
+        Me.tbFilter3.Size = New System.Drawing.Size(35, 20)
+        Me.tbFilter3.TabIndex = 1
+        Me.tbFilter3.Text = Global.WindowsApplication1.My.MySettings.Default.txtboxFilter3
+        '
+        'cbFilter3
+        '
+        Me.cbFilter3.FormattingEnabled = True
+        Me.cbFilter3.Location = New System.Drawing.Point(7, 16)
+        Me.cbFilter3.Name = "cbFilter3"
+        Me.cbFilter3.Size = New System.Drawing.Size(199, 21)
+        Me.cbFilter3.TabIndex = 0
+        '
+        'FilterDescription
+        '
+        Me.FilterDescription.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.FilterDescription.Location = New System.Drawing.Point(934, 229)
+        Me.FilterDescription.Name = "FilterDescription"
+        Me.FilterDescription.Size = New System.Drawing.Size(254, 40)
+        Me.FilterDescription.TabIndex = 123
+        Me.FilterDescription.Text = "Select up to three filters to be applied in the selected order for your custom ef" & _
+            "fects.  This is applied to the midground and background layers."
+        '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1211, 540)
         Me.ControlBox = False
+        Me.Controls.Add(Me.FilterDescription)
+        Me.Controls.Add(Me.GroupBox4)
+        Me.Controls.Add(Me.GroupBox3)
+        Me.Controls.Add(Me.gbFilter1)
         Me.Controls.Add(Me.gbDateQuals)
         Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.cbGifDelay)
@@ -1156,6 +1267,12 @@ Partial Class Form3
         CType(Me.pbHueWheel, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbDateQuals.ResumeLayout(False)
         Me.gbDateQuals.PerformLayout()
+        Me.gbFilter1.ResumeLayout(False)
+        Me.gbFilter1.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
+        Me.GroupBox4.ResumeLayout(False)
+        Me.GroupBox4.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1252,4 +1369,14 @@ Partial Class Form3
     Friend WithEvents dtEarliestDate As System.Windows.Forms.DateTimePicker
     Friend WithEvents Label19 As System.Windows.Forms.Label
     Friend WithEvents cbPrintNoDates As System.Windows.Forms.CheckBox
+    Friend WithEvents gbFilter1 As System.Windows.Forms.GroupBox
+    Friend WithEvents tbFilter1 As System.Windows.Forms.TextBox
+    Friend WithEvents cbFilter1 As System.Windows.Forms.ComboBox
+    Friend WithEvents GroupBox3 As System.Windows.Forms.GroupBox
+    Friend WithEvents tbFilter2 As System.Windows.Forms.TextBox
+    Friend WithEvents cbFilter2 As System.Windows.Forms.ComboBox
+    Friend WithEvents GroupBox4 As System.Windows.Forms.GroupBox
+    Friend WithEvents tbFilter3 As System.Windows.Forms.TextBox
+    Friend WithEvents cbFilter3 As System.Windows.Forms.ComboBox
+    Friend WithEvents FilterDescription As System.Windows.Forms.Label
 End Class

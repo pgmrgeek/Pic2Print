@@ -41,6 +41,9 @@ Public Class Form3
         If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
         If tbBKFG.Text = "" Then tbBKFG.Text = "0"
         If txtFontListIndex.Text = "" Then txtFontListIndex.Text = "0"
+        If tbFilter1.Text = "" Then tbFilter1.Text = "0"
+        If tbFilter2.Text = "" Then tbFilter2.Text = "0"
+        If tbFilter3.Text = "" Then tbFilter3.Text = "0"
 
         i = tbBKFG.Text
         If i >= ComboBoxBKFG.Items.Count Then i = 0
@@ -53,6 +56,18 @@ Public Class Form3
         i = prtrSelect2.Text
         If i >= Printer2LB.Items.Count Then i = 0
         Printer2LB.SelectedIndex = i
+
+        i = tbFilter1.Text
+        If i >= cbFilter1.Items.Count Then i = 0
+        cbFilter1.SelectedIndex = i
+
+        i = tbFilter2.Text
+        If i >= cbFilter2.Items.Count Then i = 0
+        cbFilter2.SelectedIndex = i
+
+        i = tbFilter3.Text
+        If i >= cbFilter3.Items.Count Then i = 0
+        cbFilter3.SelectedIndex = i
 
         Call CreateFamilyFontList()
         i = txtFontListIndex.Text
@@ -390,6 +405,12 @@ Public Class Form3
         Dim prtrVpct As Integer
         Dim prtrHoff As Integer
         Dim prtrVoff As Integer
+        Dim F1 As String
+        Dim F1s As String
+        Dim F2 As String
+        Dim F2s As String
+        Dim F3 As String
+        Dim F3s As String
 
         ' ====================== the first target config file ============================
 
@@ -488,10 +509,20 @@ Public Class Form3
             prtrHoff = Globals.prtrHorzOFF(Printer1LB.SelectedIndex)
             prtrVoff = Globals.prtrVertOFF(Printer1LB.SelectedIndex)
 
+            ' ------------- #20,#21, #22,#23, #24,#35
+
+            F1 = Globals.FilterActionName(tbFilter1.Text)
+            F1s = Globals.FilterSetName(tbFilter1.Text)
+            F2 = Globals.FilterActionName(tbFilter2.Text)
+            F2s = Globals.FilterSetName(tbFilter2.Text)
+            F3 = Globals.FilterActionName(tbFilter3.Text)
+            F3s = Globals.FilterSetName(tbFilter3.Text)
+
             ' -------- write  lines of text out to the file ------------
 
             Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
-                                  actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff)
+                                  actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff, _
+                                  F1, F1s, F2, F2s, F3, F3s)
 
         End If
 
@@ -590,7 +621,8 @@ Public Class Form3
 
                 ' -------- write lines of text out to the file ------------
                 Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
-                                      actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff)
+                                      actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff, _
+                                        F1, F1s, F2, F2s, F3, F3s)
 
             End If
 
@@ -620,9 +652,15 @@ Public Class Form3
         ByVal prtrHpct As Integer, _
         ByVal prtrVpct As Integer, _
         ByVal prtrHoff As Integer, _
-        ByVal prtrVoff As Integer)
+        ByVal prtrVoff As Integer, _
+        ByRef f1 As String, _
+        ByRef f1s As String, _
+        ByRef f2 As String, _
+        ByRef f2s As String, _
+        ByRef f3 As String, _
+        ByRef f3s As String)
 
-        Dim s(21) As String
+        Dim s(27) As String
 
         'My.Computer.FileSystem.WriteAllText(fconfig, "bad...", encoding:=utf8)
 
@@ -682,6 +720,14 @@ Public Class Form3
         s(19) = prtrVpct
         s(20) = prtrHoff
         s(21) = prtrVoff
+
+        ' filter strings
+        s(22) = """" & f1 & """"
+        s(23) = """" & f1s & """"
+        s(24) = """" & f2 & """"
+        s(25) = """" & f2s & """"
+        s(26) = """" & f3 & """"
+        s(27) = """" & f3s & """"
 
         ' dump all strings at once
         File.WriteAllLines(fconfig, s, System.Text.Encoding.ASCII)
@@ -919,6 +965,18 @@ Public Class Form3
         txtFontListIndex.Text = cbFontList.SelectedIndex
         lblTestFont.Font = New Font(nam, 10)
         Call cbFontListColor()
+    End Sub
+
+    Private Sub cbFilter1_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter1.SelectedIndexChanged
+        tbFilter1.Text = cbFilter1.SelectedIndex
+    End Sub
+
+    Private Sub cbFilter2_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter2.SelectedIndexChanged
+        tbFilter2.Text = cbFilter2.SelectedIndex
+    End Sub
+
+    Private Sub cbFilter3_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter3.SelectedIndexChanged
+        tbFilter3.Text = cbFilter3.SelectedIndex
     End Sub
 
     Private Sub cbFontListColor()
