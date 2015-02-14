@@ -85,7 +85,7 @@ Public Class Form3
 
     Private Sub CreateFamilyFontList()
 
-         cbFontList.Items.Clear()
+        cbFontList.Items.Clear()
 
         For Each FF As FontFamily In System.Drawing.FontFamily.Families
             If (FF.IsStyleAvailable(FontStyle.Regular)) Then
@@ -159,7 +159,7 @@ Public Class Form3
                 MessageBox.Show( _
                 "Warning - Machine Name is not 3 chars" & _
                 vbCrLf & "in length. Please correct to continue.")
-                Return 
+                Return
             End If
 
             ' make sure the numbers are valid
@@ -333,8 +333,8 @@ Public Class Form3
 
             btnFolderDialog3.Enabled = True
             Printer2PaperCount.Enabled = True
-            Printer2PrintTimeSeconds.Enabled = True
-            Printer2PrintTimeSeconds.Enabled = True
+            Printer2ProfileTimeSeconds.Enabled = True
+            Printer2ProfileTimeSeconds.Enabled = True
             Print_Folder_2.Enabled = True
             LoadBalancing.Enabled = True
             'LoadBalancingMaxP.Enabled = True
@@ -354,8 +354,8 @@ Public Class Form3
             btnFolderDialog3.Enabled = False
 
             Printer2PaperCount.Enabled = False
-            Printer2PrintTimeSeconds.Enabled = False
-            Printer2PrintTimeSeconds.Enabled = False
+            Printer2ProfileTimeSeconds.Enabled = False
+            Printer2ProfileTimeSeconds.Enabled = False
             Print_Folder_2.Enabled = False
             LoadBalancing.Enabled = False
             'LoadBalancingMaxP.Enabled = False
@@ -411,6 +411,7 @@ Public Class Form3
         Dim F2s As String
         Dim F3 As String
         Dim F3s As String
+        Dim tr As String
 
         ' ====================== the first target config file ============================
 
@@ -509,7 +510,7 @@ Public Class Form3
             prtrHoff = Globals.prtrHorzOFF(Printer1LB.SelectedIndex)
             prtrVoff = Globals.prtrVertOFF(Printer1LB.SelectedIndex)
 
-            ' ------------- #20,#21, #22,#23, #24,#35
+            ' ------------- #20,#21, #22,#23, #24, #25
 
             F1 = Globals.FilterActionName(tbFilter1.Text)
             F1s = Globals.FilterSetName(tbFilter1.Text)
@@ -518,11 +519,17 @@ Public Class Form3
             F3 = Globals.FilterActionName(tbFilter3.Text)
             F3s = Globals.FilterSetName(tbFilter3.Text)
 
+            ' ------------- #26 timing run
+
+            tr = "0"
+            If cbTimingRun.Checked Then tr = "1"
+
+
             ' -------- write  lines of text out to the file ------------
 
             Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
                                   actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff, _
-                                  F1, F1s, F2, F2s, F3, F3s)
+                                  F1, F1s, F2, F2s, F3, F3s, tr)
 
         End If
 
@@ -622,7 +629,7 @@ Public Class Form3
                 ' -------- write lines of text out to the file ------------
                 Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
                                       actionset, savepsd, colorR, colorG, colorB, GifDelay, prtrHpct, prtrVpct, prtrHoff, prtrVoff, _
-                                        F1, F1s, F2, F2s, F3, F3s)
+                                        F1, F1s, F2, F2s, F3, F3s, tr)
 
             End If
 
@@ -658,9 +665,10 @@ Public Class Form3
         ByRef f2 As String, _
         ByRef f2s As String, _
         ByRef f3 As String, _
-        ByRef f3s As String)
+        ByRef f3s As String, _
+        ByRef tr As String)
 
-        Dim s(27) As String
+        Dim s(28) As String
 
         'My.Computer.FileSystem.WriteAllText(fconfig, "bad...", encoding:=utf8)
 
@@ -729,6 +737,9 @@ Public Class Form3
         s(26) = """" & f3 & """"
         s(27) = """" & f3s & """"
 
+        ' Profile Timing Run
+        s(28) = tr
+
         ' dump all strings at once
         File.WriteAllLines(fconfig, s, System.Text.Encoding.ASCII)
 
@@ -741,16 +752,16 @@ Public Class Form3
         Dim i As Int16
 
         ' Validate the count
-        i = Printer1PrintTimeSeconds.Text
+        i = Printer1ProfileTimeSeconds.Text
         If i < 0 Then i = 0
         If i > 1000 Then i = 1000
-        Printer1PrintTimeSeconds.Text = i
+        Printer1ProfileTimeSeconds.Text = i
 
         ' Validate the count
-        i = Printer2PrintTimeSeconds.Text
+        i = Printer2ProfileTimeSeconds.Text
         If i < 0 Then i = 0
         If i > 1000 Then i = 1000
-        Printer2PrintTimeSeconds.Text = i
+        Printer2ProfileTimeSeconds.Text = i
 
         ' Validate the remaining paper count
         i = Printer1PaperCount.Text
@@ -777,6 +788,10 @@ Public Class Form3
             Globals.fPic2Print.PrintCount2.Text = Printer2PaperCount.Text
             Globals.Printer2Remaining = Printer2PaperCount.Text
         End If
+
+        ' setup the printer second counts to be accessed in timer routines
+        Globals.prtr1PrinterSeconds = Globals.prtrSeconds(Printer1LB.SelectedIndex)
+        Globals.prtr2PrinterSeconds = Globals.prtrSeconds(Printer2LB.SelectedIndex)
 
     End Sub
 
@@ -828,12 +843,12 @@ Public Class Form3
 
     Private Sub Printer1LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer1LB.SelectedIndexChanged
         prtrSelect1.Text = Printer1LB.SelectedIndex
-        Printer1PrintTimeSeconds.Text = Globals.prtrSeconds(Printer1LB.SelectedIndex)
+        Globals.prtr1PrinterSeconds = Globals.prtrSeconds(Printer1LB.SelectedIndex)
     End Sub
 
     Private Sub Printer2LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer2LB.SelectedIndexChanged
         prtrSelect2.Text = Printer2LB.SelectedIndex
-        Printer2PrintTimeSeconds.Text = Globals.prtrSeconds(Printer2LB.SelectedIndex)
+        Globals.prtr2PrinterSeconds = Globals.prtrSeconds(Printer2LB.SelectedIndex)
     End Sub
 
     Private Sub ComboBoxBKFG_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBoxBKFG.SelectedIndexChanged
@@ -1002,5 +1017,6 @@ Public Class Form3
             cbPrintNoDates.Enabled = True
         End If
     End Sub
+
 
 End Class

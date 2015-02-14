@@ -164,7 +164,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("8")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("2")>  _
         Public Property Print1PrintTime() As String
             Get
                 Return CType(Me("Print1PrintTime"),String)
@@ -188,7 +188,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("8")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("2")>  _
         Public Property Print2PrintTime() As String
             Get
                 Return CType(Me("Print2PrintTime"),String)

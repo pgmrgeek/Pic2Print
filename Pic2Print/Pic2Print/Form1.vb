@@ -1284,11 +1284,11 @@ Public Class Pic2Print
         ' mode might have been re-interpreted due to the number of layers needed in Decorate to create
         ' the file print/gif.  So we now need to examine the decorated name for the mode 
 
-        ' yep, this is a forced case of sending the image directly to printer #2
-        CopyFileToPrint2Dir(newNam)
-
         ' increment/decrement all the print counters
         IncrementPrintCounts(mode, count, 2)
+
+        ' yep, this is a forced case of sending the image directly to printer #2
+        CopyFileToPrint2Dir(newNam)
 
     End Sub
 
@@ -1306,11 +1306,11 @@ Public Class Pic2Print
 
             count = ppDecorateName(fi.Name, newNam, mode)
 
-            ' process the files in the \onsite folder through photoshop
-            Call ppProcessFiles(newNam)
-
             ' increment/decrement all the print counters
             IncrementPrintCounts(mode, count, 1)
+
+            ' process the files in the \onsite folder through photoshop
+            Call ppProcessFiles(newNam)
 
             ' if enabled, copy the file from the printed folder to the cloud folder
 
@@ -2202,7 +2202,7 @@ Public Class Pic2Print
 
                 ' advance our counters for the second machine, the KIOSK mode will increment it for our machine.  This is done here
                 ' so this machine's operator sees the effects of both printers here.
-
+                '
                 If Globals.ToPrinter = 2 Then
                     IncrementPrintCounts(mode, count, 2)
                 End If
@@ -2251,7 +2251,7 @@ Public Class Pic2Print
             If printer = 1 Then
 
                 ' printer 1 has one less sheet. Turn the button yellow for the duration
-                Globals.Printer1DownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text * count
+                Globals.Printer1DownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text + (Globals.prtr1PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
                 PrinterSelect1.BackColor = Color.LightYellow
 
                 ' if this an actual print, then decr the remaining counts
@@ -2267,7 +2267,7 @@ Public Class Pic2Print
             Else
 
                 ' printer 2 has one less sheet. turn the button yellow for the duration
-                Globals.Printer2DownCount += Globals.fForm3.Printer2PrintTimeSeconds.Text * count
+                Globals.Printer2DownCount += Globals.fForm3.Printer2ProfileTimeSeconds.Text + (Globals.prtr2PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
                 PrinterSelect2.BackColor = Color.LightYellow
 
                 ' if this an actual print, then decr the remaining counts
@@ -2424,7 +2424,7 @@ Public Class Pic2Print
 
         End If
 
-            Return trgf
+        Return trgf
 
     End Function
 
@@ -3521,7 +3521,7 @@ Public Class Pic2Print
             If Globals.ImageCache.maxIndex > 0 Then
 
                 ' add wait time so the printing and emails running in the background have time to work
-                Globals.SendEmailsDownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text
+                Globals.SendEmailsDownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text
 
                 ' scan through all the file names to find the saved email addresses.
 
@@ -3548,7 +3548,7 @@ Public Class Pic2Print
                             If Globals.ImageCache.emailAddr(idx) <> "" Then
 
                                 ' add time to the wait
-                                Globals.SendEmailsDownCount += Globals.fForm3.Printer1PrintTimeSeconds.Text
+                                Globals.SendEmailsDownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text
 
                                 ' we found one, let the user know..
                                 sendemailsmgs( _
@@ -3691,7 +3691,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.02"    ' Version string
+    Public Shared Version As String = "Version 11.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3793,6 +3793,8 @@ Public Class Globals
     Public Shared prtrVertPCT(128) As Int16
     Public Shared prtrHorzOFF(128) As Int16
     Public Shared prtrVertOFF(128) As Int16
+    Public Shared prtr1PrinterSeconds As Int16
+    Public Shared prtr2PrinterSeconds As Int16
 
     ' Array of phone MMS carriers from the CSV file
     Public Shared carrierMax As Int16 = 0

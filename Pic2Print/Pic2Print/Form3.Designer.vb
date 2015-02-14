@@ -42,15 +42,16 @@ Partial Class Form3
         Me.photog1 = New System.Windows.Forms.Label()
         Me.SortByName = New System.Windows.Forms.RadioButton()
         Me.SortByDate = New System.Windows.Forms.RadioButton()
-        Me.Printer1PrintTimeSeconds = New System.Windows.Forms.TextBox()
+        Me.Printer1ProfileTimeSeconds = New System.Windows.Forms.TextBox()
         Me.Printer1PrintTimeLabel = New System.Windows.Forms.Label()
         Me.Printer2PrintTimeLabel = New System.Windows.Forms.Label()
-        Me.Printer2PrintTimeSeconds = New System.Windows.Forms.TextBox()
+        Me.Printer2ProfileTimeSeconds = New System.Windows.Forms.TextBox()
         Me.Printer1PaperCountLabel = New System.Windows.Forms.Label()
         Me.Printer1PaperCount = New System.Windows.Forms.TextBox()
         Me.Printer2PaperCountLabel = New System.Windows.Forms.Label()
         Me.Printer2PaperCount = New System.Windows.Forms.TextBox()
         Me.Print1GroupBox = New System.Windows.Forms.GroupBox()
+        Me.cbTimingRun = New System.Windows.Forms.CheckBox()
         Me.btnFolderDialog2 = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.btnFolderDialog3 = New System.Windows.Forms.Button()
@@ -348,14 +349,14 @@ Partial Class Form3
         Me.SortByDate.Text = "By Time Stamp"
         Me.SortByDate.UseVisualStyleBackColor = True
         '
-        'Printer1PrintTimeSeconds
+        'Printer1ProfileTimeSeconds
         '
-        Me.Printer1PrintTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer1PrintTimeSeconds.Location = New System.Drawing.Point(33, 261)
-        Me.Printer1PrintTimeSeconds.Name = "Printer1PrintTimeSeconds"
-        Me.Printer1PrintTimeSeconds.Size = New System.Drawing.Size(52, 20)
-        Me.Printer1PrintTimeSeconds.TabIndex = 4
-        Me.Printer1PrintTimeSeconds.Text = Global.WindowsApplication1.My.MySettings.Default.Print1PrintTime
+        Me.Printer1ProfileTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.Printer1ProfileTimeSeconds.Location = New System.Drawing.Point(33, 261)
+        Me.Printer1ProfileTimeSeconds.Name = "Printer1ProfileTimeSeconds"
+        Me.Printer1ProfileTimeSeconds.Size = New System.Drawing.Size(52, 20)
+        Me.Printer1ProfileTimeSeconds.TabIndex = 4
+        Me.Printer1ProfileTimeSeconds.Text = Global.WindowsApplication1.My.MySettings.Default.Print1PrintTime
         '
         'Printer1PrintTimeLabel
         '
@@ -363,9 +364,9 @@ Partial Class Form3
         Me.Printer1PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
         Me.Printer1PrintTimeLabel.Location = New System.Drawing.Point(92, 265)
         Me.Printer1PrintTimeLabel.Name = "Printer1PrintTimeLabel"
-        Me.Printer1PrintTimeLabel.Size = New System.Drawing.Size(239, 13)
+        Me.Printer1PrintTimeLabel.Size = New System.Drawing.Size(159, 13)
         Me.Printer1PrintTimeLabel.TabIndex = 59
-        Me.Printer1PrintTimeLabel.Text = "Average print time in seconds (ex 8=4x6, 15=5x7)"
+        Me.Printer1PrintTimeLabel.Text = "Profiled Layout Time in Seconds"
         '
         'Printer2PrintTimeLabel
         '
@@ -373,18 +374,18 @@ Partial Class Form3
         Me.Printer2PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
         Me.Printer2PrintTimeLabel.Location = New System.Drawing.Point(82, 79)
         Me.Printer2PrintTimeLabel.Name = "Printer2PrintTimeLabel"
-        Me.Printer2PrintTimeLabel.Size = New System.Drawing.Size(242, 13)
+        Me.Printer2PrintTimeLabel.Size = New System.Drawing.Size(159, 13)
         Me.Printer2PrintTimeLabel.TabIndex = 61
-        Me.Printer2PrintTimeLabel.Text = "Average print time in seconds  (ex 8=4x6, 15=5x7)"
+        Me.Printer2PrintTimeLabel.Text = "Profiled Layout Time in Seconds"
         '
-        'Printer2PrintTimeSeconds
+        'Printer2ProfileTimeSeconds
         '
-        Me.Printer2PrintTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer2PrintTimeSeconds.Location = New System.Drawing.Point(21, 75)
-        Me.Printer2PrintTimeSeconds.Name = "Printer2PrintTimeSeconds"
-        Me.Printer2PrintTimeSeconds.Size = New System.Drawing.Size(52, 20)
-        Me.Printer2PrintTimeSeconds.TabIndex = 8
-        Me.Printer2PrintTimeSeconds.Text = Global.WindowsApplication1.My.MySettings.Default.Print2PrintTime
+        Me.Printer2ProfileTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.Printer2ProfileTimeSeconds.Location = New System.Drawing.Point(21, 75)
+        Me.Printer2ProfileTimeSeconds.Name = "Printer2ProfileTimeSeconds"
+        Me.Printer2ProfileTimeSeconds.Size = New System.Drawing.Size(52, 20)
+        Me.Printer2ProfileTimeSeconds.TabIndex = 8
+        Me.Printer2ProfileTimeSeconds.Text = Global.WindowsApplication1.My.MySettings.Default.Print2PrintTime
         '
         'Printer1PaperCountLabel
         '
@@ -426,12 +427,23 @@ Partial Class Form3
         '
         'Print1GroupBox
         '
+        Me.Print1GroupBox.Controls.Add(Me.cbTimingRun)
         Me.Print1GroupBox.Controls.Add(Me.btnFolderDialog2)
         Me.Print1GroupBox.Location = New System.Drawing.Point(10, 203)
         Me.Print1GroupBox.Name = "Print1GroupBox"
         Me.Print1GroupBox.Size = New System.Drawing.Size(345, 138)
         Me.Print1GroupBox.TabIndex = 66
         Me.Print1GroupBox.TabStop = False
+        '
+        'cbTimingRun
+        '
+        Me.cbTimingRun.AutoSize = True
+        Me.cbTimingRun.Location = New System.Drawing.Point(23, 107)
+        Me.cbTimingRun.Name = "cbTimingRun"
+        Me.cbTimingRun.Size = New System.Drawing.Size(112, 17)
+        Me.cbTimingRun.TabIndex = 27
+        Me.cbTimingRun.Text = "Profile Timing Run"
+        Me.cbTimingRun.UseVisualStyleBackColor = True
         '
         'btnFolderDialog2
         '
@@ -449,7 +461,7 @@ Partial Class Form3
         Me.GroupBox2.Controls.Add(Me.Print2Enabled)
         Me.GroupBox2.Controls.Add(Me.LoadBalancing)
         Me.GroupBox2.Controls.Add(Me.Printer2PaperCount)
-        Me.GroupBox2.Controls.Add(Me.Printer2PrintTimeSeconds)
+        Me.GroupBox2.Controls.Add(Me.Printer2ProfileTimeSeconds)
         Me.GroupBox2.Controls.Add(Me.Printer2PaperCountLabel)
         Me.GroupBox2.Controls.Add(Me.Printer2PrintTimeLabel)
         Me.GroupBox2.Controls.Add(Me.Print_Folder_2)
@@ -1227,7 +1239,7 @@ Partial Class Form3
         Me.Controls.Add(Me.Printer1PaperCountLabel)
         Me.Controls.Add(Me.Printer1PaperCount)
         Me.Controls.Add(Me.Printer1PrintTimeLabel)
-        Me.Controls.Add(Me.Printer1PrintTimeSeconds)
+        Me.Controls.Add(Me.Printer1ProfileTimeSeconds)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.VersionBox)
         Me.Controls.Add(Me.OKay)
@@ -1252,6 +1264,7 @@ Partial Class Form3
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.Print1GroupBox.ResumeLayout(False)
+        Me.Print1GroupBox.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
         Me.SourceGroupBox.ResumeLayout(False)
@@ -1297,10 +1310,10 @@ Partial Class Form3
     Friend WithEvents SortByDate As System.Windows.Forms.RadioButton
     Friend WithEvents photog2 As System.Windows.Forms.Label
     Friend WithEvents photog1 As System.Windows.Forms.Label
-    Friend WithEvents Printer1PrintTimeSeconds As System.Windows.Forms.TextBox
+    Friend WithEvents Printer1ProfileTimeSeconds As System.Windows.Forms.TextBox
     Friend WithEvents Printer1PrintTimeLabel As System.Windows.Forms.Label
     Friend WithEvents Printer2PrintTimeLabel As System.Windows.Forms.Label
-    Friend WithEvents Printer2PrintTimeSeconds As System.Windows.Forms.TextBox
+    Friend WithEvents Printer2ProfileTimeSeconds As System.Windows.Forms.TextBox
     Friend WithEvents Printer1PaperCountLabel As System.Windows.Forms.Label
     Friend WithEvents Printer1PaperCount As System.Windows.Forms.TextBox
     Friend WithEvents Printer2PaperCountLabel As System.Windows.Forms.Label
@@ -1379,4 +1392,5 @@ Partial Class Form3
     Friend WithEvents tbFilter3 As System.Windows.Forms.TextBox
     Friend WithEvents cbFilter3 As System.Windows.Forms.ComboBox
     Friend WithEvents FilterDescription As System.Windows.Forms.Label
+    Friend WithEvents cbTimingRun As System.Windows.Forms.CheckBox
 End Class
