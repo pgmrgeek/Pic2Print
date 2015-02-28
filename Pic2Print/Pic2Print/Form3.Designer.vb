@@ -24,10 +24,8 @@ Partial Class Form3
     Private Sub InitializeComponent()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Print1DestLabel = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
@@ -125,6 +123,9 @@ Partial Class Form3
         Me.tbFilter3 = New System.Windows.Forms.TextBox()
         Me.cbFilter3 = New System.Windows.Forms.ComboBox()
         Me.FilterDescription = New System.Windows.Forms.Label()
+        Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.lblFilterSelection = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -138,19 +139,19 @@ Partial Class Form3
         Me.gbFilter1.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
+        Me.GroupBox5.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
         Me.Label1.BackColor = System.Drawing.SystemColors.InfoText
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.Snow
         Me.Label1.Location = New System.Drawing.Point(12, 58)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(292, 13)
+        Me.Label1.Size = New System.Drawing.Size(343, 13)
         Me.Label1.TabIndex = 0
-        Me.Label1.Text = "                  Source && Destinations                      "
+        Me.Label1.Text = "                     Source && Destination Folders                    "
         '
         'Label2
         '
@@ -161,44 +162,25 @@ Partial Class Form3
         Me.Label2.TabIndex = 24
         Me.Label2.Text = "Incoming Image Folder"
         '
-        'Print1DestLabel
-        '
-        Me.Print1DestLabel.AutoSize = True
-        Me.Print1DestLabel.Location = New System.Drawing.Point(28, 206)
-        Me.Print1DestLabel.Name = "Print1DestLabel"
-        Me.Print1DestLabel.Size = New System.Drawing.Size(141, 13)
-        Me.Print1DestLabel.TabIndex = 25
-        Me.Print1DestLabel.Text = "Printer Destination Folder #1"
-        '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Label5.Location = New System.Drawing.Point(27, 122)
+        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label5.Location = New System.Drawing.Point(15, 19)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(122, 13)
+        Me.Label5.Size = New System.Drawing.Size(278, 13)
         Me.Label5.TabIndex = 29
-        Me.Label5.Text = "Path to incoming images"
+        Me.Label5.Text = "Path to shared folder for Managed Mode (manual printing)"
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Label6.Location = New System.Drawing.Point(30, 245)
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label6.Location = New System.Drawing.Point(15, 18)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(194, 13)
+        Me.Label6.Size = New System.Drawing.Size(276, 13)
         Me.Label6.TabIndex = 30
-        Me.Label6.Text = "Full path to printer #1, local or network.."
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Label7.Location = New System.Drawing.Point(20, 56)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(194, 13)
-        Me.Label7.TabIndex = 31
-        Me.Label7.Text = "Full path to printer #2, local or network.."
+        Me.Label6.Text = "Path to local shared folder for KIOSK mode (auto printing)"
         '
         'Label8
         '
@@ -237,7 +219,7 @@ Partial Class Form3
         '
         Me.Label11.AutoSize = True
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label11.Location = New System.Drawing.Point(12, 516)
+        Me.Label11.Location = New System.Drawing.Point(12, 532)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(317, 13)
         Me.Label11.TabIndex = 35
@@ -255,7 +237,7 @@ Partial Class Form3
         'Print_Folder_2
         '
         Me.Print_Folder_2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "DestinationPath2", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Print_Folder_2.Location = New System.Drawing.Point(6, 31)
+        Me.Print_Folder_2.Location = New System.Drawing.Point(6, 56)
         Me.Print_Folder_2.Name = "Print_Folder_2"
         Me.Print_Folder_2.Size = New System.Drawing.Size(291, 20)
         Me.Print_Folder_2.TabIndex = 7
@@ -265,7 +247,7 @@ Partial Class Form3
         '
         Me.Print_Folder_1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "DestinationPath1", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.Print_Folder_1.Enabled = False
-        Me.Print_Folder_1.Location = New System.Drawing.Point(15, 222)
+        Me.Print_Folder_1.Location = New System.Drawing.Point(20, 237)
         Me.Print_Folder_1.Name = "Print_Folder_1"
         Me.Print_Folder_1.Size = New System.Drawing.Size(289, 20)
         Me.Print_Folder_1.TabIndex = 3
@@ -274,7 +256,7 @@ Partial Class Form3
         'Image_Folder
         '
         Me.Image_Folder.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SourcePath", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Image_Folder.Location = New System.Drawing.Point(6, 15)
+        Me.Image_Folder.Location = New System.Drawing.Point(10, 36)
         Me.Image_Folder.Name = "Image_Folder"
         Me.Image_Folder.Size = New System.Drawing.Size(288, 20)
         Me.Image_Folder.TabIndex = 1
@@ -283,7 +265,7 @@ Partial Class Form3
         'VersionBox
         '
         Me.VersionBox.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.VersionBox.Location = New System.Drawing.Point(335, 514)
+        Me.VersionBox.Location = New System.Drawing.Point(335, 530)
         Me.VersionBox.Name = "VersionBox"
         Me.VersionBox.Size = New System.Drawing.Size(97, 18)
         Me.VersionBox.TabIndex = 38
@@ -292,13 +274,13 @@ Partial Class Form3
         '
         'GroupBox1
         '
-        Me.GroupBox1.BackColor = System.Drawing.Color.White
+        Me.GroupBox1.BackColor = System.Drawing.SystemColors.Control
         Me.GroupBox1.Controls.Add(Me.photog2)
         Me.GroupBox1.Controls.Add(Me.photog1)
         Me.GroupBox1.Controls.Add(Me.SortByName)
         Me.GroupBox1.Controls.Add(Me.SortByDate)
         Me.GroupBox1.ForeColor = System.Drawing.Color.Black
-        Me.GroupBox1.Location = New System.Drawing.Point(40, 138)
+        Me.GroupBox1.Location = New System.Drawing.Point(29, 138)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(219, 54)
         Me.GroupBox1.TabIndex = 2
@@ -309,7 +291,7 @@ Partial Class Form3
         '
         Me.photog2.AutoSize = True
         Me.photog2.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.photog2.ForeColor = System.Drawing.Color.Silver
+        Me.photog2.ForeColor = System.Drawing.Color.Black
         Me.photog2.Location = New System.Drawing.Point(129, 35)
         Me.photog2.Name = "photog2"
         Me.photog2.Size = New System.Drawing.Size(84, 13)
@@ -320,7 +302,7 @@ Partial Class Form3
         '
         Me.photog1.AutoSize = True
         Me.photog1.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.photog1.ForeColor = System.Drawing.Color.Silver
+        Me.photog1.ForeColor = System.Drawing.Color.Black
         Me.photog1.Location = New System.Drawing.Point(18, 35)
         Me.photog1.Name = "photog1"
         Me.photog1.Size = New System.Drawing.Size(79, 13)
@@ -352,7 +334,7 @@ Partial Class Form3
         'Printer1ProfileTimeSeconds
         '
         Me.Printer1ProfileTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer1ProfileTimeSeconds.Location = New System.Drawing.Point(33, 261)
+        Me.Printer1ProfileTimeSeconds.Location = New System.Drawing.Point(33, 265)
         Me.Printer1ProfileTimeSeconds.Name = "Printer1ProfileTimeSeconds"
         Me.Printer1ProfileTimeSeconds.Size = New System.Drawing.Size(52, 20)
         Me.Printer1ProfileTimeSeconds.TabIndex = 4
@@ -362,26 +344,26 @@ Partial Class Form3
         '
         Me.Printer1PrintTimeLabel.AutoSize = True
         Me.Printer1PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer1PrintTimeLabel.Location = New System.Drawing.Point(92, 265)
+        Me.Printer1PrintTimeLabel.Location = New System.Drawing.Point(87, 269)
         Me.Printer1PrintTimeLabel.Name = "Printer1PrintTimeLabel"
-        Me.Printer1PrintTimeLabel.Size = New System.Drawing.Size(159, 13)
+        Me.Printer1PrintTimeLabel.Size = New System.Drawing.Size(259, 13)
         Me.Printer1PrintTimeLabel.TabIndex = 59
-        Me.Printer1PrintTimeLabel.Text = "Profiled Layout Time in Seconds"
+        Me.Printer1PrintTimeLabel.Text = "# of Seconds to process this layout. (See Profile This)"
         '
         'Printer2PrintTimeLabel
         '
         Me.Printer2PrintTimeLabel.AutoSize = True
         Me.Printer2PrintTimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer2PrintTimeLabel.Location = New System.Drawing.Point(82, 79)
+        Me.Printer2PrintTimeLabel.Location = New System.Drawing.Point(77, 86)
         Me.Printer2PrintTimeLabel.Name = "Printer2PrintTimeLabel"
-        Me.Printer2PrintTimeLabel.Size = New System.Drawing.Size(159, 13)
+        Me.Printer2PrintTimeLabel.Size = New System.Drawing.Size(191, 13)
         Me.Printer2PrintTimeLabel.TabIndex = 61
-        Me.Printer2PrintTimeLabel.Text = "Profiled Layout Time in Seconds"
+        Me.Printer2PrintTimeLabel.Text = "# of Seconds to process on 2nd printer"
         '
         'Printer2ProfileTimeSeconds
         '
         Me.Printer2ProfileTimeSeconds.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2PrintTime", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer2ProfileTimeSeconds.Location = New System.Drawing.Point(21, 75)
+        Me.Printer2ProfileTimeSeconds.Location = New System.Drawing.Point(23, 82)
         Me.Printer2ProfileTimeSeconds.Name = "Printer2ProfileTimeSeconds"
         Me.Printer2ProfileTimeSeconds.Size = New System.Drawing.Size(52, 20)
         Me.Printer2ProfileTimeSeconds.TabIndex = 8
@@ -391,7 +373,7 @@ Partial Class Form3
         '
         Me.Printer1PaperCountLabel.AutoSize = True
         Me.Printer1PaperCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer1PaperCountLabel.Location = New System.Drawing.Point(92, 287)
+        Me.Printer1PaperCountLabel.Location = New System.Drawing.Point(87, 295)
         Me.Printer1PaperCountLabel.Name = "Printer1PaperCountLabel"
         Me.Printer1PaperCountLabel.Size = New System.Drawing.Size(198, 13)
         Me.Printer1PaperCountLabel.TabIndex = 63
@@ -400,7 +382,7 @@ Partial Class Form3
         'Printer1PaperCount
         '
         Me.Printer1PaperCount.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1Sheets", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer1PaperCount.Location = New System.Drawing.Point(33, 283)
+        Me.Printer1PaperCount.Location = New System.Drawing.Point(33, 291)
         Me.Printer1PaperCount.Name = "Printer1PaperCount"
         Me.Printer1PaperCount.Size = New System.Drawing.Size(52, 20)
         Me.Printer1PaperCount.TabIndex = 5
@@ -410,7 +392,7 @@ Partial Class Form3
         '
         Me.Printer2PaperCountLabel.AutoSize = True
         Me.Printer2PaperCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.Printer2PaperCountLabel.Location = New System.Drawing.Point(82, 102)
+        Me.Printer2PaperCountLabel.Location = New System.Drawing.Point(77, 111)
         Me.Printer2PaperCountLabel.Name = "Printer2PaperCountLabel"
         Me.Printer2PaperCountLabel.Size = New System.Drawing.Size(198, 13)
         Me.Printer2PaperCountLabel.TabIndex = 65
@@ -419,7 +401,7 @@ Partial Class Form3
         'Printer2PaperCount
         '
         Me.Printer2PaperCount.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print2Sheets", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer2PaperCount.Location = New System.Drawing.Point(21, 99)
+        Me.Printer2PaperCount.Location = New System.Drawing.Point(23, 108)
         Me.Printer2PaperCount.Name = "Printer2PaperCount"
         Me.Printer2PaperCount.Size = New System.Drawing.Size(52, 20)
         Me.Printer2PaperCount.TabIndex = 9
@@ -429,26 +411,28 @@ Partial Class Form3
         '
         Me.Print1GroupBox.Controls.Add(Me.cbTimingRun)
         Me.Print1GroupBox.Controls.Add(Me.btnFolderDialog2)
-        Me.Print1GroupBox.Location = New System.Drawing.Point(10, 203)
+        Me.Print1GroupBox.Controls.Add(Me.Label6)
+        Me.Print1GroupBox.Location = New System.Drawing.Point(10, 202)
         Me.Print1GroupBox.Name = "Print1GroupBox"
-        Me.Print1GroupBox.Size = New System.Drawing.Size(345, 138)
+        Me.Print1GroupBox.Size = New System.Drawing.Size(345, 154)
         Me.Print1GroupBox.TabIndex = 66
         Me.Print1GroupBox.TabStop = False
+        Me.Print1GroupBox.Text = "Printer #1 KIOSK folder - Local shared folder"
         '
         'cbTimingRun
         '
         Me.cbTimingRun.AutoSize = True
-        Me.cbTimingRun.Location = New System.Drawing.Point(23, 107)
+        Me.cbTimingRun.Location = New System.Drawing.Point(23, 117)
         Me.cbTimingRun.Name = "cbTimingRun"
-        Me.cbTimingRun.Size = New System.Drawing.Size(112, 17)
+        Me.cbTimingRun.Size = New System.Drawing.Size(283, 17)
         Me.cbTimingRun.TabIndex = 27
-        Me.cbTimingRun.Text = "Profile Timing Run"
+        Me.cbTimingRun.Text = " Profile This: Runs a profile on this layout when printing"
         Me.cbTimingRun.UseVisualStyleBackColor = True
         '
         'btnFolderDialog2
         '
         Me.btnFolderDialog2.Enabled = False
-        Me.btnFolderDialog2.Location = New System.Drawing.Point(300, 24)
+        Me.btnFolderDialog2.Location = New System.Drawing.Point(303, 35)
         Me.btnFolderDialog2.Name = "btnFolderDialog2"
         Me.btnFolderDialog2.Size = New System.Drawing.Size(33, 20)
         Me.btnFolderDialog2.TabIndex = 26
@@ -457,6 +441,7 @@ Partial Class Form3
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.Label7)
         Me.GroupBox2.Controls.Add(Me.btnFolderDialog3)
         Me.GroupBox2.Controls.Add(Me.Print2Enabled)
         Me.GroupBox2.Controls.Add(Me.LoadBalancing)
@@ -465,16 +450,16 @@ Partial Class Form3
         Me.GroupBox2.Controls.Add(Me.Printer2PaperCountLabel)
         Me.GroupBox2.Controls.Add(Me.Printer2PrintTimeLabel)
         Me.GroupBox2.Controls.Add(Me.Print_Folder_2)
-        Me.GroupBox2.Controls.Add(Me.Label7)
-        Me.GroupBox2.Location = New System.Drawing.Point(10, 347)
+        Me.GroupBox2.Location = New System.Drawing.Point(10, 359)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(345, 157)
+        Me.GroupBox2.Size = New System.Drawing.Size(345, 163)
         Me.GroupBox2.TabIndex = 67
         Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Printer #2 KIOSK folder -  Network shared folder"
         '
         'btnFolderDialog3
         '
-        Me.btnFolderDialog3.Location = New System.Drawing.Point(300, 31)
+        Me.btnFolderDialog3.Location = New System.Drawing.Point(300, 56)
         Me.btnFolderDialog3.Name = "btnFolderDialog3"
         Me.btnFolderDialog3.Size = New System.Drawing.Size(33, 20)
         Me.btnFolderDialog3.TabIndex = 26
@@ -486,11 +471,11 @@ Partial Class Form3
         Me.Print2Enabled.AutoSize = True
         Me.Print2Enabled.Checked = Global.WindowsApplication1.My.MySettings.Default.Print2EnabledBool
         Me.Print2Enabled.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "Print2EnabledBool", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Print2Enabled.Location = New System.Drawing.Point(6, 8)
+        Me.Print2Enabled.Location = New System.Drawing.Point(6, 18)
         Me.Print2Enabled.Name = "Print2Enabled"
-        Me.Print2Enabled.Size = New System.Drawing.Size(160, 17)
+        Me.Print2Enabled.Size = New System.Drawing.Size(201, 17)
         Me.Print2Enabled.TabIndex = 12
-        Me.Print2Enabled.Text = "Printer Destination Folder #2"
+        Me.Print2Enabled.Text = "Enable Printer #2 - Networked printer"
         Me.Print2Enabled.UseVisualStyleBackColor = True
         '
         'LoadBalancing
@@ -499,7 +484,7 @@ Partial Class Form3
         Me.LoadBalancing.Checked = Global.WindowsApplication1.My.MySettings.Default.EnaLoadBalancing
         Me.LoadBalancing.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "EnaLoadBalancing", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.LoadBalancing.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.LoadBalancing.Location = New System.Drawing.Point(21, 129)
+        Me.LoadBalancing.Location = New System.Drawing.Point(23, 134)
         Me.LoadBalancing.Name = "LoadBalancing"
         Me.LoadBalancing.Size = New System.Drawing.Size(136, 17)
         Me.LoadBalancing.TabIndex = 10
@@ -511,15 +496,16 @@ Partial Class Form3
         Me.SourceGroupBox.Controls.Add(Me.btnFolderDialog1)
         Me.SourceGroupBox.Controls.Add(Me.Label2)
         Me.SourceGroupBox.Controls.Add(Me.Image_Folder)
-        Me.SourceGroupBox.Location = New System.Drawing.Point(10, 83)
+        Me.SourceGroupBox.Controls.Add(Me.Label5)
+        Me.SourceGroupBox.Location = New System.Drawing.Point(10, 77)
         Me.SourceGroupBox.Name = "SourceGroupBox"
-        Me.SourceGroupBox.Size = New System.Drawing.Size(345, 113)
+        Me.SourceGroupBox.Size = New System.Drawing.Size(345, 122)
         Me.SourceGroupBox.TabIndex = 67
         Me.SourceGroupBox.TabStop = False
         '
         'btnFolderDialog1
         '
-        Me.btnFolderDialog1.Location = New System.Drawing.Point(300, 15)
+        Me.btnFolderDialog1.Location = New System.Drawing.Point(303, 36)
         Me.btnFolderDialog1.Name = "btnFolderDialog1"
         Me.btnFolderDialog1.Size = New System.Drawing.Size(33, 20)
         Me.btnFolderDialog1.TabIndex = 25
@@ -535,7 +521,7 @@ Partial Class Form3
         Me.Printer1Info.Size = New System.Drawing.Size(254, 49)
         Me.Printer1Info.TabIndex = 68
         Me.Printer1Info.TabStop = False
-        Me.Printer1Info.Text = "Printer #1 Selection"
+        Me.Printer1Info.Text = "Printer #1 Model && Paper Selection"
         '
         'prtrSelect1
         '
@@ -563,7 +549,7 @@ Partial Class Form3
         Me.Printer2Info.Size = New System.Drawing.Size(254, 47)
         Me.Printer2Info.TabIndex = 71
         Me.Printer2Info.TabStop = False
-        Me.Printer2Info.Text = "Printer #2 Selection"
+        Me.Printer2Info.Text = "Printer #2 Model && Paper Selection"
         '
         'prtrSelect2
         '
@@ -585,7 +571,6 @@ Partial Class Form3
         '
         'Label3
         '
-        Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.SystemColors.InfoText
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.Color.Snow
@@ -593,7 +578,7 @@ Partial Class Form3
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(257, 13)
         Me.Label3.TabIndex = 73
-        Me.Label3.Text = "                  Printer && Email                        "
+        Me.Label3.Text = "             Printer Type && Email Setup                       "
         '
         'GreenScreen
         '
@@ -637,9 +622,9 @@ Partial Class Form3
         Me.EnableOverlayDesc.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.EnableOverlayDesc.Location = New System.Drawing.Point(668, 138)
         Me.EnableOverlayDesc.Name = "EnableOverlayDesc"
-        Me.EnableOverlayDesc.Size = New System.Drawing.Size(194, 13)
+        Me.EnableOverlayDesc.Size = New System.Drawing.Size(226, 13)
         Me.EnableOverlayDesc.TabIndex = 77
-        Me.EnableOverlayDesc.Text = "Check this for FG overlay/watermarking"
+        Me.EnableOverlayDesc.Text = "Check this to enable FG overlay/watermarking"
         '
         'EnableGreenDesc
         '
@@ -647,16 +632,16 @@ Partial Class Form3
         Me.EnableGreenDesc.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.EnableGreenDesc.Location = New System.Drawing.Point(668, 174)
         Me.EnableGreenDesc.Name = "EnableGreenDesc"
-        Me.EnableGreenDesc.Size = New System.Drawing.Size(166, 13)
+        Me.EnableGreenDesc.Size = New System.Drawing.Size(198, 13)
         Me.EnableGreenDesc.TabIndex = 78
-        Me.EnableGreenDesc.Text = "Check this for BKG Green Screen"
+        Me.EnableGreenDesc.Text = "Check this to enable BKG Green Screen"
         '
         'NoPrint
         '
         Me.NoPrint.AutoSize = True
         Me.NoPrint.Checked = Global.WindowsApplication1.My.MySettings.Default.NoPrintCheck
         Me.NoPrint.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "NoPrintCheck", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.NoPrint.Location = New System.Drawing.Point(387, 214)
+        Me.NoPrint.Location = New System.Drawing.Point(392, 206)
         Me.NoPrint.Name = "NoPrint"
         Me.NoPrint.Size = New System.Drawing.Size(120, 17)
         Me.NoPrint.TabIndex = 25
@@ -667,7 +652,7 @@ Partial Class Form3
         '
         Me.Label4.AutoSize = True
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label4.Location = New System.Drawing.Point(387, 198)
+        Me.Label4.Location = New System.Drawing.Point(392, 188)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(194, 13)
         Me.Label4.TabIndex = 80
@@ -678,7 +663,7 @@ Partial Class Form3
         Me.EmailCloudEnabled.AutoSize = True
         Me.EmailCloudEnabled.Checked = Global.WindowsApplication1.My.MySettings.Default.SyncFolderEna
         Me.EmailCloudEnabled.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderEna", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.EmailCloudEnabled.Location = New System.Drawing.Point(387, 291)
+        Me.EmailCloudEnabled.Location = New System.Drawing.Point(9, 32)
         Me.EmailCloudEnabled.Name = "EmailCloudEnabled"
         Me.EmailCloudEnabled.Size = New System.Drawing.Size(209, 17)
         Me.EmailCloudEnabled.TabIndex = 0
@@ -689,7 +674,7 @@ Partial Class Form3
         '
         Me.EnaEmailLabel.AutoSize = True
         Me.EnaEmailLabel.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.EnaEmailLabel.Location = New System.Drawing.Point(390, 274)
+        Me.EnaEmailLabel.Location = New System.Drawing.Point(11, 16)
         Me.EnaEmailLabel.Name = "EnaEmailLabel"
         Me.EnaEmailLabel.Size = New System.Drawing.Size(225, 13)
         Me.EnaEmailLabel.TabIndex = 86
@@ -697,11 +682,11 @@ Partial Class Form3
         '
         'EmailConfigBtn
         '
-        Me.EmailConfigBtn.Location = New System.Drawing.Point(408, 314)
+        Me.EmailConfigBtn.Location = New System.Drawing.Point(35, 53)
         Me.EmailConfigBtn.Name = "EmailConfigBtn"
-        Me.EmailConfigBtn.Size = New System.Drawing.Size(75, 23)
+        Me.EmailConfigBtn.Size = New System.Drawing.Size(164, 23)
         Me.EmailConfigBtn.TabIndex = 87
-        Me.EmailConfigBtn.Text = "Email Setup"
+        Me.EmailConfigBtn.Text = "Email Server && Cloud Setup"
         Me.EmailConfigBtn.UseVisualStyleBackColor = True
         '
         'lblEnable4bkgnds
@@ -717,7 +702,7 @@ Partial Class Form3
         'txtLayersPerGIF
         '
         Me.txtLayersPerGIF.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerOutput", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerGIF.Location = New System.Drawing.Point(667, 349)
+        Me.txtLayersPerGIF.Location = New System.Drawing.Point(667, 338)
         Me.txtLayersPerGIF.Name = "txtLayersPerGIF"
         Me.txtLayersPerGIF.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerGIF.TabIndex = 89
@@ -727,7 +712,7 @@ Partial Class Form3
         'giflabel1
         '
         Me.giflabel1.AutoSize = True
-        Me.giflabel1.Location = New System.Drawing.Point(695, 352)
+        Me.giflabel1.Location = New System.Drawing.Point(695, 341)
         Me.giflabel1.Name = "giflabel1"
         Me.giflabel1.Size = New System.Drawing.Size(82, 13)
         Me.giflabel1.TabIndex = 91
@@ -736,7 +721,7 @@ Partial Class Form3
         'custlabel1
         '
         Me.custlabel1.AutoSize = True
-        Me.custlabel1.Location = New System.Drawing.Point(693, 396)
+        Me.custlabel1.Location = New System.Drawing.Point(693, 386)
         Me.custlabel1.Name = "custlabel1"
         Me.custlabel1.Size = New System.Drawing.Size(141, 13)
         Me.custlabel1.TabIndex = 92
@@ -745,7 +730,7 @@ Partial Class Form3
         'txtLayersPerCust
         '
         Me.txtLayersPerCust.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "LayersPerCustom", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtLayersPerCust.Location = New System.Drawing.Point(667, 392)
+        Me.txtLayersPerCust.Location = New System.Drawing.Point(667, 382)
         Me.txtLayersPerCust.Name = "txtLayersPerCust"
         Me.txtLayersPerCust.Size = New System.Drawing.Size(22, 20)
         Me.txtLayersPerCust.TabIndex = 93
@@ -795,18 +780,18 @@ Partial Class Form3
         'lblAutoPrintCount
         '
         Me.lblAutoPrintCount.AutoSize = True
-        Me.lblAutoPrintCount.Location = New System.Drawing.Point(693, 437)
+        Me.lblAutoPrintCount.Location = New System.Drawing.Point(40, 36)
         Me.lblAutoPrintCount.Name = "lblAutoPrintCount"
-        Me.lblAutoPrintCount.Size = New System.Drawing.Size(157, 13)
+        Me.lblAutoPrintCount.Size = New System.Drawing.Size(174, 13)
         Me.lblAutoPrintCount.TabIndex = 96
-        Me.lblAutoPrintCount.Text = "Print(s) per image in Kiosk mode"
+        Me.lblAutoPrintCount.Text = "# of Print per image in KIOSK mode"
         '
         'txtAutoPrintCnt
         '
         Me.txtAutoPrintCnt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtAutoPrtCnt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(667, 432)
+        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(7, 32)
         Me.txtAutoPrintCnt.Name = "txtAutoPrintCnt"
-        Me.txtAutoPrintCnt.Size = New System.Drawing.Size(22, 20)
+        Me.txtAutoPrintCnt.Size = New System.Drawing.Size(27, 20)
         Me.txtAutoPrintCnt.TabIndex = 97
         Me.txtAutoPrintCnt.Text = Global.WindowsApplication1.My.MySettings.Default.txtAutoPrtCnt
         Me.txtAutoPrintCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -815,17 +800,17 @@ Partial Class Form3
         '
         Me.Label13.AutoSize = True
         Me.Label13.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label13.Location = New System.Drawing.Point(664, 416)
+        Me.Label13.Location = New System.Drawing.Point(13, 16)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(183, 13)
+        Me.Label13.Size = New System.Drawing.Size(155, 13)
         Me.Label13.TabIndex = 99
-        Me.Label13.Text = "Enter # of prints for automatic printing"
+        Me.Label13.Text = "# of prints for automatic printing"
         '
         'Label14
         '
         Me.Label14.AutoSize = True
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label14.Location = New System.Drawing.Point(664, 328)
+        Me.Label14.Location = New System.Drawing.Point(668, 320)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(134, 13)
         Me.Label14.TabIndex = 100
@@ -835,11 +820,11 @@ Partial Class Form3
         '
         Me.Label15.AutoSize = True
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label15.Location = New System.Drawing.Point(664, 376)
+        Me.Label15.Location = New System.Drawing.Point(668, 364)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(165, 13)
+        Me.Label15.Size = New System.Drawing.Size(192, 13)
         Me.Label15.TabIndex = 101
-        Me.Label15.Text = "Example - 3 images per photostrip"
+        Me.Label15.Text = "# of images per layout (photostrips, etc)"
         '
         'chkBkFgsAnimated
         '
@@ -869,22 +854,22 @@ Partial Class Form3
         Me.ckSavePSD.Checked = Global.WindowsApplication1.My.MySettings.Default.ckSavePSDFile
         Me.ckSavePSD.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ckSavePSD.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "ckSavePSDFile", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.ckSavePSD.Location = New System.Drawing.Point(387, 251)
+        Me.ckSavePSD.Location = New System.Drawing.Point(392, 241)
         Me.ckSavePSD.Name = "ckSavePSD"
-        Me.ckSavePSD.Size = New System.Drawing.Size(112, 17)
+        Me.ckSavePSD.Size = New System.Drawing.Size(116, 17)
         Me.ckSavePSD.TabIndex = 104
-        Me.ckSavePSD.Text = "Save .PSD output"
+        Me.ckSavePSD.Text = "Save .PSD version"
         Me.ckSavePSD.UseVisualStyleBackColor = True
         '
         'lblSavePSD
         '
         Me.lblSavePSD.AutoSize = True
         Me.lblSavePSD.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.lblSavePSD.Location = New System.Drawing.Point(388, 234)
+        Me.lblSavePSD.Location = New System.Drawing.Point(393, 225)
         Me.lblSavePSD.Name = "lblSavePSD"
-        Me.lblSavePSD.Size = New System.Drawing.Size(189, 13)
+        Me.lblSavePSD.Size = New System.Drawing.Size(226, 13)
         Me.lblSavePSD.TabIndex = 105
-        Me.lblSavePSD.Text = "Save a .PSD version of the final image"
+        Me.lblSavePSD.Text = "Save a layered .PSD version of the final image"
         '
         'txtRGBString
         '
@@ -946,7 +931,7 @@ Partial Class Form3
         'pbHueWheel
         '
         Me.pbHueWheel.Image = Global.WindowsApplication1.My.Resources.Resources.Hue2
-        Me.pbHueWheel.Location = New System.Drawing.Point(941, 139)
+        Me.pbHueWheel.Location = New System.Drawing.Point(941, 141)
         Me.pbHueWheel.Name = "pbHueWheel"
         Me.pbHueWheel.Size = New System.Drawing.Size(72, 72)
         Me.pbHueWheel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -956,7 +941,7 @@ Partial Class Form3
         'txtMachineName
         '
         Me.txtMachineName.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "MachineName", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtMachineName.Location = New System.Drawing.Point(667, 481)
+        Me.txtMachineName.Location = New System.Drawing.Point(667, 428)
         Me.txtMachineName.Name = "txtMachineName"
         Me.txtMachineName.Size = New System.Drawing.Size(37, 20)
         Me.txtMachineName.TabIndex = 112
@@ -965,21 +950,21 @@ Partial Class Form3
         'lblMachineName
         '
         Me.lblMachineName.AutoSize = True
-        Me.lblMachineName.Location = New System.Drawing.Point(711, 485)
+        Me.lblMachineName.Location = New System.Drawing.Point(706, 432)
         Me.lblMachineName.Name = "lblMachineName"
-        Me.lblMachineName.Size = New System.Drawing.Size(142, 13)
+        Me.lblMachineName.Size = New System.Drawing.Size(95, 13)
         Me.lblMachineName.TabIndex = 113
-        Me.lblMachineName.Text = "Machine name for file names"
+        Me.lblMachineName.Text = "ID for this machine"
         '
         'Label17
         '
         Me.Label17.AutoSize = True
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label17.Location = New System.Drawing.Point(664, 462)
+        Me.Label17.Location = New System.Drawing.Point(668, 411)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(143, 13)
+        Me.Label17.Size = New System.Drawing.Size(167, 13)
         Me.Label17.TabIndex = 114
-        Me.Label17.Text = "3 char name for this machine"
+        Me.Label17.Text = "3 character name for this machine"
         '
         'lblLayoutTxTlen
         '
@@ -1028,11 +1013,11 @@ Partial Class Form3
         Me.cbDateQualified.AutoSize = True
         Me.cbDateQualified.Checked = Global.WindowsApplication1.My.MySettings.Default.KIOSKdateQual
         Me.cbDateQualified.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KIOSKdateQual", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbDateQualified.Location = New System.Drawing.Point(5, 32)
+        Me.cbDateQualified.Location = New System.Drawing.Point(9, 73)
         Me.cbDateQualified.Name = "cbDateQualified"
-        Me.cbDateQualified.Size = New System.Drawing.Size(197, 17)
+        Me.cbDateQualified.Size = New System.Drawing.Size(168, 17)
         Me.cbDateQualified.TabIndex = 119
-        Me.cbDateQualified.Text = "KIOSK mode will date qualify images"
+        Me.cbDateQualified.Text = "KIOSK will date qualify images"
         Me.cbDateQualified.UseVisualStyleBackColor = True
         '
         'gbDateQuals
@@ -1042,28 +1027,32 @@ Partial Class Form3
         Me.gbDateQuals.Controls.Add(Me.lblImageNewer)
         Me.gbDateQuals.Controls.Add(Me.cbDateQualified)
         Me.gbDateQuals.Controls.Add(Me.dtEarliestDate)
-        Me.gbDateQuals.Location = New System.Drawing.Point(382, 347)
+        Me.gbDateQuals.Controls.Add(Me.Label13)
+        Me.gbDateQuals.Controls.Add(Me.lblAutoPrintCount)
+        Me.gbDateQuals.Controls.Add(Me.txtAutoPrintCnt)
+        Me.gbDateQuals.Location = New System.Drawing.Point(383, 263)
         Me.gbDateQuals.Name = "gbDateQuals"
-        Me.gbDateQuals.Size = New System.Drawing.Size(253, 157)
+        Me.gbDateQuals.Size = New System.Drawing.Size(253, 175)
         Me.gbDateQuals.TabIndex = 120
         Me.gbDateQuals.TabStop = False
+        Me.gbDateQuals.Text = "KIOSK Setup"
         '
         'Label19
         '
         Me.Label19.AutoSize = True
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label19.Location = New System.Drawing.Point(8, 13)
+        Me.Label19.Location = New System.Drawing.Point(12, 57)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(173, 13)
+        Me.Label19.Size = New System.Drawing.Size(186, 13)
         Me.Label19.TabIndex = 121
-        Me.Label19.Text = "Check this to print only new images"
+        Me.Label19.Text = "Check this to print only today's images"
         '
         'cbPrintNoDates
         '
         Me.cbPrintNoDates.AutoSize = True
         Me.cbPrintNoDates.Checked = Global.WindowsApplication1.My.MySettings.Default.KioskPrintAnyway
         Me.cbPrintNoDates.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KioskPrintAnyway", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbPrintNoDates.Location = New System.Drawing.Point(8, 109)
+        Me.cbPrintNoDates.Location = New System.Drawing.Point(28, 140)
         Me.cbPrintNoDates.Name = "cbPrintNoDates"
         Me.cbPrintNoDates.Size = New System.Drawing.Size(163, 17)
         Me.cbPrintNoDates.TabIndex = 123
@@ -1074,7 +1063,7 @@ Partial Class Form3
         '
         Me.lblImageNewer.AutoSize = True
         Me.lblImageNewer.ForeColor = System.Drawing.Color.Black
-        Me.lblImageNewer.Location = New System.Drawing.Point(8, 60)
+        Me.lblImageNewer.Location = New System.Drawing.Point(25, 96)
         Me.lblImageNewer.Name = "lblImageNewer"
         Me.lblImageNewer.Size = New System.Drawing.Size(132, 13)
         Me.lblImageNewer.TabIndex = 122
@@ -1084,9 +1073,9 @@ Partial Class Form3
         '
         Me.dtEarliestDate.Checked = False
         Me.dtEarliestDate.DataBindings.Add(New System.Windows.Forms.Binding("Value", Global.WindowsApplication1.My.MySettings.Default, "dtEarliestDateSelected", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.dtEarliestDate.Location = New System.Drawing.Point(5, 76)
+        Me.dtEarliestDate.Location = New System.Drawing.Point(28, 114)
         Me.dtEarliestDate.Name = "dtEarliestDate"
-        Me.dtEarliestDate.Size = New System.Drawing.Size(231, 20)
+        Me.dtEarliestDate.Size = New System.Drawing.Size(215, 20)
         Me.dtEarliestDate.TabIndex = 0
         Me.dtEarliestDate.Value = Global.WindowsApplication1.My.MySettings.Default.dtEarliestDateSelected
         '
@@ -1094,7 +1083,7 @@ Partial Class Form3
         '
         Me.gbFilter1.Controls.Add(Me.tbFilter1)
         Me.gbFilter1.Controls.Add(Me.cbFilter1)
-        Me.gbFilter1.Location = New System.Drawing.Point(934, 275)
+        Me.gbFilter1.Location = New System.Drawing.Point(934, 298)
         Me.gbFilter1.Name = "gbFilter1"
         Me.gbFilter1.Size = New System.Drawing.Size(254, 50)
         Me.gbFilter1.TabIndex = 121
@@ -1122,7 +1111,7 @@ Partial Class Form3
         '
         Me.GroupBox3.Controls.Add(Me.tbFilter2)
         Me.GroupBox3.Controls.Add(Me.cbFilter2)
-        Me.GroupBox3.Location = New System.Drawing.Point(934, 332)
+        Me.GroupBox3.Location = New System.Drawing.Point(934, 355)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(254, 50)
         Me.GroupBox3.TabIndex = 122
@@ -1150,7 +1139,7 @@ Partial Class Form3
         '
         Me.GroupBox4.Controls.Add(Me.tbFilter3)
         Me.GroupBox4.Controls.Add(Me.cbFilter3)
-        Me.GroupBox4.Location = New System.Drawing.Point(934, 388)
+        Me.GroupBox4.Location = New System.Drawing.Point(934, 411)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(254, 50)
         Me.GroupBox4.TabIndex = 122
@@ -1177,26 +1166,63 @@ Partial Class Form3
         'FilterDescription
         '
         Me.FilterDescription.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.FilterDescription.Location = New System.Drawing.Point(934, 229)
+        Me.FilterDescription.Location = New System.Drawing.Point(938, 252)
         Me.FilterDescription.Name = "FilterDescription"
-        Me.FilterDescription.Size = New System.Drawing.Size(254, 40)
+        Me.FilterDescription.Size = New System.Drawing.Size(232, 40)
         Me.FilterDescription.TabIndex = 123
-        Me.FilterDescription.Text = "Select up to three filters to be applied in the selected order for your custom ef" & _
-            "fects.  This is applied to the midground and background layers."
+        Me.FilterDescription.Text = "Select up to three filters to be applied in order for your custom effects.  This " & _
+            "is applied to the midground and background layers."
+        '
+        'GroupBox5
+        '
+        Me.GroupBox5.Controls.Add(Me.EmailCloudEnabled)
+        Me.GroupBox5.Controls.Add(Me.EnaEmailLabel)
+        Me.GroupBox5.Controls.Add(Me.EmailConfigBtn)
+        Me.GroupBox5.Location = New System.Drawing.Point(382, 441)
+        Me.GroupBox5.Name = "GroupBox5"
+        Me.GroupBox5.Size = New System.Drawing.Size(253, 82)
+        Me.GroupBox5.TabIndex = 124
+        Me.GroupBox5.TabStop = False
+        Me.GroupBox5.Text = "Email Setup"
+        '
+        'lblFilterSelection
+        '
+        Me.lblFilterSelection.AutoSize = True
+        Me.lblFilterSelection.Location = New System.Drawing.Point(931, 235)
+        Me.lblFilterSelection.Name = "lblFilterSelection"
+        Me.lblFilterSelection.Size = New System.Drawing.Size(81, 13)
+        Me.lblFilterSelection.TabIndex = 125
+        Me.lblFilterSelection.Text = "Filter Selections"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label7.Location = New System.Drawing.Point(15, 38)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(293, 13)
+        Me.Label7.TabIndex = 66
+        Me.Label7.Text = "Path for networked shared folder for 2nd printer KIOSK mode"
         '
         'Form3
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1211, 540)
+        Me.ClientSize = New System.Drawing.Size(1211, 555)
         Me.ControlBox = False
+        Me.Controls.Add(Me.lblFilterSelection)
+        Me.Controls.Add(Me.GroupBox5)
         Me.Controls.Add(Me.FilterDescription)
         Me.Controls.Add(Me.GroupBox4)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.gbFilter1)
         Me.Controls.Add(Me.gbDateQuals)
+        Me.Controls.Add(Me.ckSavePSD)
         Me.Controls.Add(Me.Label18)
+        Me.Controls.Add(Me.NoPrint)
         Me.Controls.Add(Me.cbGifDelay)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.lblSavePSD)
         Me.Controls.Add(Me.txtLayoutTxTLen)
         Me.Controls.Add(Me.lblLayoutTxTlen)
         Me.Controls.Add(Me.Label17)
@@ -1207,15 +1233,10 @@ Partial Class Form3
         Me.Controls.Add(Me.gbFonts)
         Me.Controls.Add(Me.pbHueWheel)
         Me.Controls.Add(Me.txtRGBString)
-        Me.Controls.Add(Me.lblSavePSD)
-        Me.Controls.Add(Me.ckSavePSD)
         Me.Controls.Add(Me.lblBkFgAnimated)
         Me.Controls.Add(Me.chkBkFgsAnimated)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.Label14)
-        Me.Controls.Add(Me.Label13)
-        Me.Controls.Add(Me.txtAutoPrintCnt)
-        Me.Controls.Add(Me.lblAutoPrintCount)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.GroupBoxBKFG)
         Me.Controls.Add(Me.txtLayersPerCust)
@@ -1223,11 +1244,6 @@ Partial Class Form3
         Me.Controls.Add(Me.giflabel1)
         Me.Controls.Add(Me.txtLayersPerGIF)
         Me.Controls.Add(Me.lblEnable4bkgnds)
-        Me.Controls.Add(Me.EmailConfigBtn)
-        Me.Controls.Add(Me.EnaEmailLabel)
-        Me.Controls.Add(Me.EmailCloudEnabled)
-        Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.NoPrint)
         Me.Controls.Add(Me.EnableGreenDesc)
         Me.Controls.Add(Me.EnableOverlayDesc)
         Me.Controls.Add(Me.MultipleBackgrounds)
@@ -1247,10 +1263,7 @@ Partial Class Form3
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Print_Folder_1)
-        Me.Controls.Add(Me.Print1DestLabel)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Print1GroupBox)
         Me.Controls.Add(Me.GroupBox2)
@@ -1260,7 +1273,7 @@ Partial Class Form3
         Me.Name = "Form3"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Configuration Window"
+        Me.Text = "Configuration Panel"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.Print1GroupBox.ResumeLayout(False)
@@ -1286,6 +1299,8 @@ Partial Class Form3
         Me.GroupBox3.PerformLayout()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
+        Me.GroupBox5.ResumeLayout(False)
+        Me.GroupBox5.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1293,12 +1308,10 @@ Partial Class Form3
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Image_Folder As System.Windows.Forms.TextBox
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Print1DestLabel As System.Windows.Forms.Label
     Friend WithEvents Print_Folder_1 As System.Windows.Forms.TextBox
     Friend WithEvents Print_Folder_2 As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents Label6 As System.Windows.Forms.Label
-    Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Label9 As System.Windows.Forms.Label
     Friend WithEvents Label10 As System.Windows.Forms.Label
@@ -1393,4 +1406,7 @@ Partial Class Form3
     Friend WithEvents cbFilter3 As System.Windows.Forms.ComboBox
     Friend WithEvents FilterDescription As System.Windows.Forms.Label
     Friend WithEvents cbTimingRun As System.Windows.Forms.CheckBox
+    Friend WithEvents GroupBox5 As System.Windows.Forms.GroupBox
+    Friend WithEvents lblFilterSelection As System.Windows.Forms.Label
+    Friend WithEvents Label7 As System.Windows.Forms.Label
 End Class

@@ -99,6 +99,7 @@ Partial Class Pic2Print
         Me.btnTestRun = New System.Windows.Forms.Button()
         Me.gbPreview = New System.Windows.Forms.GroupBox()
         Me.pbPreview = New System.Windows.Forms.PictureBox()
+        Me.gbPhotoList = New System.Windows.Forms.GroupBox()
         Me.PrinterGroupBoxPrinterGroupBox.SuspendLayout()
         Me.BackGroundGroupBox.SuspendLayout()
         CType(Me.Background4PB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -116,6 +117,7 @@ Partial Class Pic2Print
         Me.gpLoadedFiles.SuspendLayout()
         Me.gbPreview.SuspendLayout()
         CType(Me.pbPreview, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gbPhotoList.SuspendLayout()
         Me.SuspendLayout()
         '
         'print1
@@ -268,7 +270,7 @@ Partial Class Pic2Print
         'PictureBox1Count
         '
         Me.PictureBox1Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox1Count.Location = New System.Drawing.Point(13, 118)
+        Me.PictureBox1Count.Location = New System.Drawing.Point(6, 97)
         Me.PictureBox1Count.Multiline = True
         Me.PictureBox1Count.Name = "PictureBox1Count"
         Me.PictureBox1Count.ReadOnly = True
@@ -279,7 +281,7 @@ Partial Class Pic2Print
         'PictureBox2Count
         '
         Me.PictureBox2Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox2Count.Location = New System.Drawing.Point(144, 118)
+        Me.PictureBox2Count.Location = New System.Drawing.Point(137, 97)
         Me.PictureBox2Count.Name = "PictureBox2Count"
         Me.PictureBox2Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox2Count.TabIndex = 29
@@ -288,7 +290,7 @@ Partial Class Pic2Print
         'PictureBox3Count
         '
         Me.PictureBox3Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox3Count.Location = New System.Drawing.Point(275, 118)
+        Me.PictureBox3Count.Location = New System.Drawing.Point(268, 97)
         Me.PictureBox3Count.Name = "PictureBox3Count"
         Me.PictureBox3Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox3Count.TabIndex = 30
@@ -298,7 +300,7 @@ Partial Class Pic2Print
         'PictureBox4Count
         '
         Me.PictureBox4Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox4Count.Location = New System.Drawing.Point(405, 118)
+        Me.PictureBox4Count.Location = New System.Drawing.Point(398, 97)
         Me.PictureBox4Count.Name = "PictureBox4Count"
         Me.PictureBox4Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox4Count.TabIndex = 31
@@ -308,7 +310,7 @@ Partial Class Pic2Print
         'PictureBox5Count
         '
         Me.PictureBox5Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox5Count.Location = New System.Drawing.Point(536, 118)
+        Me.PictureBox5Count.Location = New System.Drawing.Point(529, 97)
         Me.PictureBox5Count.Name = "PictureBox5Count"
         Me.PictureBox5Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox5Count.TabIndex = 32
@@ -318,7 +320,7 @@ Partial Class Pic2Print
         'PictureBox6Count
         '
         Me.PictureBox6Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox6Count.Location = New System.Drawing.Point(667, 118)
+        Me.PictureBox6Count.Location = New System.Drawing.Point(660, 97)
         Me.PictureBox6Count.Name = "PictureBox6Count"
         Me.PictureBox6Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox6Count.TabIndex = 33
@@ -328,7 +330,7 @@ Partial Class Pic2Print
         'PictureBox7Count
         '
         Me.PictureBox7Count.BackColor = System.Drawing.Color.White
-        Me.PictureBox7Count.Location = New System.Drawing.Point(803, 118)
+        Me.PictureBox7Count.Location = New System.Drawing.Point(796, 97)
         Me.PictureBox7Count.Name = "PictureBox7Count"
         Me.PictureBox7Count.Size = New System.Drawing.Size(120, 20)
         Me.PictureBox7Count.TabIndex = 34
@@ -339,7 +341,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox7.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox7.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox7.Location = New System.Drawing.Point(803, 144)
+        Me.FileNameBox7.Location = New System.Drawing.Point(796, 123)
         Me.FileNameBox7.Name = "FileNameBox7"
         Me.FileNameBox7.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox7.TabIndex = 44
@@ -350,7 +352,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox6.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox6.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox6.Location = New System.Drawing.Point(667, 144)
+        Me.FileNameBox6.Location = New System.Drawing.Point(660, 123)
         Me.FileNameBox6.Name = "FileNameBox6"
         Me.FileNameBox6.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox6.TabIndex = 43
@@ -361,7 +363,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox5.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox5.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox5.Location = New System.Drawing.Point(536, 144)
+        Me.FileNameBox5.Location = New System.Drawing.Point(529, 123)
         Me.FileNameBox5.Name = "FileNameBox5"
         Me.FileNameBox5.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox5.TabIndex = 42
@@ -372,7 +374,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox4.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox4.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox4.Location = New System.Drawing.Point(405, 144)
+        Me.FileNameBox4.Location = New System.Drawing.Point(398, 123)
         Me.FileNameBox4.Name = "FileNameBox4"
         Me.FileNameBox4.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox4.TabIndex = 41
@@ -383,7 +385,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox3.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox3.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox3.Location = New System.Drawing.Point(275, 144)
+        Me.FileNameBox3.Location = New System.Drawing.Point(268, 123)
         Me.FileNameBox3.Name = "FileNameBox3"
         Me.FileNameBox3.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox3.TabIndex = 40
@@ -394,7 +396,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox2.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox2.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox2.Location = New System.Drawing.Point(144, 144)
+        Me.FileNameBox2.Location = New System.Drawing.Point(137, 123)
         Me.FileNameBox2.Name = "FileNameBox2"
         Me.FileNameBox2.Size = New System.Drawing.Size(120, 13)
         Me.FileNameBox2.TabIndex = 39
@@ -404,7 +406,7 @@ Partial Class Pic2Print
         '
         Me.FileNameBox1.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.FileNameBox1.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FileNameBox1.Location = New System.Drawing.Point(13, 144)
+        Me.FileNameBox1.Location = New System.Drawing.Point(6, 123)
         Me.FileNameBox1.Multiline = True
         Me.FileNameBox1.Name = "FileNameBox1"
         Me.FileNameBox1.ReadOnly = True
@@ -423,7 +425,7 @@ Partial Class Pic2Print
         '
         'ShowForm3
         '
-        Me.ShowForm3.Location = New System.Drawing.Point(859, 163)
+        Me.ShowForm3.Location = New System.Drawing.Point(859, 158)
         Me.ShowForm3.Name = "ShowForm3"
         Me.ShowForm3.Size = New System.Drawing.Size(76, 23)
         Me.ShowForm3.TabIndex = 46
@@ -432,7 +434,7 @@ Partial Class Pic2Print
         '
         'Stats
         '
-        Me.Stats.Location = New System.Drawing.Point(859, 221)
+        Me.Stats.Location = New System.Drawing.Point(859, 216)
         Me.Stats.Name = "Stats"
         Me.Stats.Size = New System.Drawing.Size(76, 23)
         Me.Stats.TabIndex = 49
@@ -510,7 +512,7 @@ Partial Class Pic2Print
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.PrinterSelect1)
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.PrinterSelect2)
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.TotalPrinted)
-        Me.PrinterGroupBoxPrinterGroupBox.Location = New System.Drawing.Point(13, 163)
+        Me.PrinterGroupBoxPrinterGroupBox.Location = New System.Drawing.Point(13, 153)
         Me.PrinterGroupBoxPrinterGroupBox.Name = "PrinterGroupBoxPrinterGroupBox"
         Me.PrinterGroupBoxPrinterGroupBox.Size = New System.Drawing.Size(122, 104)
         Me.PrinterGroupBoxPrinterGroupBox.TabIndex = 55
@@ -571,7 +573,7 @@ Partial Class Pic2Print
         Me.BackGroundGroupBox.Controls.Add(Me.Background3PB)
         Me.BackGroundGroupBox.Controls.Add(Me.Background2PB)
         Me.BackGroundGroupBox.Controls.Add(Me.Background1PB)
-        Me.BackGroundGroupBox.Location = New System.Drawing.Point(141, 622)
+        Me.BackGroundGroupBox.Location = New System.Drawing.Point(141, 585)
         Me.BackGroundGroupBox.Name = "BackGroundGroupBox"
         Me.BackGroundGroupBox.Size = New System.Drawing.Size(578, 108)
         Me.BackGroundGroupBox.TabIndex = 56
@@ -662,7 +664,7 @@ Partial Class Pic2Print
         'PictureBox7
         '
         Me.PictureBox7.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox7.Location = New System.Drawing.Point(803, 12)
+        Me.PictureBox7.Location = New System.Drawing.Point(796, 9)
         Me.PictureBox7.Name = "PictureBox7"
         Me.PictureBox7.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -673,7 +675,7 @@ Partial Class Pic2Print
         'PictureBox6
         '
         Me.PictureBox6.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox6.Location = New System.Drawing.Point(667, 12)
+        Me.PictureBox6.Location = New System.Drawing.Point(660, 9)
         Me.PictureBox6.Name = "PictureBox6"
         Me.PictureBox6.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -683,7 +685,7 @@ Partial Class Pic2Print
         'PictureBox5
         '
         Me.PictureBox5.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox5.Location = New System.Drawing.Point(536, 12)
+        Me.PictureBox5.Location = New System.Drawing.Point(529, 9)
         Me.PictureBox5.Name = "PictureBox5"
         Me.PictureBox5.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -693,7 +695,7 @@ Partial Class Pic2Print
         'PictureBox4
         '
         Me.PictureBox4.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox4.Location = New System.Drawing.Point(405, 12)
+        Me.PictureBox4.Location = New System.Drawing.Point(398, 9)
         Me.PictureBox4.Name = "PictureBox4"
         Me.PictureBox4.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -703,7 +705,7 @@ Partial Class Pic2Print
         'PictureBox3
         '
         Me.PictureBox3.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox3.Location = New System.Drawing.Point(275, 12)
+        Me.PictureBox3.Location = New System.Drawing.Point(268, 9)
         Me.PictureBox3.Name = "PictureBox3"
         Me.PictureBox3.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -713,7 +715,7 @@ Partial Class Pic2Print
         'PictureBox2
         '
         Me.PictureBox2.Image = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.PictureBox2.Location = New System.Drawing.Point(144, 12)
+        Me.PictureBox2.Location = New System.Drawing.Point(137, 9)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -725,7 +727,7 @@ Partial Class Pic2Print
         Me.PictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.PictureBox1.Image = Global.WindowsApplication1.My.Resources.Resources.blank
         Me.PictureBox1.InitialImage = CType(resources.GetObject("PictureBox1.InitialImage"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(13, 12)
+        Me.PictureBox1.Location = New System.Drawing.Point(6, 9)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(120, 80)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -762,7 +764,7 @@ Partial Class Pic2Print
         Me.ButtonsGroup.Controls.Add(Me.print7)
         Me.ButtonsGroup.Controls.Add(Me.print6)
         Me.ButtonsGroup.Controls.Add(Me.print5)
-        Me.ButtonsGroup.Location = New System.Drawing.Point(141, 163)
+        Me.ButtonsGroup.Location = New System.Drawing.Point(141, 153)
         Me.ButtonsGroup.Name = "ButtonsGroup"
         Me.ButtonsGroup.Size = New System.Drawing.Size(578, 104)
         Me.ButtonsGroup.TabIndex = 61
@@ -843,7 +845,7 @@ Partial Class Pic2Print
         '
         'Quit_Button
         '
-        Me.Quit_Button.Location = New System.Drawing.Point(859, 192)
+        Me.Quit_Button.Location = New System.Drawing.Point(859, 187)
         Me.Quit_Button.Name = "Quit_Button"
         Me.Quit_Button.Size = New System.Drawing.Size(76, 23)
         Me.Quit_Button.TabIndex = 62
@@ -852,7 +854,7 @@ Partial Class Pic2Print
         '
         'SendEmails
         '
-        Me.SendEmails.Location = New System.Drawing.Point(859, 250)
+        Me.SendEmails.Location = New System.Drawing.Point(859, 245)
         Me.SendEmails.Name = "SendEmails"
         Me.SendEmails.Size = New System.Drawing.Size(75, 23)
         Me.SendEmails.TabIndex = 63
@@ -864,7 +866,7 @@ Partial Class Pic2Print
         '
         Me.gpLoadedFiles.Controls.Add(Me.btClearList)
         Me.gpLoadedFiles.Controls.Add(Me.tbFilesToLoad)
-        Me.gpLoadedFiles.Location = New System.Drawing.Point(725, 163)
+        Me.gpLoadedFiles.Location = New System.Drawing.Point(725, 153)
         Me.gpLoadedFiles.Name = "gpLoadedFiles"
         Me.gpLoadedFiles.Size = New System.Drawing.Size(122, 104)
         Me.gpLoadedFiles.TabIndex = 64
@@ -893,7 +895,7 @@ Partial Class Pic2Print
         '
         'btnTestRun
         '
-        Me.btnTestRun.Location = New System.Drawing.Point(859, 279)
+        Me.btnTestRun.Location = New System.Drawing.Point(859, 274)
         Me.btnTestRun.Name = "btnTestRun"
         Me.btnTestRun.Size = New System.Drawing.Size(75, 23)
         Me.btnTestRun.TabIndex = 65
@@ -903,7 +905,7 @@ Partial Class Pic2Print
         'gbPreview
         '
         Me.gbPreview.Controls.Add(Me.pbPreview)
-        Me.gbPreview.Location = New System.Drawing.Point(141, 273)
+        Me.gbPreview.Location = New System.Drawing.Point(141, 255)
         Me.gbPreview.Name = "gbPreview"
         Me.gbPreview.Size = New System.Drawing.Size(578, 343)
         Me.gbPreview.TabIndex = 61
@@ -922,6 +924,35 @@ Partial Class Pic2Print
         Me.pbPreview.TabStop = False
         Me.pbPreview.Tag = ""
         '
+        'gbPhotoList
+        '
+        Me.gbPhotoList.Controls.Add(Me.PictureBox1)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox2)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox3)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox4)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox5)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox6)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox7)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox1Count)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox2Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox7)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox3Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox6)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox4Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox5)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox5Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox4)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox6Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox3)
+        Me.gbPhotoList.Controls.Add(Me.PictureBox7Count)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox2)
+        Me.gbPhotoList.Controls.Add(Me.FileNameBox1)
+        Me.gbPhotoList.Location = New System.Drawing.Point(12, 4)
+        Me.gbPhotoList.Name = "gbPhotoList"
+        Me.gbPhotoList.Size = New System.Drawing.Size(922, 143)
+        Me.gbPhotoList.TabIndex = 66
+        Me.gbPhotoList.TabStop = False
+        '
         'Pic2Print
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -929,6 +960,7 @@ Partial Class Pic2Print
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(947, 730)
         Me.ControlBox = False
+        Me.Controls.Add(Me.gbPhotoList)
         Me.Controls.Add(Me.gbPreview)
         Me.Controls.Add(Me.btnTestRun)
         Me.Controls.Add(Me.gpLoadedFiles)
@@ -937,28 +969,7 @@ Partial Class Pic2Print
         Me.Controls.Add(Me.ButtonsGroup)
         Me.Controls.Add(Me.BackGroundGroupBox)
         Me.Controls.Add(Me.Stats)
-        Me.Controls.Add(Me.FileNameBox7)
-        Me.Controls.Add(Me.FileNameBox6)
-        Me.Controls.Add(Me.FileNameBox5)
-        Me.Controls.Add(Me.FileNameBox4)
-        Me.Controls.Add(Me.FileNameBox3)
-        Me.Controls.Add(Me.FileNameBox2)
-        Me.Controls.Add(Me.FileNameBox1)
-        Me.Controls.Add(Me.PictureBox7Count)
-        Me.Controls.Add(Me.PictureBox6Count)
-        Me.Controls.Add(Me.PictureBox5Count)
-        Me.Controls.Add(Me.PictureBox4Count)
-        Me.Controls.Add(Me.PictureBox3Count)
-        Me.Controls.Add(Me.PictureBox2Count)
-        Me.Controls.Add(Me.PictureBox1Count)
-        Me.Controls.Add(Me.PictureBox7)
         Me.Controls.Add(Me.ShowForm3)
-        Me.Controls.Add(Me.PictureBox6)
-        Me.Controls.Add(Me.PictureBox5)
-        Me.Controls.Add(Me.PictureBox4)
-        Me.Controls.Add(Me.PictureBox3)
-        Me.Controls.Add(Me.PictureBox2)
-        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.PrinterGroupBoxPrinterGroupBox)
         Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.WindowsApplication1.My.MySettings.Default, "Pic2Print_Loc", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.Location = Global.WindowsApplication1.My.MySettings.Default.Pic2Print_Loc
@@ -986,8 +997,9 @@ Partial Class Pic2Print
         Me.gpLoadedFiles.PerformLayout()
         Me.gbPreview.ResumeLayout(False)
         CType(Me.pbPreview, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gbPhotoList.ResumeLayout(False)
+        Me.gbPhotoList.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
@@ -1066,5 +1078,6 @@ Partial Class Pic2Print
     Friend WithEvents lblBkFgSel3 As System.Windows.Forms.Label
     Friend WithEvents lblBkFgSel2 As System.Windows.Forms.Label
     Friend WithEvents lblBkFgSel1 As System.Windows.Forms.Label
+    Friend WithEvents gbPhotoList As System.Windows.Forms.GroupBox
 
 End Class

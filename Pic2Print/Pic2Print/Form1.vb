@@ -2020,9 +2020,9 @@ Public Class Pic2Print
     '
     Public Sub ModifyForm(ByVal TurnOn As Boolean)
 
-        Dim topPt As New Point(141, 159)
-        Dim btmPt As New Point(141, 268)
-        Dim btmPt2 As New Point(141, 372)
+        Dim topPt As New Point(144, 153)
+        Dim btmPt As New Point(144, 262)
+        Dim btmPt2 As New Point(144, 366)
 
         If TurnOn Then
 
@@ -3691,7 +3691,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.05"    ' Version string
+    Public Shared Version As String = "Version 11.06"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
