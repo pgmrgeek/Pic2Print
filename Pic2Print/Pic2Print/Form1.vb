@@ -1285,7 +1285,7 @@ Public Class Pic2Print
         ' the file print/gif.  So we now need to examine the decorated name for the mode 
 
         ' increment/decrement all the print counters
-        IncrementPrintCounts(mode, count, 2)
+        IncrementPrintCounts(newNam, mode, count, 2)
 
         ' yep, this is a forced case of sending the image directly to printer #2
         CopyFileToPrint2Dir(newNam)
@@ -1307,7 +1307,7 @@ Public Class Pic2Print
             count = ppDecorateName(fi.Name, newNam, mode)
 
             ' increment/decrement all the print counters
-            IncrementPrintCounts(mode, count, 1)
+            IncrementPrintCounts(newNam, mode, count, 1)
 
             ' process the files in the \onsite folder through photoshop
             Call ppProcessFiles(newNam)
@@ -2204,7 +2204,7 @@ Public Class Pic2Print
                 ' so this machine's operator sees the effects of both printers here.
                 '
                 If Globals.ToPrinter = 2 Then
-                    IncrementPrintCounts(mode, count, 2)
+                    IncrementPrintCounts(prtfnam, mode, count, 2)
                 End If
 
                 ' increment the image printed count for GIF & Prints
@@ -2237,7 +2237,8 @@ Public Class Pic2Print
     End Function
 
 
-    Public Sub IncrementPrintCounts(ByVal mode As Integer, ByVal count As Integer, ByVal printer As Integer)
+    Public Sub IncrementPrintCounts(ByRef nam As String, ByVal mode As Integer, ByVal count As Integer, ByVal printer As Integer)
+        Dim ProcessSeconds As Integer = 0
 
         ' if printing (vs not GIF) we decrement the paper count on the appropriate printer.
 
@@ -2250,12 +2251,15 @@ Public Class Pic2Print
             ' Decrement the selected printer downcounters 
             If printer = 1 Then
 
-                ' printer 1 has one less sheet. Turn the button yellow for the duration
-                Globals.Printer1DownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text + (Globals.prtr1PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
-                PrinterSelect1.BackColor = Color.LightYellow
+                '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
+                If InStr(nam, "_m1", ) > 0 Then
+                    ProcessSeconds = _calculateSeconds(Globals.Printer1DownCount, Globals.fForm3.Printer1ProfileTimeSeconds.Text, Globals.prtr1PrinterSeconds)
+                    Globals.Printer1DownCount += ProcessSeconds + (Globals.prtr1PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
+                    PrinterSelect1.BackColor = Color.LightYellow
+                    'End If
 
-                ' if this an actual print, then decr the remaining counts
-                If mode = PRT_PRINT Then
+                    ' printer 1 has one less sheet. if this an actual print, then decr the remaining counts
+                    'If mode = PRT_PRINT Then
                     If Globals.Printer1Remaining > 0 Then
                         Globals.Printer1Remaining -= count
                         If Globals.Printer1Remaining < 0 Then
@@ -2266,12 +2270,16 @@ Public Class Pic2Print
 
             Else
 
-                ' printer 2 has one less sheet. turn the button yellow for the duration
-                Globals.Printer2DownCount += Globals.fForm3.Printer2ProfileTimeSeconds.Text + (Globals.prtr2PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
-                PrinterSelect2.BackColor = Color.LightYellow
+                '  Add in the seconds for this processing time & print time.  Turn the button yellow for the duration
+                '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
+                If InStr(nam, "_m1") > 0 Then
+                    ProcessSeconds = _calculateSeconds(Globals.Printer2DownCount, Globals.fForm3.Printer2ProfileTimeSeconds.Text, Globals.prtr2PrinterSeconds)
+                    Globals.Printer2DownCount += ProcessSeconds + (Globals.prtr2PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
+                    PrinterSelect2.BackColor = Color.LightYellow
+                    'End If
 
-                ' if this an actual print, then decr the remaining counts
-                If mode = PRT_PRINT Then
+                    ' if this an actual print, then decr the remaining counts
+                    'If mode = PRT_PRINT Then
                     If Globals.Printer2Remaining > 0 Then
                         Globals.Printer2Remaining -= count
                         If Globals.Printer2Remaining < 0 Then
@@ -2286,7 +2294,7 @@ Public Class Pic2Print
 
         ' in either case of printer1 & printer2, increment the total global print count, ignore gifs
 
-        If mode = PRT_PRINT Then
+        If InStr(nam, "_m1") > 0 Then 'If mode = PRT_PRINT Then
 
             ' the total printed count on the main panel
             Globals.TotalPrinted += count
@@ -2297,6 +2305,48 @@ Public Class Pic2Print
         End If
 
     End Sub
+
+    Private Function _calculateSeconds(ByVal PrinterDownCount As Integer, ByVal PrinterProfileTimeSeconds As Integer, ByVal prtrPrinterSeconds As Integer) As Integer
+        Dim n As Integer
+
+        ' Easy case - an idle printer means both the processing time and print time are sequential so just return the processing time
+        If PrinterDownCount = 0 Then
+            Globals.fDebug.txtPrintLn("  calculated processing seconds = " & PrinterProfileTimeSeconds)
+            Return (PrinterProfileTimeSeconds)
+        End If
+
+        ' Harder case - Printer is running, so that time can be subtracted from the processing time.
+        '    if the processing time is greater than printing, we will add time.
+
+        If PrinterProfileTimeSeconds > prtrPrinterSeconds Then
+
+            If prtrPrinterSeconds > PrinterDownCount Then
+                n = PrinterProfileTimeSeconds - PrinterDownCount    ' calc the non-overlap time 
+            Else
+                n = PrinterProfileTimeSeconds - prtrPrinterSeconds  ' calc the non-overlap time
+            End If
+
+        Else
+
+            ' since the processing time is less than printing, we have best case of maybe not adding seconds
+
+            If prtrPrinterSeconds > PrinterDownCount Then
+                If PrinterDownCount > PrinterProfileTimeSeconds Then
+                    n = 0 ' printing is greater than processing time.
+                Else
+                    n = PrinterProfileTimeSeconds - PrinterDownCount    ' calc the non-overlap time 
+                End If
+            Else
+                n = 0  ' printing will take longer than processing
+            End If
+
+        End If
+
+        ' return a calculated # of seconds for the processing time
+        'Globals.fDebug.txtPrintLn("  calculated processing seconds = " & n)
+        Return n
+
+    End Function
 
     Public Delegate Sub UpdatePrinterCountBoxesCallback(ByVal count1 As Integer, ByVal count2 As Integer)
     Public Sub UpdatePrinterCountBoxes(ByVal count1, ByVal count2)
@@ -3691,7 +3741,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.06"    ' Version string
+    Public Shared Version As String = "Version 11.09"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
