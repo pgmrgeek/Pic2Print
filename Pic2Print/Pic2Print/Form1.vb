@@ -2,7 +2,7 @@
 Imports System.IO
 Imports System.Threading
 '
-'=====================================================================
+'====================================================================
 '                              Pic2Print
 '====================================================================
 '
@@ -319,6 +319,13 @@ Public Class Pic2Print
                     Globals.prtrRatio(Globals.prtrMax) = arrCurrentRow(6)
                     Globals.prtrSeconds(Globals.prtrMax) = arrCurrentRow(7)
 
+                    ' setup defaults for the extentions to the printer file
+                    Globals.prtrHorzPCT(Globals.prtrMax) = 100
+                    Globals.prtrVertPCT(Globals.prtrMax) = 100
+                    Globals.prtrHorzOFF(Globals.prtrMax) = 0
+                    Globals.prtrVertOFF(Globals.prtrMax) = 0
+                    Globals.prtrStartupSecs(Globals.prtrMax) = 2
+
                     ' version 10 change.  Added 4 fields to the printer file. Use defaults on older files..
 
                     If sz > 8 Then
@@ -326,11 +333,12 @@ Public Class Pic2Print
                         Globals.prtrVertPCT(Globals.prtrMax) = arrCurrentRow(9)
                         Globals.prtrHorzOFF(Globals.prtrMax) = arrCurrentRow(10)
                         Globals.prtrVertOFF(Globals.prtrMax) = arrCurrentRow(11)
-                    Else ' use these defaults
-                        Globals.prtrHorzPCT(Globals.prtrMax) = 100
-                        Globals.prtrVertPCT(Globals.prtrMax) = 100
-                        Globals.prtrHorzOFF(Globals.prtrMax) = 0
-                        Globals.prtrVertOFF(Globals.prtrMax) = 0
+
+                    End If
+
+                    ' version 11.10 added 1 field for printer startup seconds
+                    If sz > 12 Then
+                        Globals.prtrStartupSecs(Globals.prtrMax) = arrCurrentRow(12)
                     End If
 
                     Globals.fForm3.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
@@ -340,7 +348,7 @@ Public Class Pic2Print
 
                 End If
 
-                End If
+            End If
 
         End While
 
@@ -2245,16 +2253,17 @@ Public Class Pic2Print
         ''''''''' dsc - For debugging load balancing, use the simple if statement; don't check for NoPrint or you'll never see it..
 
         'Globals.fDebug.txtPrintLn("DEBUG ONLY - RESTORE THIS IF STATEMENT!")
-        If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
-            'If (mode = PRT_PRINT) Then
+        'If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
+        If (mode = PRT_PRINT) Then
 
             ' Decrement the selected printer downcounters 
             If printer = 1 Then
 
                 '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
                 If InStr(nam, "_m1", ) > 0 Then
-                    ProcessSeconds = _calculateSeconds(Globals.Printer1DownCount, Globals.fForm3.Printer1ProfileTimeSeconds.Text, Globals.prtr1PrinterSeconds)
+                    ProcessSeconds = _calculateSeconds(Globals.Printer1DownCount, Globals.fForm3.Printer1ProfileTimeSeconds.Text, Globals.prtr1PrinterSeconds, Globals.prtr1PrinterStartupSecs)
                     Globals.Printer1DownCount += ProcessSeconds + (Globals.prtr1PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
+                    'Globals.fDebug.txtPrintLn("Print1 downcount:" & Globals.Printer1DownCount)
                     PrinterSelect1.BackColor = Color.LightYellow
                     'End If
 
@@ -2273,8 +2282,9 @@ Public Class Pic2Print
                 '  Add in the seconds for this processing time & print time.  Turn the button yellow for the duration
                 '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
                 If InStr(nam, "_m1") > 0 Then
-                    ProcessSeconds = _calculateSeconds(Globals.Printer2DownCount, Globals.fForm3.Printer2ProfileTimeSeconds.Text, Globals.prtr2PrinterSeconds)
+                    ProcessSeconds = _calculateSeconds(Globals.Printer2DownCount, Globals.fForm3.Printer2ProfileTimeSeconds.Text, Globals.prtr2PrinterSeconds, Globals.prtr2PrinterStartupSecs)
                     Globals.Printer2DownCount += ProcessSeconds + (Globals.prtr2PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
+                    'Globals.fDebug.txtPrintLn("Print2 downcount:" & Globals.Printer2DownCount)
                     PrinterSelect2.BackColor = Color.LightYellow
                     'End If
 
@@ -2306,13 +2316,13 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Function _calculateSeconds(ByVal PrinterDownCount As Integer, ByVal PrinterProfileTimeSeconds As Integer, ByVal prtrPrinterSeconds As Integer) As Integer
+    Private Function _calculateSeconds(ByVal PrinterDownCount As Integer, ByVal PrinterProfileTimeSeconds As Integer, ByVal prtrPrinterSeconds As Integer, ByVal prtrStartupSecs As Integer) As Integer
         Dim n As Integer
 
         ' Easy case - an idle printer means both the processing time and print time are sequential so just return the processing time
         If PrinterDownCount = 0 Then
-            Globals.fDebug.txtPrintLn("  calculated processing seconds = " & PrinterProfileTimeSeconds)
-            Return (PrinterProfileTimeSeconds)
+            Globals.fDebug.txtPrintLn("DownC=" & PrinterDownCount & " profTm=" & PrinterProfileTimeSeconds & " prtTm=" & prtrPrinterSeconds & " prtStrtUp=" & prtrStartupSecs & " plus " & n & " seconds")
+            Return (PrinterProfileTimeSeconds + prtrStartupSecs)  ' we add X seconds for printer startup time.  
         End If
 
         ' Harder case - Printer is running, so that time can be subtracted from the processing time.
@@ -2343,7 +2353,7 @@ Public Class Pic2Print
         End If
 
         ' return a calculated # of seconds for the processing time
-        'Globals.fDebug.txtPrintLn("  calculated processing seconds = " & n)
+        Globals.fDebug.txtPrintLn("DownC=" & PrinterDownCount & " profTm=" & PrinterProfileTimeSeconds & " prtTm=" & prtrPrinterSeconds & " prtStrtUp=" & prtrStartupSecs & " plus " & n & " seconds")
         Return n
 
     End Function
@@ -3741,7 +3751,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.09"    ' Version string
+    Public Shared Version As String = "Version 11.10"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3839,12 +3849,15 @@ Public Class Globals
     Public Shared prtrDPI(128) As Int16
     Public Shared prtrRatio(128) As Int16
     Public Shared prtrSeconds(128) As Int16
+    Public Shared prtrStartupSecs(128) As Int16
     Public Shared prtrHorzPCT(128) As Int16
     Public Shared prtrVertPCT(128) As Int16
     Public Shared prtrHorzOFF(128) As Int16
     Public Shared prtrVertOFF(128) As Int16
     Public Shared prtr1PrinterSeconds As Int16
+    Public Shared prtr1PrinterStartupSecs As Int16
     Public Shared prtr2PrinterSeconds As Int16
+    Public Shared prtr2PrinterStartupSecs As Int16
 
     ' Array of phone MMS carriers from the CSV file
     Public Shared carrierMax As Int16 = 0

@@ -791,7 +791,9 @@ Public Class Form3
 
         ' setup the printer second counts to be accessed in timer routines
         Globals.prtr1PrinterSeconds = Globals.prtrSeconds(Printer1LB.SelectedIndex)
+        Globals.prtr1PrinterStartupSecs = Globals.prtrStartupSecs(Printer1LB.SelectedIndex)
         Globals.prtr2PrinterSeconds = Globals.prtrSeconds(Printer2LB.SelectedIndex)
+        Globals.prtr2PrinterStartupSecs = Globals.prtrStartupSecs(Printer2LB.SelectedIndex)
 
     End Sub
 
