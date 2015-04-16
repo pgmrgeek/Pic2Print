@@ -31,86 +31,36 @@ Public Class PostView
 
         End If
 
-        ' Call FormLayout()
+        ' establish the default size
+
+        Call Postview_Resized()
 
         For Each str In Globals.fmmsForm.CarrierCB.Items
             CarrierCB.Items.Add(str)
         Next
-        ' CarrierCB.Items.Add(Globals.fmmsForm.CarrierCB.Items)
-
-        'Call SwapButtons(Globals.fForm3.EmailCloudEnabled.Checked)
-
-        'pbPostView.Image = My.Resources.nobk
-        'pbThumb1.Image = My.Resources.nobk
-        'pbThumb2.Image = My.Resources.nobk
-        'PbThumb3.Image = My.Resources.nobk
-        'pbThumb4.Image = My.Resources.nobk
 
         Call postLoadThumbs(True)
-
         Globals.fPostViewHasLoaded = True
 
     End Sub
 
-    ' Public Sub FormLayout()
-    'Dim p As Point
+    Private Sub PostView_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
 
-    '   SwapButtons(Globals.fForm3.EmailCloudEnabled.Checked)
+        Call Postview_Resized()
 
-    '   If Globals.fForm3.MultipleBackgrounds.Checked Then
-    '       p.X = 310
-    '      p.Y = 206
-    '       PostView1PB.Size = p
-    '         PostView2PB.Visible = True
-    '        PostView3PB.Visible = True
-    '        PostView4PB.Visible = True
-    '
-    '    Else
-    '          p.X = 626
-    '         p.Y = 418
-    '         PostView1PB.Size = p
-    '         PostView2PB.Visible = False
-    '         PostView3PB.Visible = False
-    '         PostView4PB.Visible = False
-    '     End If
-    ''
-    'End Sub
+    End Sub
 
     Private Sub PreviewHideButton_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PostCloseButton1.Click
         Call PostCloseClick()
     End Sub
+
     Private Sub PostCloseButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Call PostCloseClick()
     End Sub
 
     Private Sub PostCloseClick()
-
         Me.Hide()
-
-        'If Globals.PostViewsLoaded And 1 Then
-        'PostView1PB.Image.Dispose()
-        'PostView1PB.Image = My.Resources.nobk
-        'End If
-
-        'If Globals.PostViewsLoaded And 2 Then
-        'PostView2PB.Image.Dispose()
-        'PostView2PB.Image = My.Resources.nobk
-        'End If
-
-        'If Globals.PostViewsLoaded And 4 Then
-        'PostView3PB.Image.Dispose()
-        'PostView3PB.Image = My.Resources.nobk
-        'End If
-
-        'If Globals.PostViewsLoaded And 8 Then
-        'PostView4PB.Image.Dispose()
-        'PostView4PB.Image = My.Resources.nobk
-        'End If
-
-        'Globals.PostViewsLoaded = 0
-
     End Sub
-
 
     Private Sub btnPostSend_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostSend.Click
         ' just save the text for later..
@@ -124,45 +74,42 @@ Public Class PostView
 
     End Sub
 
+    Private Sub Postview_Resized()
+        Dim s As Point ' size
+        Dim l As Point ' location
+        Dim x As Integer
+        Dim y As Integer
+
+        ' reposition the thumbnail box
+
+        x = Me.Size.Width / 2 - 4
+        x = x - (gbThumbBox.Width / 2)
+        s.Y = gbThumbBox.Location.Y
+        s.X = x
+        gbThumbBox.Location = s
+
+        ' reposition the button/email group
+
+        l = Me.Size
+        l.Y = l.Y - 128
+        x = l.X / 2
+        l.X = x - (PostGroup.Size.Width / 2)
+        If l.Y < 128 Then l.Y = 128
+        If l.X < 0 Then l.X = 0
+        PostGroup.Location = l
+
+        ' resize the picture box starting location
+
+        l.Y = gbThumbBox.Location.Y + gbThumbBox.Size.Height + 4  ' starting height
+        s.Y = PostGroup.Location.Y - 4 - l.Y
+        s.X = (s.Y * 1.333)
+        l.X = Me.Size.Width / 2 - (s.X / 2)
+        pbPostView.Size = s
+        pbPostView.Location = l
+
+    End Sub
+
     Public Sub SetLoadPostViews(ByRef pb As PictureBox, ByRef fnam As String, ByRef mask As Int16)
-
-        ' DSC rewrite this to load images from the printed folder...
-
-        ' If idx = 1 Then
-        ' InvokeRequired required compares the thread ID of the
-        ' calling thread to the thread ID of the creating thread.
-        ' If these threads are different, it returns true.
-        ' If pb.InvokeRequired Then
-        '
-        '   Dim d As New Globals.SetPostViewCallback(AddressOf SetLoadPostViews)
-        '   Me.Invoke(d, New Object() {pb, fnam, mask})
-
-        '   Else
-
-        ' safeguard - don't process if the file isn't found.
-        '    If File.Exists(Globals.tmpPrint1_Folder & fnam) = False Then
-        'fnam = ""
-        '   End If
-
-        ' a null string means, dispose of the held image
-        '   If fnam = "" Then
-        'pb.Image.Dispose()
-        '    pb.Image = My.Resources.blank
-        '    Globals.PostViewsLoaded = Globals.PostViewsLoaded And Not mask
-        '   Else
-
-        ' DSC!!! free this up or we have a memory leak!
-        ' if there is some image, free it up
-        'If pb.Image <> My.Resources.nobk Then
-        'pb.Image.Dispose()
-        ' End If
-
-        ' now load the preview from the file
-        '   pb.Image = Image.FromFile(Globals.tmpPrint1_Folder & fnam)
-        '   Globals.PostViewsLoaded = Globals.PostViewsLoaded Or mask
-        '   End If
-        '
-        '   End If
 
     End Sub
 
@@ -325,9 +272,6 @@ Public Class PostView
                 CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
             End If
 
-            ' CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
-
-
         End If
 
     End Sub
@@ -335,5 +279,6 @@ Public Class PostView
     Private Sub btnReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReprint.Click
         Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
     End Sub
+
 
 End Class

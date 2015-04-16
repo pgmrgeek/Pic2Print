@@ -11,6 +11,13 @@ Imports System.Text
 '
 Public Class Preview
 
+    ' used to specify what to do with the file when printing it. either load, print or just create a .gif
+    Public Const PRT_LOAD = 0
+    Public Const PRT_PRINT = 1
+    Public Const PRT_GIF = 2
+    'Public Const PRT_POST = 3
+    Public Const PRT_REPRINT = 4
+
     Private Sub ThumbnailForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ' if user reset, move the form to the top left corner - 2 positions
 
@@ -30,21 +37,6 @@ Public Class Preview
 
         Call Form2_Resized()
 
-        'Dim myControl As Control
-        'myControl = sender
-        'Dim s As Size = New Size(20, 20)
-
-        ' Ensure the Form remains square (Height = Width). 
-        'If myControl.Size.Height > 20 Then
-        's.Height = myControl.Size.Height ' - 20
-        'End If
-
-        'If myControl.Size.Width > 20 Then
-        's.Width = myControl.Size.Height ' - 20
-        'End If
-
-        ' Form2PictureBox.Size = s
-
     End Sub
 
 
@@ -58,40 +50,26 @@ Public Class Preview
 
     Private Sub Form2_Resized()
         Dim p As Point
-
+        Dim x As Integer
         ' resize the picture box
 
-        'p = MyBase.Size
         p = Me.Size
+        x = p.X / 2
 
         p.X -= 8
-        p.Y -= 124
+        p.Y -= 96
         If p.X < 8 Then p.X = 8
-        If p.Y < 124 Then p.Y = 124
+        If p.Y < 96 Then p.Y = 96
 
         Form2PictureBox.Size = p
 
-        ' move the close button position
-        p.Y = MyBase.Size.Height - 64
-        If p.Y < 0 Then p.Y = 0
+        p = Me.Size
+        p.Y = p.Y - 102
+        p.X = x - (gbOptions.Size.Width / 2)
+        If p.Y < 102 Then p.Y = 102
+        If p.X < 0 Then p.X = 0
+        gbOptions.Location = p
 
-        p.X = PrevClose.Location.X
-        PrevClose.Location = p
-
-        ' move the print message label
-        p.X = lblPrintMsg.Location.X
-        lblPrintMsg.Location = p
-        p.Y += 16
-        lblRemaining.Location = p
-        p.Y -= 16
-
-        ' move the  message text box
-        p.X = BtnSaveTxt.Location.X
-        BtnSaveTxt.Location = p
-
-        ' move the  message text box
-        p.X = txtPrintMsg.Location.X
-        txtPrintMsg.Location = p
 
 
     End Sub
@@ -133,7 +111,73 @@ Public Class Preview
         lblRemaining.Text = "Remaining = " & Globals.fForm3.txtLayoutTxTLen.Text - Microsoft.VisualBasic.Len(txtPrintMsg.Text)
     End Sub
 
-    Private Sub Form2PictureBox_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Form2PictureBox.Click
+    Private Sub btnLeftMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftMost.Click
+        Globals.fPic2Print.ScreenMiddle(False, 0)
+        Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(0), 0)
+    End Sub
 
+    Private Sub btnRightMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightMost.Click
+        Dim idx As Int16 = Globals.ImageCache.maxIndex - 7
+        If idx < 0 Then idx = 0
+        Globals.fPic2Print.ScreenMiddle(False, idx)
+        idx = 6 ' move to last image
+        If Globals.ScreenBase + 7 > Globals.ImageCache.maxIndex Then
+            idx = Globals.ImageCache.maxIndex - Globals.ScreenBase
+        End If
+        Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
+    End Sub
+
+    Private Sub btnLeftOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftOne.Click
+        MoveImageFocus(-1)
+        'Globals.fPic2Print.ScreenMiddle(True, -3)
+    End Sub
+
+    Private Sub btnRightOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightOne.Click
+        MoveImageFocus(1)
+        'Globals.fPic2Print.ScreenMiddle(True, 3)
+    End Sub
+
+    Private Sub btnProcessOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnProcessOne.Click
+        Call Globals.fPic2Print.Validate_and_PrintThisCount(1, PRT_PRINT)
+        Call Globals.fPic2Print.resetlayercounter()
+    End Sub
+
+
+    Private Sub moveimagefocus(ByVal offset As Integer)
+
+        If (offset = -1) Then ' moving one position to the left, to the first image
+
+            ' bail out if we're already at the start
+            If (Globals.ScreenBase + Globals.PictureBoxSelected) = 0 Then Return
+
+            If Globals.PictureBoxSelected = 0 Then
+                Globals.fPic2Print.ScreenMiddle(True, -1)
+                Globals.PictureBoxSelected = 0
+            Else
+                Globals.PictureBoxSelected -= 1
+            End If
+
+            Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(Globals.PictureBoxSelected), Globals.PictureBoxSelected)
+
+        Else  ' moving one position to the right, to the last image
+
+            ' bail out if we're already at the start
+            If (Globals.ScreenBase + Globals.PictureBoxSelected + 1) >= Globals.ImageCache.maxIndex Then Return
+
+            If Globals.PictureBoxSelected = 6 Then
+                Globals.fPic2Print.ScreenMiddle(True, 1)
+                Globals.PictureBoxSelected = 6
+            Else
+                Globals.PictureBoxSelected += 1
+            End If
+
+            Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(Globals.PictureBoxSelected), Globals.PictureBoxSelected)
+
+        End If
+
+    End Sub
+
+    Private Sub btnRefresh_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRefresh.Click
+        Call Globals.fPic2Print.PerformRefresh()
     End Sub
 End Class

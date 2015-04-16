@@ -1,6 +1,8 @@
 ﻿Imports System
 Imports System.IO
 Imports System.Threading
+
+
 '
 '====================================================================
 '                              Pic2Print
@@ -61,6 +63,12 @@ Imports System.Threading
 '
 Public Class Pic2Print
 
+    ' used to specify what to do with the file when printing it. either load, print or just create a .gif
+    Public Const PRT_LOAD = 0
+    Public Const PRT_PRINT = 1
+    Public Const PRT_GIF = 2
+    'Public Const PRT_POST = 3
+    Public Const PRT_REPRINT = 4
     '
     ' ================================== Startup/End Code ===================================================
     '
@@ -797,7 +805,7 @@ Public Class Pic2Print
     End Sub
 
 
-    Private Function Validate_and_PrintThisCount(ByRef count As Int16, ByVal mode As Integer) As Boolean
+    Public Function Validate_and_PrintThisCount(ByRef count As Int16, ByVal mode As Integer) As Boolean
         Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
         Dim b As Boolean
 
@@ -1014,10 +1022,6 @@ Public Class Pic2Print
 
     Public Sub right_start_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles right_start.Click
         Dim idx As Int16 = Globals.ImageCache.maxIndex - 3
-        ' if too low, set to validate this new index
-        'If idx < 3 Then
-        'idx = Globals.ScreenBase + 4
-        'End If
         idx = Globals.ImageCache.maxIndex - 7
         If idx < 0 Then idx = 0
         ScreenMiddle(False, idx)
@@ -1025,6 +1029,10 @@ Public Class Pic2Print
 
     '----====< New Files load  button >====----
     Private Sub New_Files_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles New_Files.Click
+        Call PerformRefresh()
+    End Sub
+
+    Public Sub PerformRefresh()
         Dim idx As Int16
         Dim wasGreen As Boolean = False
 
@@ -1088,6 +1096,7 @@ Public Class Pic2Print
 
         End If
 
+        cbAutoFollow.Checked = False
         Preview.Show()
 
     End Sub
@@ -2970,7 +2979,7 @@ Public Class Pic2Print
     End Sub
 
     ' sets the 3D bevel edge to show the focus
-    Private Sub SetPictureBoxFocus(ByRef pb As PictureBox, ByVal idx As Int16)
+    Public Sub SetPictureBoxFocus(ByRef pb As PictureBox, ByVal idx As Int16)
 
         ' new selection and global index to the files
         Globals.PictureBoxSelected = idx
@@ -3110,7 +3119,7 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Sub ScreenMiddle(ByVal relative As Boolean, ByVal offset As Int16)
+    Public Sub ScreenMiddle(ByVal relative As Boolean, ByVal offset As Int16)
         Dim idx As Int16
 
         ' the list of thumbs is moving, so make them all inactive (safe, they're not going anywhere..)
@@ -3499,64 +3508,6 @@ Public Class Pic2Print
         PostView.postLoadThumbs(True)
         PostView.Show()
 
-        ' don't allow a build if one is in progress - only one at a time..
-        '
-        ' If Globals.tmpBuildPostViews > 0 Then
-        'MessageBox.Show("Currently Building Post Views. Click Okay," & vbCrLf & _
-        '                  "and wait for the process to complete before" & vbCrLf & _
-        '                  "requesting another build.")
-        ' Return
-        'End If
-
-        'Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
-        'If idx < Globals.FileNamesMax Then
-
-        ' make sure the file hasn't been deleted/moved underneath us..
-
-        'If Globals.PicBoxNames(Globals.PictureBoxSelected).Text <> "" Then
-
-        'Globals.fPostView.usrEmail2.Text = Globals.FileNameEmails(Globals.ScreenBase + Globals.PictureBoxSelected)
-
-        ' If Globals.fPostView.Visible = False Then
-        'Globals.fPostView.FormLayout()
-        ' Globals.fPostView.Show()
-        'End If
-
-        ' flush all the pre-existing images from the prior load
-        'If Globals.PostViewsLoaded And &H80 Then
-
-        'If Globals.PostViewsLoaded And 1 Then
-        'Globals.fPostView.PostView1PB.Image.Dispose()
-        ' Globals.fPostView.PostView1PB.Image = My.Resources.blank
-        ' End If
-
-        ' If Globals.PostViewsLoaded And 2 Then
-        'Globals.fPostView.PostView2PB.Image.Dispose()
-        'Globals.fPostView.PostView2PB.Image = My.Resources.blank
-        'End If
-
-        'If Globals.PostViewsLoaded And 4 Then
-        'Globals.fPostView.PostView3PB.Image.Dispose()
-        'Globals.fPostView.PostView3PB.Image = My.Resources.blank
-        'End If
-
-        'If Globals.PostViewsLoaded And 8 Then
-        'Globals.fPostView.PostView4PB.Image.Dispose()
-        ' Globals.fPostView.PostView4PB.Image = My.Resources.blank
-        ' End If
-
-        ' Globals.PostViewsLoaded = 0
-
-        ' End If
-
-        ' process it through the normal path now. (as opposed a special case)
-        'PrintThisCount(idx, 1, PRT_POST)
-        'Call resetlayercounter()
-
-        ' End If
-
-        ' End If
-
     End Sub
 
     ' this code is brute force taking control for the duration to send out all emails to guests and facebook
@@ -3675,15 +3626,6 @@ Public Class Pic2Print
 
     End Sub
 
-    ' ================================ CONSTANTS in this Class =======================================
-
-    ' used to specify what to do with the file when printing it. either load, print or just create a .gif
-    Public Const PRT_LOAD = 0
-    Public Const PRT_PRINT = 1
-    Public Const PRT_GIF = 2
-    'Public Const PRT_POST = 3
-    Public Const PRT_REPRINT = 4
-
     Private Sub cbQuickBG_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbQuickBG.CheckedChanged
 
         ' Quick control check/uncheck of the background layer
@@ -3751,7 +3693,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.10"    ' Version string
+    Public Shared Version As String = "Version 11.11"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
