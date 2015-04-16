@@ -1464,6 +1464,7 @@ Public Class Pic2Print
         Dim email1 As String = ""
         Dim phone1 As String = ""
         Dim sel As Integer
+        Dim waitTime = 500  ' wait a half second initially, then 3 seconds after the first pass
 
         ' seems reasonable, if the print processor thread can run, so can we..
         Do While Globals.PrintProcessRun > 0
@@ -1528,10 +1529,12 @@ Public Class Pic2Print
                     Globals.fPostView.chkAutoScrolltoNewImages()
                 End If
 
+                waitTime = 3000  ' after the first pass, we can do this slowly
+
             End If
 
-            ' sleep for a second before looking for more .JPGs
-            Thread.Sleep(3000)
+            ' sleep for three seconds before looking for more .JPGs
+            Thread.Sleep(waitTime)
 
         Loop
 
@@ -1587,7 +1590,6 @@ Public Class Pic2Print
 
             End If
         End If
-
 
     End Sub
 
@@ -3693,7 +3695,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.11"    ' Version string
+    Public Shared Version As String = "Version 11.12"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

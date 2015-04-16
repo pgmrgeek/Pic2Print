@@ -39,7 +39,8 @@ Public Class PostView
             CarrierCB.Items.Add(str)
         Next
 
-        Call postLoadThumbs(True)
+        Call doReloadImages()
+        'Call postLoadThumbs(True)
         Globals.fPostViewHasLoaded = True
 
     End Sub
@@ -176,6 +177,10 @@ Public Class PostView
         Call postLoadThumbs(True)
     End Sub
     Private Sub btnLeftEnd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftEnd.Click
+        Call doReloadImages()
+    End Sub
+
+    Private Sub doReloadImages()
         screenBase = 0
         ' release the butterflys, see which will return..
         Globals.PrintCache.FreeAllPictures()
@@ -220,59 +225,59 @@ Public Class PostView
         ' InvokeRequired required compares the thread ID of the
         ' calling thread to the thread ID of the creating thread.
         ' If these threads are different, it returns true.
-        If pbThumb1.InvokeRequired Then
-            Dim d As New postRefreshCallback(AddressOf postLoadThumbs)
-            Me.Invoke(d, New Object() {doAll})
-        Else
+        'If pbThumb1.InvokeRequired Then
+        'Dim d As New postRefreshCallback(AddressOf postLoadThumbs)
+        ' Me.Invoke(d, New Object() {doAll})
+        ' Else
 
-            If doAll = True Then
+        If doAll = True Then
 
-                ' draw all four images
-                If screenBase < Globals.PrintCache.maxIndex Then
-                    img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase))
-                Else
-                    img = My.Resources.blank
-                End If
-                pbThumb1.Image = img
-
-                If screenBase + 1 < Globals.PrintCache.maxIndex Then
-                    img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 1))
-                Else
-                    img = My.Resources.blank
-                End If
-                pbThumb2.Image = img
-
-                If screenBase + 2 < Globals.PrintCache.maxIndex Then
-                    img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 2))
-                Else
-                    img = My.Resources.blank
-                End If
-                PbThumb3.Image = img
-
-                If screenBase + 3 < Globals.PrintCache.maxIndex Then
-                    img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 3))
-                Else
-                    img = My.Resources.blank
-                End If
-                pbThumb4.Image = img
-
-            End If
-
-            i = screenBase + ThumbSelect
-            If i < Globals.PrintCache.maxIndex Then
-                img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(i))
+            ' draw all four images
+            If screenBase < Globals.PrintCache.maxIndex Then
+                img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase))
             Else
                 img = My.Resources.blank
             End If
-            pbPostView.Image = img
-            usrEmail2.Text = Globals.PrintCache.emailAddr(screenBase + ThumbSelect)
-            tbPhoneNum.Text = Globals.PrintCache.phoneNumber(screenBase + ThumbSelect)
+            pbThumb1.Image = img
 
-            If Globals.fPostViewHasLoaded Then
-                CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
+            If screenBase + 1 < Globals.PrintCache.maxIndex Then
+                img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 1))
+            Else
+                img = My.Resources.blank
             End If
+            pbThumb2.Image = img
+
+            If screenBase + 2 < Globals.PrintCache.maxIndex Then
+                img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 2))
+            Else
+                img = My.Resources.blank
+            End If
+            PbThumb3.Image = img
+
+            If screenBase + 3 < Globals.PrintCache.maxIndex Then
+                img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 3))
+            Else
+                img = My.Resources.blank
+            End If
+            pbThumb4.Image = img
 
         End If
+
+        i = screenBase + ThumbSelect
+        If i < Globals.PrintCache.maxIndex Then
+            img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(i))
+        Else
+            img = My.Resources.blank
+        End If
+        pbPostView.Image = img
+        usrEmail2.Text = Globals.PrintCache.emailAddr(screenBase + ThumbSelect)
+        tbPhoneNum.Text = Globals.PrintCache.phoneNumber(screenBase + ThumbSelect)
+
+        If Globals.fPostViewHasLoaded Then
+            CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
+        End If
+
+        'End If
 
     End Sub
 
