@@ -19,11 +19,19 @@ Public Class Preview
     Public Const PRT_REPRINT = 4
 
     Private Sub ThumbnailForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim str As String
+
         ' if user reset, move the form to the top left corner - 2 positions
 
         If Globals.cmdLineReset Then
             SetDesktopLocation(40, 40)
         End If
+
+        ' load the carrier names, etc into local storage
+
+        For Each str In Globals.fmmsForm.CarrierCB.Items
+            CarrierCB.Items.Add(str)
+        Next
 
         ' relocate the objects in the form
 
@@ -39,6 +47,9 @@ Public Class Preview
 
     End Sub
 
+    Private Sub preview_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
+        PreEmailGroup.Visible = False
+    End Sub
 
     Private Sub Form2_ResizeEnd(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.ResizeEnd
 
@@ -51,10 +62,12 @@ Public Class Preview
     Private Sub Form2_Resized()
         Dim p As Point
         Dim x As Integer
+        Dim y As Integer
         ' resize the picture box
 
         p = Me.Size
         x = p.X / 2
+        y = p.Y / 2
 
         p.X -= 8
         p.Y -= 96
@@ -70,33 +83,16 @@ Public Class Preview
         If p.X < 0 Then p.X = 0
         gbOptions.Location = p
 
-
+        p.X = x - (PreEmailGroup.Width / 2)
+        p.Y = y - 48
+        PreEmailGroup.Location = p
 
     End Sub
-
-    'Public Sub SwapButtons(TurnOn As Boolean)
-    '    If TurnOn = True Then
-    'PrevGroup.Visible = True
-    'PrevCloseButton.Visible = False
-    '    Else
-    'PrevGroup.Visible = False
-    'PrevCloseButton.Visible = True
-    '     End If
-    ' End Sub
 
     Private Sub PrevClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PrevClose.Click
         SaveMessage()
         Me.Hide()
     End Sub
-
-    'Private Sub PrevMMS_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    '    Globals.fmmsForm.usrEmail1.Text = Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
-    '    Globals.fmmsForm.txtPhoneNum.Text = Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
-    '    Globals.fmmsForm.CarrierCB.SelectedIndex = Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
-    '    Globals.fmmsForm.txtMessage.Text = Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected)
-    '    Globals.fmmsForm.ShowDialog()
-    '
-    ' End Sub
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSaveTxt.Click
         SaveMessage()
@@ -128,12 +124,12 @@ Public Class Preview
     End Sub
 
     Private Sub btnLeftOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftOne.Click
-        MoveImageFocus(-1)
+        moveimagefocus(-1)
         'Globals.fPic2Print.ScreenMiddle(True, -3)
     End Sub
 
     Private Sub btnRightOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightOne.Click
-        MoveImageFocus(1)
+        moveimagefocus(1)
         'Globals.fPic2Print.ScreenMiddle(True, 3)
     End Sub
 
@@ -179,5 +175,44 @@ Public Class Preview
 
     Private Sub btnRefresh_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRefresh.Click
         Call Globals.fPic2Print.PerformRefresh()
+    End Sub
+
+    Private Sub btnEmailDlg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailDlg.Click
+
+        ' pull the existing email/txt msg data from the globals to present it to the user
+        usrEmail2.Text = Globals.PrintCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
+        tbPhoneNum.Text = Globals.PrintCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
+        CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
+
+        PreEmailGroup.Visible = True
+
+    End Sub
+
+    Private Sub btnEmailSend(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostSend.Click
+        ' save the text for later..
+        Call PreSaveAndClose()
+
+        ' now "print" one copy (sends email..)
+        Call Globals.fPic2Print.Validate_and_PrintThisCount(1, PRT_PRINT)
+        Call Globals.fPic2Print.resetlayercounter()
+
+        PreEmailGroup.Visible = False
+
+    End Sub
+
+    Private Sub btnEmailClose(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        ' save the text for later, nothing more..
+        Call PreSaveAndClose()
+        PreEmailGroup.Visible = False
+    End Sub
+
+    Private Sub PreSaveAndClose()
+        ' just save the text for later..
+        Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail2.Text
+        Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = tbPhoneNum.Text
+        Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected) = CarrierCB.SelectedIndex
+        ' save the data to disk too
+        Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
+
     End Sub
 End Class

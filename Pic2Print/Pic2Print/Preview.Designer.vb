@@ -36,8 +36,17 @@ Partial Class Preview
         Me.btnProcessOne = New System.Windows.Forms.Button()
         Me.btnRightOne = New System.Windows.Forms.Button()
         Me.btnLeftOne = New System.Windows.Forms.Button()
+        Me.PreEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.CarrierCB = New System.Windows.Forms.ComboBox()
+        Me.tbPhoneNum = New System.Windows.Forms.TextBox()
+        Me.lblPhone = New System.Windows.Forms.Label()
+        Me.btnPostSend = New System.Windows.Forms.Button()
+        Me.usrEmail2 = New System.Windows.Forms.TextBox()
+        Me.emaillabel = New System.Windows.Forms.Label()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbOptions.SuspendLayout()
+        Me.PreEmailGroup.SuspendLayout()
         Me.SuspendLayout()
         '
         'PrevClose
@@ -178,12 +187,91 @@ Partial Class Preview
         Me.btnLeftOne.Text = "<"
         Me.btnLeftOne.UseVisualStyleBackColor = True
         '
+        'PreEmailGroup
+        '
+        Me.PreEmailGroup.Controls.Add(Me.Button1)
+        Me.PreEmailGroup.Controls.Add(Me.CarrierCB)
+        Me.PreEmailGroup.Controls.Add(Me.tbPhoneNum)
+        Me.PreEmailGroup.Controls.Add(Me.lblPhone)
+        Me.PreEmailGroup.Controls.Add(Me.btnPostSend)
+        Me.PreEmailGroup.Controls.Add(Me.usrEmail2)
+        Me.PreEmailGroup.Controls.Add(Me.emaillabel)
+        Me.PreEmailGroup.Location = New System.Drawing.Point(35, 141)
+        Me.PreEmailGroup.Name = "PreEmailGroup"
+        Me.PreEmailGroup.Size = New System.Drawing.Size(563, 134)
+        Me.PreEmailGroup.TabIndex = 9
+        Me.PreEmailGroup.TabStop = False
+        Me.PreEmailGroup.Visible = False
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(482, 70)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 21)
+        Me.Button1.TabIndex = 12
+        Me.Button1.Text = "Close"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'CarrierCB
+        '
+        Me.CarrierCB.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CarrierCB.FormattingEnabled = True
+        Me.CarrierCB.Location = New System.Drawing.Point(263, 70)
+        Me.CarrierCB.Name = "CarrierCB"
+        Me.CarrierCB.Size = New System.Drawing.Size(213, 45)
+        Me.CarrierCB.TabIndex = 11
+        '
+        'tbPhoneNum
+        '
+        Me.tbPhoneNum.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tbPhoneNum.Location = New System.Drawing.Point(63, 70)
+        Me.tbPhoneNum.Name = "tbPhoneNum"
+        Me.tbPhoneNum.Size = New System.Drawing.Size(191, 44)
+        Me.tbPhoneNum.TabIndex = 10
+        '
+        'lblPhone
+        '
+        Me.lblPhone.AutoSize = True
+        Me.lblPhone.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPhone.Location = New System.Drawing.Point(4, 84)
+        Me.lblPhone.Name = "lblPhone"
+        Me.lblPhone.Size = New System.Drawing.Size(53, 15)
+        Me.lblPhone.TabIndex = 9
+        Me.lblPhone.Text = "Phone#:"
+        '
+        'btnPostSend
+        '
+        Me.btnPostSend.Location = New System.Drawing.Point(482, 43)
+        Me.btnPostSend.Name = "btnPostSend"
+        Me.btnPostSend.Size = New System.Drawing.Size(75, 21)
+        Me.btnPostSend.TabIndex = 8
+        Me.btnPostSend.Text = "Send"
+        Me.btnPostSend.UseVisualStyleBackColor = True
+        '
+        'usrEmail2
+        '
+        Me.usrEmail2.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.usrEmail2.Location = New System.Drawing.Point(64, 20)
+        Me.usrEmail2.Name = "usrEmail2"
+        Me.usrEmail2.Size = New System.Drawing.Size(412, 44)
+        Me.usrEmail2.TabIndex = 7
+        '
+        'emaillabel
+        '
+        Me.emaillabel.AutoSize = True
+        Me.emaillabel.Location = New System.Drawing.Point(7, 27)
+        Me.emaillabel.Name = "emaillabel"
+        Me.emaillabel.Size = New System.Drawing.Size(35, 13)
+        Me.emaillabel.TabIndex = 6
+        Me.emaillabel.Text = "Email:"
+        '
         'Preview
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = Global.WindowsApplication1.My.MySettings.Default.img_size
         Me.ControlBox = False
+        Me.Controls.Add(Me.PreEmailGroup)
         Me.Controls.Add(Me.gbOptions)
         Me.Controls.Add(Me.Form2PictureBox)
         Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.WindowsApplication1.My.MySettings.Default, "Thumbnail_Location", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -196,6 +284,8 @@ Partial Class Preview
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbOptions.ResumeLayout(False)
         Me.gbOptions.PerformLayout()
+        Me.PreEmailGroup.ResumeLayout(False)
+        Me.PreEmailGroup.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -213,4 +303,12 @@ Partial Class Preview
     Friend WithEvents btnRefresh As System.Windows.Forms.Button
     Friend WithEvents btnLeftMost As System.Windows.Forms.Button
     Friend WithEvents btnRightMost As System.Windows.Forms.Button
+    Friend WithEvents PreEmailGroup As System.Windows.Forms.GroupBox
+    Friend WithEvents CarrierCB As System.Windows.Forms.ComboBox
+    Friend WithEvents tbPhoneNum As System.Windows.Forms.TextBox
+    Friend WithEvents lblPhone As System.Windows.Forms.Label
+    Friend WithEvents btnPostSend As System.Windows.Forms.Button
+    Friend WithEvents usrEmail2 As System.Windows.Forms.TextBox
+    Friend WithEvents emaillabel As System.Windows.Forms.Label
+    Friend WithEvents Button1 As System.Windows.Forms.Button
 End Class

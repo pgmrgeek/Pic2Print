@@ -17,7 +17,7 @@ Public Class PostView
     Public Delegate Sub postRefreshCallback(ByVal str As String)
 
     Private Sub PostView_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
-
+        PostEmailGroup.Visible = False
     End Sub
 
     Private Sub PostView_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -73,13 +73,15 @@ Public Class PostView
         ' send via email now too
         Pic2Print.PostProcessEmail(Globals.PrintCache.fullName(screenBase + ThumbSelect))
 
+        PostEmailGroup.Visible = False
+
     End Sub
 
     Private Sub Postview_Resized()
         Dim s As Point ' size
         Dim l As Point ' location
         Dim x As Integer
-        Dim y As Integer
+        'Dim y As Integer
 
         ' reposition the thumbnail box
 
@@ -89,20 +91,30 @@ Public Class PostView
         s.X = x
         gbThumbBox.Location = s
 
-        ' reposition the button/email group
+        ' reposition the email group
 
         l = Me.Size
-        l.Y = l.Y - 128
+        l.Y = l.Y / 2 - 58
         x = l.X / 2
-        l.X = x - (PostGroup.Size.Width / 2)
-        If l.Y < 128 Then l.Y = 128
+        l.X = x - (PostEmailGroup.Size.Width / 2)
+        If l.Y < 58 Then l.Y = 58
         If l.X < 0 Then l.X = 0
-        PostGroup.Location = l
+        PostEmailGroup.Location = l
+
+        ' reposition the button group
+
+        l = Me.Size
+        l.Y = l.Y - (grpButtons.Size.Height * 1.5)
+        x = l.X / 2
+        l.X = x - (grpButtons.Size.Width / 2)
+        If l.Y < 28 Then l.Y = 28
+        If l.X < 0 Then l.X = 0
+        grpButtons.Location = l
 
         ' resize the picture box starting location
 
         l.Y = gbThumbBox.Location.Y + gbThumbBox.Size.Height + 4  ' starting height
-        s.Y = PostGroup.Location.Y - 4 - l.Y
+        s.Y = grpButtons.Location.Y - 4 - l.Y
         s.X = (s.Y * 1.333)
         l.X = Me.Size.Width / 2 - (s.X / 2)
         pbPostView.Size = s
@@ -285,5 +297,11 @@ Public Class PostView
         Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
     End Sub
 
+    Private Sub btnEmailPopup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailPopup.Click
+        PostEmailGroup.Visible = True
+    End Sub
 
+    Private Sub btnEmailClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailClose.Click
+        PostEmailGroup.Visible = False
+    End Sub
 End Class

@@ -706,11 +706,13 @@ Public Class Pic2Print
         ' kill
         If running Then
             btnTestRun.BackColor = Control.DefaultBackColor
+            btnTestRun.Text = "Test Run"
             running = False
             Return
         End If
 
         running = True
+        btnTestRun.Text = "Stop Testn"
 
         Do While running
 
@@ -1050,6 +1052,7 @@ Public Class Pic2Print
 
         ' turn off the background color on the button
         New_Files.BackColor = Control.DefaultBackColor
+        'Globals.fPreview.btnRefresh.BackColor = Control.DefaultBackColor
 
         ' automatically move out to the left ONLY if the refresh button was green. don't change the screen otherwise
 
@@ -1082,6 +1085,18 @@ Public Class Pic2Print
     ' ----====< Show 2nd Form Button - Larger image view >====----
     ' show 2nd form button event handler - opens the window, shows the focused image
     Public Sub ShowForm1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviewButton.Click
+
+        ' if its visible, hide it then pop it up to the top
+        If Preview.Visible Then
+            Preview.Hide()
+        End If
+
+        ' Dont execute if form3 & 4 are open!
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
+                             "click OKAY before continuing.")
+            Return
+        End If
 
         If (Globals.FileIndexSelected >= Globals.ScreenBase) And
             (Globals.FileIndexSelected <= Globals.ScreenBase + 6) Then
@@ -1134,6 +1149,9 @@ Public Class Pic2Print
 
     Private Sub Stats_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Stats.Click
         'Globals.fDebug.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+        If Globals.fDebug.Visible = True Then
+            Globals.fDebug.Hide()
+        End If
         Globals.fDebug.Show()
     End Sub
 
@@ -1804,6 +1822,7 @@ Public Class Pic2Print
     Private Sub ppMoveFiles(ByRef fName As String, ByRef subdir As String)
         Dim fNameTxt As String = Microsoft.VisualBasic.Left(fName, InStr(fName, ".jp", CompareMethod.Text) - 1) & ".txt"
         Dim trgnamtxt As String = "c:\onsite\orig\" & subdir & fNameTxt
+        Dim prtnamtxt As String = "c:\onsite\printed\" & subdir & fNameTxt
         Dim trgnam As String = "c:\onsite\orig\" & subdir & fName
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
         Dim fnamtxt As String = Globals.tmpPrint1_Folder & fNameTxt
@@ -1814,15 +1833,26 @@ Public Class Pic2Print
         End If
         My.Computer.FileSystem.MoveFile(fnam, trgnam)
 
-        ' move the .txt file out of the print folder to the 'orig' folder
+        ' copy the .txt file out of the print folder to the 'printed' folder
 
         If My.Computer.FileSystem.FileExists(fnamtxt) Then
+
+            ' delete it if there's a copy in the printed folder
+            If My.Computer.FileSystem.FileExists(prtnamtxt) Then
+                My.Computer.FileSystem.DeleteFile(prtnamtxt)
+            End If
+            ' move the .txt now to the orig folder
+            My.Computer.FileSystem.CopyFile(fnamtxt, prtnamtxt)
+
+            ' move the .txt file out of the print folder to the 'orig' folder
+
             ' delete it if there's a copy in the orig folder
             If My.Computer.FileSystem.FileExists(trgnamtxt) Then
                 My.Computer.FileSystem.DeleteFile(trgnamtxt)
             End If
             ' move the .txt now to the orig folder
             My.Computer.FileSystem.MoveFile(fnamtxt, trgnamtxt)
+
         End If
 
     End Sub
@@ -2675,7 +2705,7 @@ Public Class Pic2Print
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
         Dim trgp As String = Globals.fForm4.SyncFolderPath.Text
         Dim srcnam As String
-        Dim i As Int16
+        'Dim i As Int16
 
         ' exit if this is the overloaded call, just to clear the last name
         If fnam = "" Then
@@ -3099,6 +3129,7 @@ Public Class Pic2Print
             ' just load it the straight forward way.
 
             Globals.fPic2Print.New_Files.BackColor = Color.LightGreen
+            'Globals.fPreview.btnRefresh.BackColor = Color.LightGreen
 
         End If
 
@@ -3110,6 +3141,7 @@ Public Class Pic2Print
 
             'txt_folderactivity.Text &= "File " & e.FullPath & " has been created" & vbCrLf
             Globals.fPic2Print.New_Files.BackColor = Color.LightGreen
+            'Globals.fPreview.btnRefresh.BackColor = Color.LightGreen
 
         End If
 
@@ -3695,7 +3727,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 11.12"    ' Version string
+    Public Shared Version As String = "Version 12.00"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

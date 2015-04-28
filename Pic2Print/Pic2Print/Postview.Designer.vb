@@ -23,16 +23,16 @@ Partial Class PostView
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.pbPostView = New System.Windows.Forms.PictureBox()
-        Me.PostGroup = New System.Windows.Forms.GroupBox()
-        Me.btnReprint = New System.Windows.Forms.Button()
-        Me.PostCloseButton1 = New System.Windows.Forms.Button()
+        Me.PostEmailGroup = New System.Windows.Forms.GroupBox()
         Me.CarrierCB = New System.Windows.Forms.ComboBox()
-        Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.tbPhoneNum = New System.Windows.Forms.TextBox()
         Me.lblPhone = New System.Windows.Forms.Label()
         Me.btnPostSend = New System.Windows.Forms.Button()
         Me.usrEmail2 = New System.Windows.Forms.TextBox()
         Me.emaillabel = New System.Windows.Forms.Label()
+        Me.btnReprint = New System.Windows.Forms.Button()
+        Me.PostCloseButton1 = New System.Windows.Forms.Button()
+        Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.pbThumb1 = New System.Windows.Forms.PictureBox()
         Me.pbThumb2 = New System.Windows.Forms.PictureBox()
         Me.PbThumb3 = New System.Windows.Forms.PictureBox()
@@ -42,93 +42,66 @@ Partial Class PostView
         Me.btnButtonRtEnd = New System.Windows.Forms.Button()
         Me.btnLeftEnd = New System.Windows.Forms.Button()
         Me.gbThumbBox = New System.Windows.Forms.GroupBox()
+        Me.grpButtons = New System.Windows.Forms.GroupBox()
+        Me.btnEmailPopup = New System.Windows.Forms.Button()
+        Me.btnEmailClose = New System.Windows.Forms.Button()
         CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PostGroup.SuspendLayout()
+        Me.PostEmailGroup.SuspendLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbThumbBox.SuspendLayout()
+        Me.grpButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'pbPostView
         '
         Me.pbPostView.Location = New System.Drawing.Point(116, 108)
         Me.pbPostView.Name = "pbPostView"
-        Me.pbPostView.Size = New System.Drawing.Size(480, 320)
+        Me.pbPostView.Size = New System.Drawing.Size(480, 363)
         Me.pbPostView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.pbPostView.TabIndex = 0
         Me.pbPostView.TabStop = False
         Me.pbPostView.Tag = ""
         '
-        'PostGroup
+        'PostEmailGroup
         '
-        Me.PostGroup.Controls.Add(Me.btnReprint)
-        Me.PostGroup.Controls.Add(Me.PostCloseButton1)
-        Me.PostGroup.Controls.Add(Me.CarrierCB)
-        Me.PostGroup.Controls.Add(Me.chkAutoScroll)
-        Me.PostGroup.Controls.Add(Me.tbPhoneNum)
-        Me.PostGroup.Controls.Add(Me.lblPhone)
-        Me.PostGroup.Controls.Add(Me.btnPostSend)
-        Me.PostGroup.Controls.Add(Me.usrEmail2)
-        Me.PostGroup.Controls.Add(Me.emaillabel)
-        Me.PostGroup.Location = New System.Drawing.Point(69, 434)
-        Me.PostGroup.Name = "PostGroup"
-        Me.PostGroup.Size = New System.Drawing.Size(563, 96)
-        Me.PostGroup.TabIndex = 7
-        Me.PostGroup.TabStop = False
-        '
-        'btnReprint
-        '
-        Me.btnReprint.Location = New System.Drawing.Point(467, 14)
-        Me.btnReprint.Name = "btnReprint"
-        Me.btnReprint.Size = New System.Drawing.Size(75, 23)
-        Me.btnReprint.TabIndex = 17
-        Me.btnReprint.Text = "Reprint "
-        Me.btnReprint.UseVisualStyleBackColor = True
-        '
-        'PostCloseButton1
-        '
-        Me.PostCloseButton1.Location = New System.Drawing.Point(467, 66)
-        Me.PostCloseButton1.Name = "PostCloseButton1"
-        Me.PostCloseButton1.Size = New System.Drawing.Size(75, 23)
-        Me.PostCloseButton1.TabIndex = 11
-        Me.PostCloseButton1.Text = "Close"
-        Me.PostCloseButton1.UseVisualStyleBackColor = True
+        Me.PostEmailGroup.Controls.Add(Me.btnEmailClose)
+        Me.PostEmailGroup.Controls.Add(Me.CarrierCB)
+        Me.PostEmailGroup.Controls.Add(Me.tbPhoneNum)
+        Me.PostEmailGroup.Controls.Add(Me.lblPhone)
+        Me.PostEmailGroup.Controls.Add(Me.btnPostSend)
+        Me.PostEmailGroup.Controls.Add(Me.usrEmail2)
+        Me.PostEmailGroup.Controls.Add(Me.emaillabel)
+        Me.PostEmailGroup.Location = New System.Drawing.Point(61, 213)
+        Me.PostEmailGroup.Name = "PostEmailGroup"
+        Me.PostEmailGroup.Size = New System.Drawing.Size(583, 116)
+        Me.PostEmailGroup.TabIndex = 7
+        Me.PostEmailGroup.TabStop = False
         '
         'CarrierCB
         '
-        Me.CarrierCB.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CarrierCB.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CarrierCB.FormattingEnabled = True
-        Me.CarrierCB.Location = New System.Drawing.Point(222, 46)
+        Me.CarrierCB.Location = New System.Drawing.Point(229, 63)
         Me.CarrierCB.Name = "CarrierCB"
-        Me.CarrierCB.Size = New System.Drawing.Size(213, 32)
+        Me.CarrierCB.Size = New System.Drawing.Size(213, 45)
         Me.CarrierCB.TabIndex = 11
-        '
-        'chkAutoScroll
-        '
-        Me.chkAutoScroll.AutoSize = True
-        Me.chkAutoScroll.Location = New System.Drawing.Point(468, 43)
-        Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(74, 17)
-        Me.chkAutoScroll.TabIndex = 16
-        Me.chkAutoScroll.Text = "AutoScroll"
-        Me.chkAutoScroll.UseVisualStyleBackColor = True
-        Me.chkAutoScroll.Visible = False
         '
         'tbPhoneNum
         '
-        Me.tbPhoneNum.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.tbPhoneNum.Location = New System.Drawing.Point(59, 49)
+        Me.tbPhoneNum.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tbPhoneNum.Location = New System.Drawing.Point(65, 63)
         Me.tbPhoneNum.Name = "tbPhoneNum"
-        Me.tbPhoneNum.Size = New System.Drawing.Size(162, 29)
+        Me.tbPhoneNum.Size = New System.Drawing.Size(162, 44)
         Me.tbPhoneNum.TabIndex = 10
         '
         'lblPhone
         '
         Me.lblPhone.AutoSize = True
         Me.lblPhone.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.5!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblPhone.Location = New System.Drawing.Point(7, 52)
+        Me.lblPhone.Location = New System.Drawing.Point(7, 66)
         Me.lblPhone.Name = "lblPhone"
         Me.lblPhone.Size = New System.Drawing.Size(53, 15)
         Me.lblPhone.TabIndex = 9
@@ -136,7 +109,7 @@ Partial Class PostView
         '
         'btnPostSend
         '
-        Me.btnPostSend.Location = New System.Drawing.Point(360, 19)
+        Me.btnPostSend.Location = New System.Drawing.Point(466, 37)
         Me.btnPostSend.Name = "btnPostSend"
         Me.btnPostSend.Size = New System.Drawing.Size(75, 21)
         Me.btnPostSend.TabIndex = 8
@@ -145,10 +118,10 @@ Partial Class PostView
         '
         'usrEmail2
         '
-        Me.usrEmail2.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.usrEmail2.Location = New System.Drawing.Point(59, 14)
+        Me.usrEmail2.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.usrEmail2.Location = New System.Drawing.Point(66, 14)
         Me.usrEmail2.Name = "usrEmail2"
-        Me.usrEmail2.Size = New System.Drawing.Size(295, 29)
+        Me.usrEmail2.Size = New System.Drawing.Size(376, 44)
         Me.usrEmail2.TabIndex = 7
         '
         'emaillabel
@@ -159,6 +132,35 @@ Partial Class PostView
         Me.emaillabel.Size = New System.Drawing.Size(35, 13)
         Me.emaillabel.TabIndex = 6
         Me.emaillabel.Text = "Email:"
+        '
+        'btnReprint
+        '
+        Me.btnReprint.Location = New System.Drawing.Point(225, 19)
+        Me.btnReprint.Name = "btnReprint"
+        Me.btnReprint.Size = New System.Drawing.Size(75, 23)
+        Me.btnReprint.TabIndex = 17
+        Me.btnReprint.Text = "Reprint "
+        Me.btnReprint.UseVisualStyleBackColor = True
+        '
+        'PostCloseButton1
+        '
+        Me.PostCloseButton1.Location = New System.Drawing.Point(324, 19)
+        Me.PostCloseButton1.Name = "PostCloseButton1"
+        Me.PostCloseButton1.Size = New System.Drawing.Size(75, 23)
+        Me.PostCloseButton1.TabIndex = 11
+        Me.PostCloseButton1.Text = "Close"
+        Me.PostCloseButton1.UseVisualStyleBackColor = True
+        '
+        'chkAutoScroll
+        '
+        Me.chkAutoScroll.AutoSize = True
+        Me.chkAutoScroll.Location = New System.Drawing.Point(438, 23)
+        Me.chkAutoScroll.Name = "chkAutoScroll"
+        Me.chkAutoScroll.Size = New System.Drawing.Size(74, 17)
+        Me.chkAutoScroll.TabIndex = 16
+        Me.chkAutoScroll.Text = "AutoScroll"
+        Me.chkAutoScroll.UseVisualStyleBackColor = True
+        Me.chkAutoScroll.Visible = False
         '
         'pbThumb1
         '
@@ -248,6 +250,36 @@ Partial Class PostView
         Me.gbThumbBox.TabIndex = 16
         Me.gbThumbBox.TabStop = False
         '
+        'grpButtons
+        '
+        Me.grpButtons.Controls.Add(Me.btnEmailPopup)
+        Me.grpButtons.Controls.Add(Me.PostCloseButton1)
+        Me.grpButtons.Controls.Add(Me.chkAutoScroll)
+        Me.grpButtons.Controls.Add(Me.btnReprint)
+        Me.grpButtons.Location = New System.Drawing.Point(84, 477)
+        Me.grpButtons.Name = "grpButtons"
+        Me.grpButtons.Size = New System.Drawing.Size(540, 56)
+        Me.grpButtons.TabIndex = 17
+        Me.grpButtons.TabStop = False
+        '
+        'btnEmailPopup
+        '
+        Me.btnEmailPopup.Location = New System.Drawing.Point(124, 19)
+        Me.btnEmailPopup.Name = "btnEmailPopup"
+        Me.btnEmailPopup.Size = New System.Drawing.Size(75, 23)
+        Me.btnEmailPopup.TabIndex = 18
+        Me.btnEmailPopup.Text = "Email "
+        Me.btnEmailPopup.UseVisualStyleBackColor = True
+        '
+        'btnEmailClose
+        '
+        Me.btnEmailClose.Location = New System.Drawing.Point(466, 66)
+        Me.btnEmailClose.Name = "btnEmailClose"
+        Me.btnEmailClose.Size = New System.Drawing.Size(75, 21)
+        Me.btnEmailClose.TabIndex = 12
+        Me.btnEmailClose.Text = "Close"
+        Me.btnEmailClose.UseVisualStyleBackColor = True
+        '
         'PostView
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -255,26 +287,29 @@ Partial Class PostView
         Me.BackColor = System.Drawing.SystemColors.ActiveBorder
         Me.ClientSize = New System.Drawing.Size(696, 534)
         Me.ControlBox = False
+        Me.Controls.Add(Me.grpButtons)
         Me.Controls.Add(Me.gbThumbBox)
-        Me.Controls.Add(Me.PostGroup)
+        Me.Controls.Add(Me.PostEmailGroup)
         Me.Controls.Add(Me.pbPostView)
         Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.WindowsApplication1.My.MySettings.Default, "Prev_Location", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.Location = Global.WindowsApplication1.My.MySettings.Default.Prev_Location
         Me.Name = "PostView"
         Me.Text = "Post View of Processed Images"
         CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.PostGroup.ResumeLayout(False)
-        Me.PostGroup.PerformLayout()
+        Me.PostEmailGroup.ResumeLayout(False)
+        Me.PostEmailGroup.PerformLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbThumbBox.ResumeLayout(False)
+        Me.grpButtons.ResumeLayout(False)
+        Me.grpButtons.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents pbPostView As System.Windows.Forms.PictureBox
-    Friend WithEvents PostGroup As System.Windows.Forms.GroupBox
+    Friend WithEvents PostEmailGroup As System.Windows.Forms.GroupBox
     Friend WithEvents btnPostSend As System.Windows.Forms.Button
     Friend WithEvents usrEmail2 As System.Windows.Forms.TextBox
     Friend WithEvents emaillabel As System.Windows.Forms.Label
@@ -293,4 +328,7 @@ Partial Class PostView
     Friend WithEvents CarrierCB As System.Windows.Forms.ComboBox
     Friend WithEvents btnReprint As System.Windows.Forms.Button
     Friend WithEvents gbThumbBox As System.Windows.Forms.GroupBox
+    Friend WithEvents grpButtons As System.Windows.Forms.GroupBox
+    Friend WithEvents btnEmailPopup As System.Windows.Forms.Button
+    Friend WithEvents btnEmailClose As System.Windows.Forms.Button
 End Class
