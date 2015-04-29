@@ -44,6 +44,7 @@ Partial Class Preview
         Me.btnPostSend = New System.Windows.Forms.Button()
         Me.usrEmail2 = New System.Windows.Forms.TextBox()
         Me.emaillabel = New System.Windows.Forms.Label()
+        Me.btnApply = New System.Windows.Forms.Button()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbOptions.SuspendLayout()
         Me.PreEmailGroup.SuspendLayout()
@@ -189,6 +190,7 @@ Partial Class Preview
         '
         'PreEmailGroup
         '
+        Me.PreEmailGroup.Controls.Add(Me.btnApply)
         Me.PreEmailGroup.Controls.Add(Me.Button1)
         Me.PreEmailGroup.Controls.Add(Me.CarrierCB)
         Me.PreEmailGroup.Controls.Add(Me.tbPhoneNum)
@@ -205,11 +207,11 @@ Partial Class Preview
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(482, 70)
+        Me.Button1.Location = New System.Drawing.Point(482, 84)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 21)
         Me.Button1.TabIndex = 12
-        Me.Button1.Text = "Close"
+        Me.Button1.Text = "Cancel"
         Me.Button1.UseVisualStyleBackColor = True
         '
         'CarrierCB
@@ -241,7 +243,7 @@ Partial Class Preview
         '
         'btnPostSend
         '
-        Me.btnPostSend.Location = New System.Drawing.Point(482, 43)
+        Me.btnPostSend.Location = New System.Drawing.Point(482, 30)
         Me.btnPostSend.Name = "btnPostSend"
         Me.btnPostSend.Size = New System.Drawing.Size(75, 21)
         Me.btnPostSend.TabIndex = 8
@@ -264,6 +266,15 @@ Partial Class Preview
         Me.emaillabel.Size = New System.Drawing.Size(35, 13)
         Me.emaillabel.TabIndex = 6
         Me.emaillabel.Text = "Email:"
+        '
+        'btnApply
+        '
+        Me.btnApply.Location = New System.Drawing.Point(482, 57)
+        Me.btnApply.Name = "btnApply"
+        Me.btnApply.Size = New System.Drawing.Size(75, 21)
+        Me.btnApply.TabIndex = 13
+        Me.btnApply.Text = "Apply"
+        Me.btnApply.UseVisualStyleBackColor = True
         '
         'Preview
         '
@@ -311,4 +322,5 @@ Partial Class Preview
     Friend WithEvents usrEmail2 As System.Windows.Forms.TextBox
     Friend WithEvents emaillabel As System.Windows.Forms.Label
     Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents btnApply As System.Windows.Forms.Button
 End Class

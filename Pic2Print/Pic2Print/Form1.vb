@@ -1656,7 +1656,8 @@ Public Class Pic2Print
     Public Sub ReBuildUserEmails(ByRef email As String, ByRef phone As String, ByVal sel As Integer)
         Dim i As Integer
 
-        ' extract the digits from the user's text
+        ' extract the digits from the user's text in case there are spaces, brackets or dashes
+
         If phone <> "" Then
 
             If email <> "" Then email = email & ","
@@ -1669,8 +1670,13 @@ Public Class Pic2Print
 
             Next
 
-            ' get the carrier
+            ' get the carrier, validate the index before referencing the domain
 
+            If ((sel < 0) Or (sel >= Globals.carrierDomain.Length)) Then
+                Globals.fDebug.txtPrintLn("ERR: ReBuildUserEmails: carrier selector is invalid, resetting to 0")
+                sel = 0
+                ' problem with this, it most likely will select a wrong carrier and the txt msg will be sent to the wrong place.
+            End If
             email = email & Globals.carrierDomain(sel)
 
         End If
@@ -2417,6 +2423,7 @@ Public Class Pic2Print
     Public Sub BuildUserEmails(ByVal idx As Integer, ByRef email As String)
         Dim i As Integer
         Dim phone As String
+        Dim n As Integer
 
         email = ""
 
@@ -2427,7 +2434,7 @@ Public Class Pic2Print
         ' extract the digits from the user's text
         If Globals.ImageCache.phoneNumber(idx) <> "" Then
 
-            If email <> "" Then email = email & ";"
+            If email <> "" Then email = email & ","
 
             phone = Globals.ImageCache.phoneNumber(idx)
 
@@ -2439,9 +2446,15 @@ Public Class Pic2Print
 
             Next
 
-            ' get the carrier
+            ' get the carrier, validate the index before referencing the domain
 
-            email = email & Globals.carrierDomain(Globals.ImageCache.carrierSelector(idx))
+            n = Globals.ImageCache.carrierSelector(idx)
+            If ((n < 0) Or (n >= Globals.carrierDomain.Length)) Then
+                Globals.fDebug.txtPrintLn("ERR: BuildUserEmails: carrier idx is invalid, resetting to 0")
+                n = 0
+                ' problem with this, it most likely will select a wrong carrier and the txt msg will be sent to the wrong place.
+            End If
+            email = email & Globals.carrierDomain(n)
 
         End If
 
@@ -2454,7 +2467,6 @@ Public Class Pic2Print
 
         ' trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), Microsoft.VisualBasic.Len(cache.fileName(idx)) - 4)
         trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), InStr(cache.fileName(idx), ".jp", CompareMethod.Text) - 1)
-        'debug.TextBox1_println("PrintThisFile:" & trgf & " to " & Globals.DestinationPath)
 
         ' write out the count to the file
         data = cache.maxPrintCount(idx) & vbCrLf & _
@@ -3727,7 +3739,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.00"    ' Version string
+    Public Shared Version As String = "Version 12.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

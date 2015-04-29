@@ -49,6 +49,7 @@ Public Class Preview
 
     Private Sub preview_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
         PreEmailGroup.Visible = False
+        'gbOptions.Visible = True
     End Sub
 
     Private Sub Form2_ResizeEnd(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.ResizeEnd
@@ -185,28 +186,39 @@ Public Class Preview
         CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         PreEmailGroup.Visible = True
+        gbOptions.Visible = False
 
     End Sub
 
     Private Sub btnEmailSend(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostSend.Click
         ' save the text for later..
-        Call PreSaveAndClose()
+        If PreSaveAndClose() = 0 Then Return
 
         ' now "print" one copy (sends email..)
         Call Globals.fPic2Print.Validate_and_PrintThisCount(1, PRT_PRINT)
         Call Globals.fPic2Print.resetlayercounter()
 
         PreEmailGroup.Visible = False
+        gbOptions.Visible = True
 
     End Sub
 
-    Private Sub btnEmailClose(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+    Private Sub btnApply_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnApply.Click
         ' save the text for later, nothing more..
-        Call PreSaveAndClose()
+        If PreSaveAndClose() = 0 Then Return
+
         PreEmailGroup.Visible = False
+        gbOptions.Visible = True
+
     End Sub
 
-    Private Sub PreSaveAndClose()
+    Private Sub btnEmailCancel(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        PreEmailGroup.Visible = False
+        gbOptions.Visible = True
+
+    End Sub
+
+    Private Function PreSaveAndClose()
         ' just save the text for later..
         Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail2.Text
         Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = tbPhoneNum.Text
@@ -214,5 +226,13 @@ Public Class Preview
         ' save the data to disk too
         Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
 
-    End Sub
+        If ((tbPhoneNum.Text <> "") And (CarrierCB.SelectedIndex < 0)) Then
+            MsgBox("You've entered a phone number. Now Select your Carrier")
+            Return 0
+        End If
+        Return 1
+
+    End Function
+
+    
 End Class

@@ -24,6 +24,7 @@ Partial Class PostView
     Private Sub InitializeComponent()
         Me.pbPostView = New System.Windows.Forms.PictureBox()
         Me.PostEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.btnEmailClose = New System.Windows.Forms.Button()
         Me.CarrierCB = New System.Windows.Forms.ComboBox()
         Me.tbPhoneNum = New System.Windows.Forms.TextBox()
         Me.lblPhone = New System.Windows.Forms.Label()
@@ -44,7 +45,6 @@ Partial Class PostView
         Me.gbThumbBox = New System.Windows.Forms.GroupBox()
         Me.grpButtons = New System.Windows.Forms.GroupBox()
         Me.btnEmailPopup = New System.Windows.Forms.Button()
-        Me.btnEmailClose = New System.Windows.Forms.Button()
         CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PostEmailGroup.SuspendLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -79,6 +79,15 @@ Partial Class PostView
         Me.PostEmailGroup.Size = New System.Drawing.Size(583, 116)
         Me.PostEmailGroup.TabIndex = 7
         Me.PostEmailGroup.TabStop = False
+        '
+        'btnEmailClose
+        '
+        Me.btnEmailClose.Location = New System.Drawing.Point(466, 66)
+        Me.btnEmailClose.Name = "btnEmailClose"
+        Me.btnEmailClose.Size = New System.Drawing.Size(75, 21)
+        Me.btnEmailClose.TabIndex = 12
+        Me.btnEmailClose.Text = "Cancel"
+        Me.btnEmailClose.UseVisualStyleBackColor = True
         '
         'CarrierCB
         '
@@ -270,15 +279,6 @@ Partial Class PostView
         Me.btnEmailPopup.TabIndex = 18
         Me.btnEmailPopup.Text = "Email "
         Me.btnEmailPopup.UseVisualStyleBackColor = True
-        '
-        'btnEmailClose
-        '
-        Me.btnEmailClose.Location = New System.Drawing.Point(466, 66)
-        Me.btnEmailClose.Name = "btnEmailClose"
-        Me.btnEmailClose.Size = New System.Drawing.Size(75, 21)
-        Me.btnEmailClose.TabIndex = 12
-        Me.btnEmailClose.Text = "Close"
-        Me.btnEmailClose.UseVisualStyleBackColor = True
         '
         'PostView
         '

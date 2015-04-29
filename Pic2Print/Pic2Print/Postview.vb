@@ -65,15 +65,21 @@ Public Class PostView
 
     Private Sub btnPostSend_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostSend.Click
         ' just save the text for later..
-        Globals.PrintCache.emailAddr(screenBase + ThumbSelect) = usrEmail2.Text
-        Globals.PrintCache.phoneNumber(screenBase + ThumbSelect) = tbPhoneNum.Text
-        Globals.PrintCache.carrierSelector(screenBase + ThumbSelect) = CarrierCB.SelectedIndex
-        ' save the data to disk too
-        Globals.fPic2Print.SaveFileNameData(Globals.PrintCache, screenBase + ThumbSelect)
-        ' send via email now too
-        Pic2Print.PostProcessEmail(Globals.PrintCache.fullName(screenBase + ThumbSelect))
 
-        PostEmailGroup.Visible = False
+        If ((tbPhoneNum.Text <> "") And (CarrierCB.SelectedIndex < 0)) Then
+            MsgBox("You've entered a phone number. Now Select your Carrier")
+        Else
+            Globals.PrintCache.emailAddr(screenBase + ThumbSelect) = usrEmail2.Text
+            Globals.PrintCache.phoneNumber(screenBase + ThumbSelect) = tbPhoneNum.Text
+            Globals.PrintCache.carrierSelector(screenBase + ThumbSelect) = CarrierCB.SelectedIndex
+            ' save the data to disk too
+            Globals.fPic2Print.SaveFileNameData(Globals.PrintCache, screenBase + ThumbSelect)
+            ' send via email now too
+            Pic2Print.PostProcessEmail(Globals.PrintCache.fullName(screenBase + ThumbSelect))
+
+            PostEmailGroup.Visible = False
+            grpButtons.Visible = True
+        End If
 
     End Sub
 
@@ -299,9 +305,11 @@ Public Class PostView
 
     Private Sub btnEmailPopup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailPopup.Click
         PostEmailGroup.Visible = True
+        grpButtons.Visible = False
     End Sub
 
     Private Sub btnEmailClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailClose.Click
         PostEmailGroup.Visible = False
+        grpButtons.Visible = True
     End Sub
 End Class
