@@ -18,6 +18,10 @@ Public Class Preview
     'Public Const PRT_POST = 3
     Public Const PRT_REPRINT = 4
 
+    Dim lastEmail As String = ""
+    Dim lastPhone As String = ""
+    Dim lastCarrier As Integer = 0
+
     Private Sub ThumbnailForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim str As String
 
@@ -48,8 +52,16 @@ Public Class Preview
     End Sub
 
     Private Sub preview_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
-        PreEmailGroup.Visible = False
-        'gbOptions.Visible = True
+
+        ' show the file name in the window title
+
+        updateTitle()
+
+        If PreEmailGroup.Visible = True Then
+            PreEmailGroup.Visible = False
+            gbOptions.Visible = True
+        End If
+
     End Sub
 
     Private Sub Form2_ResizeEnd(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.ResizeEnd
@@ -111,6 +123,7 @@ Public Class Preview
     Private Sub btnLeftMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftMost.Click
         Globals.fPic2Print.ScreenMiddle(False, 0)
         Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(0), 0)
+        Call updateTitle()
     End Sub
 
     Private Sub btnRightMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightMost.Click
@@ -122,15 +135,18 @@ Public Class Preview
             idx = Globals.ImageCache.maxIndex - Globals.ScreenBase
         End If
         Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
+        Call updateTitle()
     End Sub
 
     Private Sub btnLeftOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftOne.Click
         moveimagefocus(-1)
+        Call updateTitle()
         'Globals.fPic2Print.ScreenMiddle(True, -3)
     End Sub
 
     Private Sub btnRightOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightOne.Click
         moveimagefocus(1)
+        Call updateTitle()
         'Globals.fPic2Print.ScreenMiddle(True, 3)
     End Sub
 
@@ -181,9 +197,9 @@ Public Class Preview
     Private Sub btnEmailDlg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailDlg.Click
 
         ' pull the existing email/txt msg data from the globals to present it to the user
-        usrEmail2.Text = Globals.PrintCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
-        tbPhoneNum.Text = Globals.PrintCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
-        CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
+        usrEmail2.Text = Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
+        tbPhoneNum.Text = Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
+        CarrierCB.SelectedIndex = Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         PreEmailGroup.Visible = True
         gbOptions.Visible = False
@@ -218,21 +234,55 @@ Public Class Preview
 
     End Sub
 
+    Private Sub btnCopy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCopy.Click
+        lastEmail = usrEmail2.Text
+        lastPhone = tbPhoneNum.Text
+        lastCarrier = CarrierCB.SelectedIndex
+    End Sub
+
+    Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
+        usrEmail2.Text = lastEmail
+        tbPhoneNum.Text = lastPhone
+        CarrierCB.SelectedIndex = lastCarrier
+    End Sub
+
     Private Function PreSaveAndClose()
-        ' just save the text for later..
-        Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail2.Text
-        Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = tbPhoneNum.Text
-        Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected) = CarrierCB.SelectedIndex
-        ' save the data to disk too
-        Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
+
+        ' only process if the phone & carrier are complete
 
         If ((tbPhoneNum.Text <> "") And (CarrierCB.SelectedIndex < 0)) Then
             MsgBox("You've entered a phone number. Now Select your Carrier")
             Return 0
         End If
+
+        ' just save the text for later..
+        Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail2.Text
+        Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = tbPhoneNum.Text
+        Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected) = CarrierCB.SelectedIndex
+
+        ' save a copy in our local copy/paste storeage
+        lastEmail = usrEmail2.Text
+        lastPhone = tbPhoneNum.Text
+        lastCarrier = CarrierCB.SelectedIndex
+
+        ' save the data to disk too
+        Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
+
         Return 1
 
     End Function
 
+    Private Sub updateTitle()
+        Dim s As String = ""
+
+        ' append the file name to the preview window title
+        If Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) <> "" Then
+            s = " - " & Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected)
+        End If
+
+        'Globals.fPreview.Text = "Preview " & s
+        Me.Text = "Preview " & s
+
+    End Sub
     
 End Class

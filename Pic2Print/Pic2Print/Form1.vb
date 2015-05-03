@@ -231,7 +231,7 @@ Public Class Pic2Print
 
         ' pop up the config window on start
 
-        fForm3.Show()
+        'fForm3.Show()
 
         ' show the GIF button as disabled. enabled when 3 images are loaded
         Globals.MaxGifLayersNeeded = Globals.fForm3.txtLayersPerGIF.Text
@@ -256,6 +256,10 @@ Public Class Pic2Print
 
         ' highlight the first image 
         Call SetPictureBoxFocus(PictureBox1, 0)
+
+        ' pop up the config window on start
+
+        fForm3.Show()
 
     End Sub
 
@@ -3739,7 +3743,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.01"    ' Version string
+    Public Shared Version As String = "Version 12.02"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

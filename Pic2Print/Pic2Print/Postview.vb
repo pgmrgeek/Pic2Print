@@ -14,6 +14,10 @@ Public Class PostView
     Dim screenBase As Integer = 0
     Dim ThumbSelect As Integer = 0
 
+    Dim lastEmail As String = ""
+    Dim lastPhone As String = ""
+    Dim lastCarrier As Integer = 0
+
     Public Delegate Sub postRefreshCallback(ByVal str As String)
 
     Private Sub PostView_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
@@ -72,6 +76,7 @@ Public Class PostView
             Globals.PrintCache.emailAddr(screenBase + ThumbSelect) = usrEmail2.Text
             Globals.PrintCache.phoneNumber(screenBase + ThumbSelect) = tbPhoneNum.Text
             Globals.PrintCache.carrierSelector(screenBase + ThumbSelect) = CarrierCB.SelectedIndex
+
             ' save the data to disk too
             Globals.fPic2Print.SaveFileNameData(Globals.PrintCache, screenBase + ThumbSelect)
             ' send via email now too
@@ -311,5 +316,17 @@ Public Class PostView
     Private Sub btnEmailClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailClose.Click
         PostEmailGroup.Visible = False
         grpButtons.Visible = True
+    End Sub
+
+    Private Sub btnCopy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCopy.Click
+        lastEmail = usrEmail2.Text
+        lastPhone = tbPhoneNum.Text
+        lastCarrier = CarrierCB.SelectedIndex
+    End Sub
+
+    Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
+        usrEmail2.Text = lastEmail
+        tbPhoneNum.Text = lastPhone
+        CarrierCB.SelectedIndex = lastCarrier
     End Sub
 End Class

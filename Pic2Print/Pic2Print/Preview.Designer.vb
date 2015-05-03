@@ -23,7 +23,6 @@ Partial Class Preview
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.PrevClose = New System.Windows.Forms.Button()
-        Me.Form2PictureBox = New System.Windows.Forms.PictureBox()
         Me.lblPrintMsg = New System.Windows.Forms.Label()
         Me.txtPrintMsg = New System.Windows.Forms.TextBox()
         Me.BtnSaveTxt = New System.Windows.Forms.Button()
@@ -37,6 +36,9 @@ Partial Class Preview
         Me.btnRightOne = New System.Windows.Forms.Button()
         Me.btnLeftOne = New System.Windows.Forms.Button()
         Me.PreEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.btnPaste = New System.Windows.Forms.Button()
+        Me.btnCopy = New System.Windows.Forms.Button()
+        Me.btnApply = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.CarrierCB = New System.Windows.Forms.ComboBox()
         Me.tbPhoneNum = New System.Windows.Forms.TextBox()
@@ -44,10 +46,10 @@ Partial Class Preview
         Me.btnPostSend = New System.Windows.Forms.Button()
         Me.usrEmail2 = New System.Windows.Forms.TextBox()
         Me.emaillabel = New System.Windows.Forms.Label()
-        Me.btnApply = New System.Windows.Forms.Button()
-        CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Form2PictureBox = New System.Windows.Forms.PictureBox()
         Me.gbOptions.SuspendLayout()
         Me.PreEmailGroup.SuspendLayout()
+        CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'PrevClose
@@ -58,16 +60,6 @@ Partial Class Preview
         Me.PrevClose.TabIndex = 3
         Me.PrevClose.Text = "Close"
         Me.PrevClose.UseVisualStyleBackColor = True
-        '
-        'Form2PictureBox
-        '
-        Me.Form2PictureBox.InitialImage = Global.WindowsApplication1.My.Resources.Resources.blank
-        Me.Form2PictureBox.Location = New System.Drawing.Point(12, 0)
-        Me.Form2PictureBox.Name = "Form2PictureBox"
-        Me.Form2PictureBox.Size = New System.Drawing.Size(608, 372)
-        Me.Form2PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.Form2PictureBox.TabIndex = 0
-        Me.Form2PictureBox.TabStop = False
         '
         'lblPrintMsg
         '
@@ -190,6 +182,8 @@ Partial Class Preview
         '
         'PreEmailGroup
         '
+        Me.PreEmailGroup.Controls.Add(Me.btnPaste)
+        Me.PreEmailGroup.Controls.Add(Me.btnCopy)
         Me.PreEmailGroup.Controls.Add(Me.btnApply)
         Me.PreEmailGroup.Controls.Add(Me.Button1)
         Me.PreEmailGroup.Controls.Add(Me.CarrierCB)
@@ -205,9 +199,36 @@ Partial Class Preview
         Me.PreEmailGroup.TabStop = False
         Me.PreEmailGroup.Visible = False
         '
+        'btnPaste
+        '
+        Me.btnPaste.Image = Global.WindowsApplication1.My.Resources.Resources.paste
+        Me.btnPaste.Location = New System.Drawing.Point(524, 96)
+        Me.btnPaste.Name = "btnPaste"
+        Me.btnPaste.Size = New System.Drawing.Size(28, 28)
+        Me.btnPaste.TabIndex = 15
+        Me.btnPaste.UseVisualStyleBackColor = True
+        '
+        'btnCopy
+        '
+        Me.btnCopy.Image = Global.WindowsApplication1.My.Resources.Resources.copy
+        Me.btnCopy.Location = New System.Drawing.Point(490, 96)
+        Me.btnCopy.Name = "btnCopy"
+        Me.btnCopy.Size = New System.Drawing.Size(28, 28)
+        Me.btnCopy.TabIndex = 14
+        Me.btnCopy.UseVisualStyleBackColor = True
+        '
+        'btnApply
+        '
+        Me.btnApply.Location = New System.Drawing.Point(483, 43)
+        Me.btnApply.Name = "btnApply"
+        Me.btnApply.Size = New System.Drawing.Size(75, 21)
+        Me.btnApply.TabIndex = 13
+        Me.btnApply.Text = "Okay"
+        Me.btnApply.UseVisualStyleBackColor = True
+        '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(482, 84)
+        Me.Button1.Location = New System.Drawing.Point(483, 70)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 21)
         Me.Button1.TabIndex = 12
@@ -243,7 +264,7 @@ Partial Class Preview
         '
         'btnPostSend
         '
-        Me.btnPostSend.Location = New System.Drawing.Point(482, 30)
+        Me.btnPostSend.Location = New System.Drawing.Point(483, 16)
         Me.btnPostSend.Name = "btnPostSend"
         Me.btnPostSend.Size = New System.Drawing.Size(75, 21)
         Me.btnPostSend.TabIndex = 8
@@ -267,14 +288,15 @@ Partial Class Preview
         Me.emaillabel.TabIndex = 6
         Me.emaillabel.Text = "Email:"
         '
-        'btnApply
+        'Form2PictureBox
         '
-        Me.btnApply.Location = New System.Drawing.Point(482, 57)
-        Me.btnApply.Name = "btnApply"
-        Me.btnApply.Size = New System.Drawing.Size(75, 21)
-        Me.btnApply.TabIndex = 13
-        Me.btnApply.Text = "Apply"
-        Me.btnApply.UseVisualStyleBackColor = True
+        Me.Form2PictureBox.InitialImage = Global.WindowsApplication1.My.Resources.Resources.blank
+        Me.Form2PictureBox.Location = New System.Drawing.Point(12, 0)
+        Me.Form2PictureBox.Name = "Form2PictureBox"
+        Me.Form2PictureBox.Size = New System.Drawing.Size(608, 364)
+        Me.Form2PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.Form2PictureBox.TabIndex = 0
+        Me.Form2PictureBox.TabStop = False
         '
         'Preview
         '
@@ -292,11 +314,11 @@ Partial Class Preview
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Preview"
-        CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbOptions.ResumeLayout(False)
         Me.gbOptions.PerformLayout()
         Me.PreEmailGroup.ResumeLayout(False)
         Me.PreEmailGroup.PerformLayout()
+        CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -323,4 +345,6 @@ Partial Class Preview
     Friend WithEvents emaillabel As System.Windows.Forms.Label
     Friend WithEvents Button1 As System.Windows.Forms.Button
     Friend WithEvents btnApply As System.Windows.Forms.Button
+    Friend WithEvents btnCopy As System.Windows.Forms.Button
+    Friend WithEvents btnPaste As System.Windows.Forms.Button
 End Class

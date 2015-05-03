@@ -22,7 +22,6 @@ Partial Class PostView
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.pbPostView = New System.Windows.Forms.PictureBox()
         Me.PostEmailGroup = New System.Windows.Forms.GroupBox()
         Me.btnEmailClose = New System.Windows.Forms.Button()
         Me.CarrierCB = New System.Windows.Forms.ComboBox()
@@ -34,10 +33,6 @@ Partial Class PostView
         Me.btnReprint = New System.Windows.Forms.Button()
         Me.PostCloseButton1 = New System.Windows.Forms.Button()
         Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
-        Me.pbThumb1 = New System.Windows.Forms.PictureBox()
-        Me.pbThumb2 = New System.Windows.Forms.PictureBox()
-        Me.PbThumb3 = New System.Windows.Forms.PictureBox()
-        Me.pbThumb4 = New System.Windows.Forms.PictureBox()
         Me.btnLeft = New System.Windows.Forms.Button()
         Me.btnRight = New System.Windows.Forms.Button()
         Me.btnButtonRtEnd = New System.Windows.Forms.Button()
@@ -45,28 +40,27 @@ Partial Class PostView
         Me.gbThumbBox = New System.Windows.Forms.GroupBox()
         Me.grpButtons = New System.Windows.Forms.GroupBox()
         Me.btnEmailPopup = New System.Windows.Forms.Button()
-        CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pbThumb1 = New System.Windows.Forms.PictureBox()
+        Me.pbThumb2 = New System.Windows.Forms.PictureBox()
+        Me.PbThumb3 = New System.Windows.Forms.PictureBox()
+        Me.pbThumb4 = New System.Windows.Forms.PictureBox()
+        Me.pbPostView = New System.Windows.Forms.PictureBox()
+        Me.btnPaste = New System.Windows.Forms.Button()
+        Me.btnCopy = New System.Windows.Forms.Button()
         Me.PostEmailGroup.SuspendLayout()
+        Me.gbThumbBox.SuspendLayout()
+        Me.grpButtons.SuspendLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.gbThumbBox.SuspendLayout()
-        Me.grpButtons.SuspendLayout()
+        CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'pbPostView
-        '
-        Me.pbPostView.Location = New System.Drawing.Point(116, 108)
-        Me.pbPostView.Name = "pbPostView"
-        Me.pbPostView.Size = New System.Drawing.Size(480, 363)
-        Me.pbPostView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.pbPostView.TabIndex = 0
-        Me.pbPostView.TabStop = False
-        Me.pbPostView.Tag = ""
         '
         'PostEmailGroup
         '
+        Me.PostEmailGroup.Controls.Add(Me.btnPaste)
+        Me.PostEmailGroup.Controls.Add(Me.btnCopy)
         Me.PostEmailGroup.Controls.Add(Me.btnEmailClose)
         Me.PostEmailGroup.Controls.Add(Me.CarrierCB)
         Me.PostEmailGroup.Controls.Add(Me.tbPhoneNum)
@@ -82,7 +76,7 @@ Partial Class PostView
         '
         'btnEmailClose
         '
-        Me.btnEmailClose.Location = New System.Drawing.Point(466, 66)
+        Me.btnEmailClose.Location = New System.Drawing.Point(473, 48)
         Me.btnEmailClose.Name = "btnEmailClose"
         Me.btnEmailClose.Size = New System.Drawing.Size(75, 21)
         Me.btnEmailClose.TabIndex = 12
@@ -118,7 +112,7 @@ Partial Class PostView
         '
         'btnPostSend
         '
-        Me.btnPostSend.Location = New System.Drawing.Point(466, 37)
+        Me.btnPostSend.Location = New System.Drawing.Point(473, 19)
         Me.btnPostSend.Name = "btnPostSend"
         Me.btnPostSend.Size = New System.Drawing.Size(75, 21)
         Me.btnPostSend.TabIndex = 8
@@ -170,42 +164,6 @@ Partial Class PostView
         Me.chkAutoScroll.Text = "AutoScroll"
         Me.chkAutoScroll.UseVisualStyleBackColor = True
         Me.chkAutoScroll.Visible = False
-        '
-        'pbThumb1
-        '
-        Me.pbThumb1.Location = New System.Drawing.Point(60, 8)
-        Me.pbThumb1.Name = "pbThumb1"
-        Me.pbThumb1.Size = New System.Drawing.Size(135, 90)
-        Me.pbThumb1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.pbThumb1.TabIndex = 8
-        Me.pbThumb1.TabStop = False
-        '
-        'pbThumb2
-        '
-        Me.pbThumb2.Location = New System.Drawing.Point(202, 8)
-        Me.pbThumb2.Name = "pbThumb2"
-        Me.pbThumb2.Size = New System.Drawing.Size(135, 90)
-        Me.pbThumb2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.pbThumb2.TabIndex = 9
-        Me.pbThumb2.TabStop = False
-        '
-        'PbThumb3
-        '
-        Me.PbThumb3.Location = New System.Drawing.Point(344, 8)
-        Me.PbThumb3.Name = "PbThumb3"
-        Me.PbThumb3.Size = New System.Drawing.Size(135, 90)
-        Me.PbThumb3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PbThumb3.TabIndex = 10
-        Me.PbThumb3.TabStop = False
-        '
-        'pbThumb4
-        '
-        Me.pbThumb4.Location = New System.Drawing.Point(485, 8)
-        Me.pbThumb4.Name = "pbThumb4"
-        Me.pbThumb4.Size = New System.Drawing.Size(135, 90)
-        Me.pbThumb4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.pbThumb4.TabIndex = 11
-        Me.pbThumb4.TabStop = False
         '
         'btnLeft
         '
@@ -280,6 +238,70 @@ Partial Class PostView
         Me.btnEmailPopup.Text = "Email "
         Me.btnEmailPopup.UseVisualStyleBackColor = True
         '
+        'pbThumb1
+        '
+        Me.pbThumb1.Location = New System.Drawing.Point(60, 8)
+        Me.pbThumb1.Name = "pbThumb1"
+        Me.pbThumb1.Size = New System.Drawing.Size(135, 90)
+        Me.pbThumb1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.pbThumb1.TabIndex = 8
+        Me.pbThumb1.TabStop = False
+        '
+        'pbThumb2
+        '
+        Me.pbThumb2.Location = New System.Drawing.Point(202, 8)
+        Me.pbThumb2.Name = "pbThumb2"
+        Me.pbThumb2.Size = New System.Drawing.Size(135, 90)
+        Me.pbThumb2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.pbThumb2.TabIndex = 9
+        Me.pbThumb2.TabStop = False
+        '
+        'PbThumb3
+        '
+        Me.PbThumb3.Location = New System.Drawing.Point(344, 8)
+        Me.PbThumb3.Name = "PbThumb3"
+        Me.PbThumb3.Size = New System.Drawing.Size(135, 90)
+        Me.PbThumb3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PbThumb3.TabIndex = 10
+        Me.PbThumb3.TabStop = False
+        '
+        'pbThumb4
+        '
+        Me.pbThumb4.Location = New System.Drawing.Point(485, 8)
+        Me.pbThumb4.Name = "pbThumb4"
+        Me.pbThumb4.Size = New System.Drawing.Size(135, 90)
+        Me.pbThumb4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.pbThumb4.TabIndex = 11
+        Me.pbThumb4.TabStop = False
+        '
+        'pbPostView
+        '
+        Me.pbPostView.Location = New System.Drawing.Point(116, 108)
+        Me.pbPostView.Name = "pbPostView"
+        Me.pbPostView.Size = New System.Drawing.Size(480, 363)
+        Me.pbPostView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.pbPostView.TabIndex = 0
+        Me.pbPostView.TabStop = False
+        Me.pbPostView.Tag = ""
+        '
+        'btnPaste
+        '
+        Me.btnPaste.Image = Global.WindowsApplication1.My.Resources.Resources.paste
+        Me.btnPaste.Location = New System.Drawing.Point(513, 76)
+        Me.btnPaste.Name = "btnPaste"
+        Me.btnPaste.Size = New System.Drawing.Size(28, 28)
+        Me.btnPaste.TabIndex = 17
+        Me.btnPaste.UseVisualStyleBackColor = True
+        '
+        'btnCopy
+        '
+        Me.btnCopy.Image = Global.WindowsApplication1.My.Resources.Resources.copy
+        Me.btnCopy.Location = New System.Drawing.Point(479, 76)
+        Me.btnCopy.Name = "btnCopy"
+        Me.btnCopy.Size = New System.Drawing.Size(28, 28)
+        Me.btnCopy.TabIndex = 16
+        Me.btnCopy.UseVisualStyleBackColor = True
+        '
         'PostView
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -295,16 +317,16 @@ Partial Class PostView
         Me.Location = Global.WindowsApplication1.My.MySettings.Default.Prev_Location
         Me.Name = "PostView"
         Me.Text = "Post View of Processed Images"
-        CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PostEmailGroup.ResumeLayout(False)
         Me.PostEmailGroup.PerformLayout()
+        Me.gbThumbBox.ResumeLayout(False)
+        Me.grpButtons.ResumeLayout(False)
+        Me.grpButtons.PerformLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.gbThumbBox.ResumeLayout(False)
-        Me.grpButtons.ResumeLayout(False)
-        Me.grpButtons.PerformLayout()
+        CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -331,4 +353,6 @@ Partial Class PostView
     Friend WithEvents grpButtons As System.Windows.Forms.GroupBox
     Friend WithEvents btnEmailPopup As System.Windows.Forms.Button
     Friend WithEvents btnEmailClose As System.Windows.Forms.Button
+    Friend WithEvents btnPaste As System.Windows.Forms.Button
+    Friend WithEvents btnCopy As System.Windows.Forms.Button
 End Class
