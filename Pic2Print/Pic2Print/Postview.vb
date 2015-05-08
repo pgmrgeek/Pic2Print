@@ -232,9 +232,9 @@ Public Class PostView
                 ' release the butterflys, see which will return..
                 Globals.PrintCache.FreeAllPictures()
                 Call postLoadThumbs(True)
-                Me.Invalidate()
-                Application.DoEvents()
-                Thread.Sleep(200)
+                'Me.Invalidate()
+                'Application.DoEvents()
+                'Thread.Sleep(200)
             End If
 
         End If

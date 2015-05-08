@@ -100,6 +100,7 @@ Partial Class Pic2Print
         Me.gbPreview = New System.Windows.Forms.GroupBox()
         Me.pbPreview = New System.Windows.Forms.PictureBox()
         Me.gbPhotoList = New System.Windows.Forms.GroupBox()
+        Me.SaveEmailAddrs = New System.Windows.Forms.Button()
         Me.PrinterGroupBoxPrinterGroupBox.SuspendLayout()
         Me.BackGroundGroupBox.SuspendLayout()
         CType(Me.Background4PB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -895,7 +896,7 @@ Partial Class Pic2Print
         '
         'btnTestRun
         '
-        Me.btnTestRun.Location = New System.Drawing.Point(859, 274)
+        Me.btnTestRun.Location = New System.Drawing.Point(860, 303)
         Me.btnTestRun.Name = "btnTestRun"
         Me.btnTestRun.Size = New System.Drawing.Size(75, 23)
         Me.btnTestRun.TabIndex = 65
@@ -953,6 +954,16 @@ Partial Class Pic2Print
         Me.gbPhotoList.TabIndex = 66
         Me.gbPhotoList.TabStop = False
         '
+        'SaveEmailAddrs
+        '
+        Me.SaveEmailAddrs.Location = New System.Drawing.Point(859, 274)
+        Me.SaveEmailAddrs.Name = "SaveEmailAddrs"
+        Me.SaveEmailAddrs.Size = New System.Drawing.Size(75, 23)
+        Me.SaveEmailAddrs.TabIndex = 67
+        Me.SaveEmailAddrs.Text = "Save Emails"
+        Me.SaveEmailAddrs.UseVisualStyleBackColor = True
+        Me.SaveEmailAddrs.Visible = False
+        '
         'Pic2Print
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -960,6 +971,7 @@ Partial Class Pic2Print
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(947, 730)
         Me.ControlBox = False
+        Me.Controls.Add(Me.SaveEmailAddrs)
         Me.Controls.Add(Me.gbPhotoList)
         Me.Controls.Add(Me.gbPreview)
         Me.Controls.Add(Me.btnTestRun)
@@ -1079,5 +1091,6 @@ Partial Class Pic2Print
     Friend WithEvents lblBkFgSel2 As System.Windows.Forms.Label
     Friend WithEvents lblBkFgSel1 As System.Windows.Forms.Label
     Friend WithEvents gbPhotoList As System.Windows.Forms.GroupBox
+    Friend WithEvents SaveEmailAddrs As System.Windows.Forms.Button
 
 End Class

@@ -81,6 +81,7 @@ Public Class Pic2Print
         Dim fDebug As New debug
         Dim fSendEmails As New SendEmails
         Dim fmmsForm As New mmsForm
+        Dim dateStr As String
 
         Globals.fPic2Print = Me
         Globals.fPostView = fpostview
@@ -100,6 +101,9 @@ Public Class Pic2Print
 
         Globals.fDebug.Show()
         Globals.fDebug.Hide()
+
+        dateStr = Format(Date.Now(), "ddMMMyyyy")
+        Globals.fDebug.txtPrintLn("================== New Session - " & dateStr & " ========================" & vbCrLf)
 
         Globals.cmdLineDebug = False
         For Each argument As String In My.Application.CommandLineArgs
@@ -128,6 +132,7 @@ Public Class Pic2Print
 
         If Globals.cmdSendEmails Then
             SendEmails.Visible = True
+            SaveEmailAddrs.Visible = True
         End If
 
         ' setup the background colors on the printer controls as green, ready to go..
@@ -1115,7 +1120,7 @@ Public Class Pic2Print
 
         End If
 
-        cbAutoFollow.Checked = False
+        'cbAutoFollow.Checked = False
         Preview.Show()
 
     End Sub
@@ -1876,6 +1881,7 @@ Public Class Pic2Print
         Dim fname As String
         Dim recip As String
         Dim ttl = 120        ' time to live for waiting on incoming files to the print folder
+        Dim n As Integer
 
         ' we loop forever basically monitoring the FIFO
 
@@ -1956,8 +1962,24 @@ Public Class Pic2Print
 
                         Globals.EmailSendActive = 1
                         Globals.fDebug.txtPrintLn("emailing " & fname & " to " & recip)
-                        compiler.Start()
-                        compiler.WaitForExit()
+
+                        ' attempt sending 5 times, quits when send succeeds
+                        For n = 1 To 5
+
+                            ' attempt the send
+                            compiler.Start()
+                            compiler.WaitForExit()
+
+                            ' if a failure, notify the user
+                            If compiler.ExitCode = 1 Then
+                                Globals.fDebug.txtPrintLn("email FAILED, retry #" & n & ": " & fname & " to " & recip)
+                                Thread.Sleep(200)
+                            Else
+                                Globals.fDebug.txtPrintLn("email succeeded on try #" & n)
+                                Exit For
+                            End If
+                        Next n
+
                         Globals.EmailSendActive = 0
 
                         ' increment the outbound fifo index
@@ -1969,12 +1991,6 @@ Public Class Pic2Print
                         ' in one step, release this entry via the count
                         Globals.EmailFifoCount -= 1
                         Globals.EmailFifoCountChanged += 1
-
-                        If compiler.ExitCode = 1 Then
-                            Globals.fDebug.txtPrintLn("email FAILED!")
-                        Else
-                            Globals.fDebug.txtPrintLn("email sent")
-                        End If
 
                         ttl = 120        ' reload ttl down counter for next file
 
@@ -3259,7 +3275,7 @@ Public Class Pic2Print
 
             ' if the count is greater than 0, then print the count, else display nothing..
             str = ""
-            If Globals.ImageCache.emailAddr(idx) <> "" Then str = " (email)"
+            If Globals.ImageCache.emailAddr(idx) <> "" Or Globals.ImageCache.phoneNumber(idx) <> "" Then str = " (email)"
             If Globals.ImageCache.maxPrintCount(idx) > 0 Then
                 pc.Text = Globals.ImageCache.maxPrintCount(idx) & str
             Else
@@ -3724,26 +3740,89 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
+    Private Sub SaveEmailAddrs_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveEmailAddrs.Click
+        Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
+        Dim txtAddr As String
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
+                             "click OKAY before continuing.")
+            Return
+        End If
+
+        If PathsAreValid() Then
+
+            ShowBusy(True)
+
+            If Globals.ImageCache.maxIndex > 0 Then
+
+                Dim csvFile As String = Globals.tmpPrint1_Folder & "\emails.csv"
+                Dim outFile As IO.StreamWriter = My.Computer.FileSystem.OpenTextFileWriter(csvFile, False)
+                outFile.WriteLine("Column 1, Column 2, Column 3")
+
+                ' scan through all the file names to find the saved email addresses.
+
+                For idx = 0 To Globals.ImageCache.maxIndex
+
+                    If Globals.ImageCache.fileName(idx) <> "" Then
+                        If Globals.ImageCache.emailAddr(idx) <> "" Or Globals.ImageCache.phoneNumber(idx) <> "" Then
+
+                            ' we found one, let the user know..
+                            If Globals.ImageCache.phoneNumber(idx) <> "" Then
+                                txtAddr = Globals.ImageCache.phoneNumber(idx) & Globals.carrierDomain(Globals.ImageCache.carrierSelector(idx))
+                            Else
+                                txtAddr = ""
+                            End If
+
+                            outFile.WriteLine("""" & Globals.ImageCache.fileName(idx) & """" & "," &
+                                              """" & Globals.ImageCache.emailAddr(idx) & """" & "," &
+                                              """" & txtAddr & """")
+
+                        End If
+
+                        End If
+
+                Next
+                outFile.Close()
+
+                ' wait while emails are being sent out
+                If Globals.SendEmailsDownCount > 0 Then
+
+                    sendemailsmgs("Waiting for emails to complete sending" & vbCrLf)
+
+                    Do While Globals.EmailSendActive Or (Globals.EmailFifoCount > 0) Or (Globals.SendEmailsDownCount > 0)
+                        System.Threading.Thread.Sleep(200)
+                        Application.DoEvents()
+                    Loop
+
+                End If
+
+                sendemailsmgs("Finished" & vbCrLf)
+
+                If Globals.SendEmailsAgain = 2 Then
+
+                    Globals.fSendEmails.CancelSend.Text = "Okay"
+
+                    Do While Globals.SendEmailsAgain > 0
+                        System.Threading.Thread.Sleep(200)
+                        Application.DoEvents()
+                    Loop
+
+                End If
+
+            End If
+
+        End If
+
+        ShowBusy(False)
 
     End Sub
-
-    Private Sub PictureBox3Count_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3Count.TextChanged
-
-    End Sub
-
-    Private Sub PictureBox5Count_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox5Count.TextChanged
-
-    End Sub
-
-
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.02"    ' Version string
+    Public Shared Version As String = "Version 12.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

@@ -210,6 +210,11 @@ Public Class Preview
         ' save the text for later..
         If PreSaveAndClose() = 0 Then Return
 
+        ' save email/txt # if there valid data 
+        If usrEmail2.Text <> "" Or tbPhoneNum.Text <> "" Then
+            Call CopyEmailInfo()
+        End If
+
         ' now "print" one copy (sends email..)
         Call Globals.fPic2Print.Validate_and_PrintThisCount(1, PRT_PRINT)
         Call Globals.fPic2Print.resetlayercounter()
@@ -235,9 +240,7 @@ Public Class Preview
     End Sub
 
     Private Sub btnCopy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCopy.Click
-        lastEmail = usrEmail2.Text
-        lastPhone = tbPhoneNum.Text
-        lastCarrier = CarrierCB.SelectedIndex
+        Call CopyEmailInfo()
     End Sub
 
     Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
@@ -284,5 +287,11 @@ Public Class Preview
         Me.Text = "Preview " & s
 
     End Sub
-    
+
+    Private Sub CopyEmailInfo()
+        lastEmail = usrEmail2.Text
+        lastPhone = tbPhoneNum.Text
+        lastCarrier = CarrierCB.SelectedIndex
+    End Sub
+
 End Class
