@@ -1365,6 +1365,11 @@ Public Class Pic2Print
                     CopyFileToCloudDir(newNam)
                 End If
 
+                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                'If Globals.fForm4.syncPostPath.Text <> "" Then
+                'CopyFileToPostCloudDir(newNam)
+                'End If
+
                 ' send out email..
                 PostProcessEmail(Globals.PrintCache.filePath & newNam)
 
@@ -1491,6 +1496,8 @@ Public Class Pic2Print
         Dim email1 As String = ""
         Dim phone1 As String = ""
         Dim sel As Integer
+        Dim optin As Boolean
+        Dim permit As Boolean
         Dim waitTime = 500  ' wait a half second initially, then 3 seconds after the first pass
 
         ' seems reasonable, if the print processor thread can run, so can we..
@@ -1533,10 +1540,12 @@ Public Class Pic2Print
                                 Globals.PrintCache.fileName(idx) = fi.Name
 
                                 ' possibly load the email address & phone #
-                                If LoadPrintedTxtFile(folder & fi.Name, email1, phone1, sel) = True Then
+                                If LoadPrintedTxtFile(folder & fi.Name, email1, phone1, sel, optin, permit) = True Then
                                     Globals.PrintCache.emailAddr(idx) = email1
                                     Globals.PrintCache.phoneNumber(idx) = phone1
                                     Globals.PrintCache.carrierSelector(idx) = sel
+                                    Globals.PrintCache.OptIn(idx) = optin
+                                    Globals.PrintCache.permit(idx) = permit
                                 End If
 
                                 ' let the post view form know there are updates available
@@ -1572,6 +1581,8 @@ Public Class Pic2Print
         Dim phone1 As String = ""
         Dim sel As Integer
         Dim gifnam As String
+        Dim optin As Boolean
+        Dim permit As Boolean
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
         Dim trgp As String = Globals.fForm4.SyncFolderPath.Text
 
@@ -1593,7 +1604,7 @@ Public Class Pic2Print
 
                 ' get the personal email address
 
-                If LoadPrintedTxtFile(fnam, email1, phone1, sel) = True Then
+                If LoadPrintedTxtFile(fnam, email1, phone1, sel, optin, permit) = True Then
 
                     Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
 
@@ -1620,12 +1631,19 @@ Public Class Pic2Print
 
     End Sub
 
-    Private Function LoadPrintedTxtFile(ByRef fnam As String, ByRef email1 As String, ByRef phone1 As String, ByRef selector As Integer)
+    Private Function LoadPrintedTxtFile( _
+                                     ByRef fnam As String, _
+                                     ByRef email1 As String, _
+                                     ByRef phone1 As String, _
+                                     ByRef selector As Integer, _
+                                     ByRef optin As Boolean, _
+                                     ByRef permit As Boolean)
         Dim txtf As String
         Dim cnt As Integer
         Dim p1cnt As Integer
         Dim p2cnt As Integer
         Dim eon As Integer
+        Dim tmp As String
 
         ' calculate the end of the file name based upon either .JPG or .GIF extension
         eon = InStr(fnam, ".jp", CompareMethod.Text)
@@ -1647,9 +1665,19 @@ Public Class Pic2Print
             email1 = fileReader.ReadLine()           ' read in the email address
             phone1 = ""
             selector = 0
+
             If Not fileReader.EndOfStream Then
                 phone1 = fileReader.ReadLine()           ' read the phone #
                 selector = CInt(fileReader.ReadLine())       ' read the carrier selector        
+            End If
+
+            If Not fileReader.EndOfStream Then
+                tmp = fileReader.ReadLine()           ' read in the optin boolean
+                If tmp = "false" Then optin = False
+                If tmp = "true" Then optin = True
+                tmp = fileReader.ReadLine()          ' read in the permission boolean 
+                If tmp = "false" Then permit = False
+                If tmp = "true" Then permit = True
             End If
 
             fileReader.Close()
@@ -1937,9 +1965,15 @@ Public Class Pic2Print
                                 " -f " & Globals.tmpAcctEmailAddr & _
                                 " -t " & recip & _
                                 " -sub """ & Globals.EmailToCaption(Globals.EmailFifoOut) & """" & _
-                                " -auth-plain" & _
-                                " -attach " & fname & _
-                                " -v -log " & "c:\onsite\software\email.log"
+                                " -auth-plain"
+
+                        ' if there is a message body file, included that text.
+
+                        If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.txt") Then
+                            cmdln = cmdln & " -attach c:\onsite\software\emailbody.txt,text/plain,i"
+                        End If
+
+                        cmdln = cmdln & " -attach " & fname & " -v -log " & "c:\onsite\software\email.log"
 
                         '" -message ""Your Picture from the event"" " & _
 
@@ -2495,7 +2529,9 @@ Public Class Pic2Print
             cache.emailAddr(idx) & vbCrLf & _
             cache.phoneNumber(idx) & vbCrLf & _
             cache.carrierSelector(idx) & vbCrLf & _
-            cache.message(idx) & vbCrLf
+            cache.message(idx) & vbCrLf & _
+            cache.OptIn(idx) & vbCrLf & _
+            cache.permit(idx) & vbCrLf
 
         My.Computer.FileSystem.WriteAllText(
             cache.filePath & trgf & ".txt", data, False, System.Text.Encoding.ASCII)
@@ -2763,63 +2799,48 @@ Public Class Pic2Print
 
         Next
 
-        '
-        'If My.Computer.FileSystem.FileExists(srcp & fnam) Then
-        '
-        '' debug msg
-        ' Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & fnam & " to " & trgp)
-        '
-        'My.Computer.FileSystem.CopyFile(
-        '   srcp & fnam, _
-        '   trgp & fnam, _
-        'Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
-        'Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
-        ')
-        '
-        'End If
-        '
-        ' trim the file name of the .jpg for a .gif search/copy
-        '
-        'i = InStr(fnam, ".jp", CompareMethod.Text)
-        'srcnam = Microsoft.VisualBasic.Left(fnam, i)
-        '
-        ' if photoshop saved the .GIF file, copy it to the cloud
-        '
-        ' If My.Computer.FileSystem.FileExists(srcp & srcnam & "gif") Then
-        '
+    End Sub
+
+    '
+    ' subroutine to copy the final output file from the printed folder to the cloud folder
+    '
+    Public Sub CopyFileToPostCloudDir(ByRef fnam As String)
+        Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
+        Dim trgp As String = Globals.fForm4.syncPostPath.Text
+        Dim srcnam As String
+        'Dim i As Int16
+        Dim l As Integer
+
+        ' exit if this is the overloaded call, just to clear the last name
+        If fnam = "" Then
+            Return
+        End If
+
+        ' calc the right most part of the file name (less paths)
+        l = Len(srcp)
+        l = Len(fnam) - l
+        If (l <= 0) Then
+            Return
+        End If
+
+        srcnam = Microsoft.VisualBasic.Right(fnam, l)
+
+        'Dim di As New System.IO.DirectoryInfo(srcp)
+        'Dim fi() As System.IO.FileInfo = di.GetFiles(srcnam)
+
+        'For Each f In fi
+
         ' debug msg
-        'Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & "gif" & " to " & trgp)
-        '
-        ' My.Computer.FileSystem.CopyFile(
-        '    srcp & srcnam & "gif", _
-        '   trgp & srcnam & "gif", _
-        '  Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
-        '  Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
-        ')
-        '
-        'End If
-        '
-        '
-        ' trim the file name of the .jpg for a .gif search/copy
-        '
-        'i = InStr(fnam, ".jp", CompareMethod.Text)
-        'srcnam = Microsoft.VisualBasic.Left(fnam, 6) & "*.gif"
-        '
-        ' if photoshop saved the .GIF file, copy it to the cloud
-        '
-        'If My.Computer.FileSystem.FileExists(srcp & srcnam) Then
-        '
-        ' debug msg
-        'Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & srcnam & " to " & trgp)
-        '
-        'My.Computer.FileSystem.CopyFile(
-        '   srcp & srcnam, _
-        'trgp, _
-        'Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
-        'Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing()
-        ')
-        '
-        'End If
+        Globals.fDebug.txtPrintLn("CopyFileToPostCloudDir:" & fnam & " to " & trgp)
+
+        My.Computer.FileSystem.CopyFile(
+           fnam,
+           trgp & srcnam, _
+           Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
+           Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing
+        )
+
+        'Next
 
     End Sub
 
@@ -2958,6 +2979,8 @@ Public Class Pic2Print
         Dim sMessage As String
         Dim idx As Integer
         Dim ext As String
+        Dim optin As Boolean
+        Dim permitt As Boolean
 
         'debug.TextBox1_println("AddFilesToArray")
 
@@ -2999,22 +3022,32 @@ Public Class Pic2Print
                     phone = ""
                     sMessage = ""
                     sel = 0
+
                     If Not fileReader.EndOfStream Then
                         phone = fileReader.ReadLine()           ' read the phone #
                         sel = CInt(fileReader.ReadLine())       ' read the carrier selector
                     End If
+
                     If Not fileReader.EndOfStream Then
                         ' read the user text message
                         sMessage = fileReader.ReadLine()    ' read the message string
                     End If
 
-                    ' save the details from the txt file.
+                    If Not fileReader.EndOfStream Then
+                        ' read the user text message
+                        optin = fileReader.ReadLine()    ' read the message string
+                        permitt = fileReader.ReadLine()    ' read the message string
+                    End If
+
+                    ' load the details from the txt file.
 
                     Globals.ImageCache.maxPrintCount(idx) = cnt
                     Globals.ImageCache.emailAddr(idx) = emailaddr
                     Globals.ImageCache.phoneNumber(idx) = phone
                     Globals.ImageCache.carrierSelector(idx) = sel
                     Globals.ImageCache.message(idx) = sMessage
+                    Globals.ImageCache.OptIn(idx) = optin
+                    Globals.ImageCache.permit(idx) = permitt
                     'Globals.ImageCache.maxPrintedIndex  = Globals.ImageCache.maxIndex
                     If cnt > 0 Then Globals.ImageCache.maxPrintedIndex = idx
                     Globals.TotalPrinted += cnt
@@ -3322,12 +3355,13 @@ Public Class Pic2Print
     '        2 validate printer #1 path
     '        4 validate printer #2 path
     '        8 validate cloud path
+    '       16 validate postview cloud path
     '
     Public Function ValidatePaths(ByVal i As Int16, ByVal verbose As Boolean) As Boolean
 
         If i = -1 Then
 
-            i = i And 15
+            i = i And 31
 
             ' image folder and printer #1 folder are required
             Call _checkthispath("Incoming Image Folder:", _
@@ -3355,6 +3389,16 @@ Public Class Pic2Print
                 ' not enabled, drop this check
                 Globals.PathsValidated = Globals.PathsValidated And (Not 8)    ' clears this validated bit
                 i = i And (Not 8)
+            End If
+
+            ' optional Postview Folder needs to be validated
+            If Globals.fForm4.syncPostPath.Text <> "" Then
+                _checkthispath("PostView Cloud Config:", _
+                               Globals.fForm4.syncPostPath.Text, "", 16, verbose)
+            Else
+                ' not enabled, drop this check
+                Globals.PathsValidated = Globals.PathsValidated And (Not 16)    ' clears this validated bit
+                i = i And (Not 16)
             End If
 
             ' now after the checks, see if we have all the paths validated
@@ -3386,6 +3430,15 @@ Public Class Pic2Print
             If Globals.fForm4.SyncFolderPath.Text <> "" Then
                 Return _checkthispath("Cloud Config:", _
                                       Globals.fForm4.SyncFolderPath.Text, "", 8, verbose)
+            Else
+                Return True
+            End If
+        End If
+
+        If i = 16 Then
+            If Globals.fForm4.syncPostPath.Text <> "" Then
+                Return _checkthispath("Postview Cloud Config:", _
+                                      Globals.fForm4.syncPostPath.Text, "", 16, verbose)
             Else
                 Return True
             End If
@@ -3501,7 +3554,7 @@ Public Class Pic2Print
 
 
     Public Function PathsAreValid() As Boolean
-        Dim i As Int16 = Globals.PathsValidated And 15
+        Dim i As Int16 = Globals.PathsValidated And 31
 
         If Globals.fForm3.Print2Enabled.Checked = False Then
             i = i And (Not 4)
@@ -3509,6 +3562,10 @@ Public Class Pic2Print
 
         If Globals.fForm4.SyncFolderPath.Text = "" Then
             i = i And (Not 8)
+        End If
+
+        If Globals.fForm4.syncPostPath.Text = "" Then
+            i = i And (Not 16)
         End If
 
         If Globals.PathsValidated <> i Then
@@ -3779,7 +3836,7 @@ Public Class Pic2Print
 
                         End If
 
-                        End If
+                    End If
 
                 Next
                 outFile.Close()
@@ -3822,7 +3879,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.03"    ' Version string
+    Public Shared Version As String = "Version 12.04"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

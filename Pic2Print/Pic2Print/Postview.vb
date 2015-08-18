@@ -17,6 +17,8 @@ Public Class PostView
     Dim lastEmail As String = ""
     Dim lastPhone As String = ""
     Dim lastCarrier As Integer = 0
+    Dim lastOptIn As Boolean
+    Dim lastPermit As Boolean
 
     Public Delegate Sub postRefreshCallback(ByVal str As String)
 
@@ -76,11 +78,14 @@ Public Class PostView
             Globals.PrintCache.emailAddr(screenBase + ThumbSelect) = usrEmail2.Text
             Globals.PrintCache.phoneNumber(screenBase + ThumbSelect) = tbPhoneNum.Text
             Globals.PrintCache.carrierSelector(screenBase + ThumbSelect) = CarrierCB.SelectedIndex
+            Globals.PrintCache.OptIn(screenBase + ThumbSelect) = ckb_PostOptin.Checked
+            Globals.PrintCache.permit(screenBase + ThumbSelect) = ckb_PostPermit.Checked
 
             ' save the data to disk too
             Globals.fPic2Print.SaveFileNameData(Globals.PrintCache, screenBase + ThumbSelect)
             ' send via email now too
             Pic2Print.PostProcessEmail(Globals.PrintCache.fullName(screenBase + ThumbSelect))
+            Pic2Print.CopyFileToPostCloudDir(Globals.PrintCache.fullName(screenBase + ThumbSelect))
 
             PostEmailGroup.Visible = False
             grpButtons.Visible = True
@@ -289,8 +294,10 @@ Public Class PostView
         i = screenBase + ThumbSelect
         If i < Globals.PrintCache.maxIndex Then
             img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(i))
+            lbl_Frame.Text = "Frame #" & Globals.PrintCache.fileName(i).Substring(0, 5)
         Else
             img = My.Resources.blank
+            lbl_Frame.Text = "Frame #"
         End If
         pbPostView.Image = img
         usrEmail2.Text = Globals.PrintCache.emailAddr(screenBase + ThumbSelect)
@@ -306,6 +313,7 @@ Public Class PostView
 
     Private Sub btnReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReprint.Click
         Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
+        Pic2Print.CopyFileToPostCloudDir(Globals.PrintCache.fullName(screenBase + ThumbSelect))
     End Sub
 
     Private Sub btnEmailPopup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailPopup.Click
@@ -322,11 +330,16 @@ Public Class PostView
         lastEmail = usrEmail2.Text
         lastPhone = tbPhoneNum.Text
         lastCarrier = CarrierCB.SelectedIndex
+        lastOptIn = ckb_PostOptin.Checked
+        lastPermit = ckb_PostPermit.Checked
+
     End Sub
 
     Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
         usrEmail2.Text = lastEmail
         tbPhoneNum.Text = lastPhone
         CarrierCB.SelectedIndex = lastCarrier
+        ckb_PostOptin.Checked = lastOptIn
+        ckb_PostPermit.Checked = lastPermit
     End Sub
 End Class

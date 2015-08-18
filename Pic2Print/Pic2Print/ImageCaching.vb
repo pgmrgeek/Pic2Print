@@ -14,7 +14,9 @@
     Private _FileNamePhone() As String          ' user phone number
     Private _FileNamePhoneSel() As Integer      ' user phone number selector
     Private _FileNameMessage() As String        ' a message the user can send/print on photos
-    Private _MaxArraySize = 50                    ' this will rise to 2048
+    Private _FileNameOptIn() As Boolean         ' User opts-in to email lists
+    Private _FileNamePermit() As Boolean        ' User gives permission to use his/her photo in promos
+    Private _MaxArraySize = 50                  ' this will rise to 2048
 
     ' tracking of image resources
     Private _ImageCacheFileName(14) As String      ' file names matching the image
@@ -31,12 +33,14 @@
         'Return 0
 
         _MaxArraySize = siz
-        ReDim Preserve _FileName(siz)                ' string filenames
+        ReDim Preserve _FileName(siz)               ' string filenames
         ReDim Preserve _FileNamePrinted(siz)        ' # of times printed
-        ReDim Preserve _FileNameEmail(siz)           ' user email addresses
-        ReDim Preserve _FileNamePhone(siz)           ' user phone number
+        ReDim Preserve _FileNameEmail(siz)          ' user email addresses
+        ReDim Preserve _FileNamePhone(siz)          ' user phone number
         ReDim Preserve _FileNamePhoneSel(siz)       ' user phone number selector
         ReDim Preserve _FileNameMessage(siz)        ' a message the user can send/print on photos
+        ReDim Preserve _FileNameOptIn(siz)          ' OptIn to emails
+        ReDim Preserve _FileNamePermit(siz)         ' permits image to be used
 
     End Sub
 
@@ -129,6 +133,32 @@
         End Set
 
     End Property
+
+
+    ' Permits image to be used in promos
+    Property OptIn(ByVal i As Integer) As Boolean
+        Get
+            Return _FileNameOptIn(i)
+        End Get
+
+        Set(ByVal value As Boolean)
+            _FileNameOptIn(i) = value
+        End Set
+
+    End Property
+
+    ' Permits image to be used in promos
+    Property permit(ByVal i As Integer) As Boolean
+        Get
+            Return _FileNamePermit(i)
+        End Get
+
+        Set(ByVal value As Boolean)
+            _FileNamePermit(i) = value
+        End Set
+
+    End Property
+
     ' list of emails for the indexed file name
     Property emailAddr(ByVal i As Integer) As String
         Get

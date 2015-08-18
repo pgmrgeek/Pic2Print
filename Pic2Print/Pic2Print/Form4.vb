@@ -63,6 +63,21 @@ Public Class Form4
 
                 End If
 
+                If Globals.fPic2Print.ValidatePaths(16, True) = False Then
+                    'MessageBox.Show("Postview Sync Path NOT VALID" & vbCrLf & "Try Again!")
+                    Return
+                Else
+
+                    ' the sync folder can't equal the print folders
+                    If (syncPostPath.Text = Globals.fForm3.Print_Folder_1.Text) Or (syncPostPath.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                        MessageBox.Show("Warning! PostView Sync Folder and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
+                        Return
+                    End If
+
+                    'MessageBox.Show("All paths are good")
+
+                End If
+
             End If
 
         End If
@@ -129,5 +144,23 @@ Public Class Form4
         End If
     End Sub
 
+    Private Sub btnPostViewFinder_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostViewFinder.Click
+        Dim str As String
+        FolderBrowserDialog1.SelectedPath = syncPostPath.Text
+        If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
+            str = FolderBrowserDialog1.SelectedPath
+            syncPostPath.Text = str
+        End If
+    End Sub
 
+    Private Sub syncPostPath_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles syncPostPath.TextChanged
+        ' problem here - we dont know if its going visible or invisible..
+        If Globals.EmailProcessRun = 2 Then
+            Globals.EmailProcessRun = 1 ' pause the print processor
+        End If
+    End Sub
+
+    Private Sub syncPostLabel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles syncPostLabel.Click
+
+    End Sub
 End Class

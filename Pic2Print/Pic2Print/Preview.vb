@@ -21,6 +21,8 @@ Public Class Preview
     Dim lastEmail As String = ""
     Dim lastPhone As String = ""
     Dim lastCarrier As Integer = 0
+    Dim lastOptin As Boolean
+    Dim lastPermit As Boolean
 
     Private Sub ThumbnailForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim str As String
@@ -200,6 +202,8 @@ Public Class Preview
         usrEmail2.Text = Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected)
         tbPhoneNum.Text = Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected)
         CarrierCB.SelectedIndex = Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected)
+        ckb_PreOptin.Checked = Globals.ImageCache.OptIn(Globals.ScreenBase + Globals.PictureBoxSelected)
+        ckb_PrePermit.Checked = Globals.ImageCache.permit(Globals.ScreenBase + Globals.PictureBoxSelected)
 
         PreEmailGroup.Visible = True
         gbOptions.Visible = False
@@ -247,6 +251,8 @@ Public Class Preview
         usrEmail2.Text = lastEmail
         tbPhoneNum.Text = lastPhone
         CarrierCB.SelectedIndex = lastCarrier
+        ckb_PreOptin.Checked = lastOptin
+        ckb_PrePermit.Checked = lastPermit
     End Sub
 
     Private Function PreSaveAndClose()
@@ -262,11 +268,15 @@ Public Class Preview
         Globals.ImageCache.emailAddr(Globals.ScreenBase + Globals.PictureBoxSelected) = usrEmail2.Text
         Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = tbPhoneNum.Text
         Globals.ImageCache.carrierSelector(Globals.ScreenBase + Globals.PictureBoxSelected) = CarrierCB.SelectedIndex
+        Globals.ImageCache.OptIn(Globals.ScreenBase + Globals.PictureBoxSelected) = ckb_PreOptin.Checked
+        Globals.ImageCache.permit(Globals.ScreenBase + Globals.PictureBoxSelected) = ckb_PrePermit.Checked
 
         ' save a copy in our local copy/paste storeage
         lastEmail = usrEmail2.Text
         lastPhone = tbPhoneNum.Text
         lastCarrier = CarrierCB.SelectedIndex
+        lastOptin = ckb_PreOptin.Checked
+        lastPermit = ckb_PrePermit.Checked
 
         ' save the data to disk too
         Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
@@ -292,6 +302,8 @@ Public Class Preview
         lastEmail = usrEmail2.Text
         lastPhone = tbPhoneNum.Text
         lastCarrier = CarrierCB.SelectedIndex
+        lastOptin = ckb_PreOptin.Checked
+        lastPermit = ckb_PrePermit.Checked
     End Sub
 
 End Class

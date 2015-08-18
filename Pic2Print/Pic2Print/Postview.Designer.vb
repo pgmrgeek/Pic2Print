@@ -23,6 +23,8 @@ Partial Class PostView
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.PostEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.btnPaste = New System.Windows.Forms.Button()
+        Me.btnCopy = New System.Windows.Forms.Button()
         Me.btnEmailClose = New System.Windows.Forms.Button()
         Me.CarrierCB = New System.Windows.Forms.ComboBox()
         Me.tbPhoneNum = New System.Windows.Forms.TextBox()
@@ -38,27 +40,30 @@ Partial Class PostView
         Me.btnButtonRtEnd = New System.Windows.Forms.Button()
         Me.btnLeftEnd = New System.Windows.Forms.Button()
         Me.gbThumbBox = New System.Windows.Forms.GroupBox()
-        Me.grpButtons = New System.Windows.Forms.GroupBox()
-        Me.btnEmailPopup = New System.Windows.Forms.Button()
         Me.pbThumb1 = New System.Windows.Forms.PictureBox()
         Me.pbThumb2 = New System.Windows.Forms.PictureBox()
         Me.PbThumb3 = New System.Windows.Forms.PictureBox()
         Me.pbThumb4 = New System.Windows.Forms.PictureBox()
+        Me.grpButtons = New System.Windows.Forms.GroupBox()
+        Me.lbl_Frame = New System.Windows.Forms.Label()
+        Me.btnEmailPopup = New System.Windows.Forms.Button()
         Me.pbPostView = New System.Windows.Forms.PictureBox()
-        Me.btnPaste = New System.Windows.Forms.Button()
-        Me.btnCopy = New System.Windows.Forms.Button()
+        Me.ckb_PostOptin = New System.Windows.Forms.CheckBox()
+        Me.ckb_PostPermit = New System.Windows.Forms.CheckBox()
         Me.PostEmailGroup.SuspendLayout()
         Me.gbThumbBox.SuspendLayout()
-        Me.grpButtons.SuspendLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpButtons.SuspendLayout()
         CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'PostEmailGroup
         '
+        Me.PostEmailGroup.Controls.Add(Me.ckb_PostPermit)
+        Me.PostEmailGroup.Controls.Add(Me.ckb_PostOptin)
         Me.PostEmailGroup.Controls.Add(Me.btnPaste)
         Me.PostEmailGroup.Controls.Add(Me.btnCopy)
         Me.PostEmailGroup.Controls.Add(Me.btnEmailClose)
@@ -68,11 +73,29 @@ Partial Class PostView
         Me.PostEmailGroup.Controls.Add(Me.btnPostSend)
         Me.PostEmailGroup.Controls.Add(Me.usrEmail2)
         Me.PostEmailGroup.Controls.Add(Me.emaillabel)
-        Me.PostEmailGroup.Location = New System.Drawing.Point(61, 213)
+        Me.PostEmailGroup.Location = New System.Drawing.Point(64, 191)
         Me.PostEmailGroup.Name = "PostEmailGroup"
-        Me.PostEmailGroup.Size = New System.Drawing.Size(583, 116)
+        Me.PostEmailGroup.Size = New System.Drawing.Size(583, 170)
         Me.PostEmailGroup.TabIndex = 7
         Me.PostEmailGroup.TabStop = False
+        '
+        'btnPaste
+        '
+        Me.btnPaste.Image = Global.WindowsApplication1.My.Resources.Resources.paste
+        Me.btnPaste.Location = New System.Drawing.Point(513, 76)
+        Me.btnPaste.Name = "btnPaste"
+        Me.btnPaste.Size = New System.Drawing.Size(28, 28)
+        Me.btnPaste.TabIndex = 17
+        Me.btnPaste.UseVisualStyleBackColor = True
+        '
+        'btnCopy
+        '
+        Me.btnCopy.Image = Global.WindowsApplication1.My.Resources.Resources.copy
+        Me.btnCopy.Location = New System.Drawing.Point(479, 76)
+        Me.btnCopy.Name = "btnCopy"
+        Me.btnCopy.Size = New System.Drawing.Size(28, 28)
+        Me.btnCopy.TabIndex = 16
+        Me.btnCopy.UseVisualStyleBackColor = True
         '
         'btnEmailClose
         '
@@ -217,27 +240,6 @@ Partial Class PostView
         Me.gbThumbBox.TabIndex = 16
         Me.gbThumbBox.TabStop = False
         '
-        'grpButtons
-        '
-        Me.grpButtons.Controls.Add(Me.btnEmailPopup)
-        Me.grpButtons.Controls.Add(Me.PostCloseButton1)
-        Me.grpButtons.Controls.Add(Me.chkAutoScroll)
-        Me.grpButtons.Controls.Add(Me.btnReprint)
-        Me.grpButtons.Location = New System.Drawing.Point(84, 477)
-        Me.grpButtons.Name = "grpButtons"
-        Me.grpButtons.Size = New System.Drawing.Size(540, 56)
-        Me.grpButtons.TabIndex = 17
-        Me.grpButtons.TabStop = False
-        '
-        'btnEmailPopup
-        '
-        Me.btnEmailPopup.Location = New System.Drawing.Point(124, 19)
-        Me.btnEmailPopup.Name = "btnEmailPopup"
-        Me.btnEmailPopup.Size = New System.Drawing.Size(75, 23)
-        Me.btnEmailPopup.TabIndex = 18
-        Me.btnEmailPopup.Text = "Email "
-        Me.btnEmailPopup.UseVisualStyleBackColor = True
-        '
         'pbThumb1
         '
         Me.pbThumb1.Location = New System.Drawing.Point(60, 8)
@@ -274,6 +276,37 @@ Partial Class PostView
         Me.pbThumb4.TabIndex = 11
         Me.pbThumb4.TabStop = False
         '
+        'grpButtons
+        '
+        Me.grpButtons.Controls.Add(Me.lbl_Frame)
+        Me.grpButtons.Controls.Add(Me.btnEmailPopup)
+        Me.grpButtons.Controls.Add(Me.PostCloseButton1)
+        Me.grpButtons.Controls.Add(Me.chkAutoScroll)
+        Me.grpButtons.Controls.Add(Me.btnReprint)
+        Me.grpButtons.Location = New System.Drawing.Point(84, 477)
+        Me.grpButtons.Name = "grpButtons"
+        Me.grpButtons.Size = New System.Drawing.Size(540, 56)
+        Me.grpButtons.TabIndex = 17
+        Me.grpButtons.TabStop = False
+        '
+        'lbl_Frame
+        '
+        Me.lbl_Frame.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_Frame.Location = New System.Drawing.Point(6, 19)
+        Me.lbl_Frame.Name = "lbl_Frame"
+        Me.lbl_Frame.Size = New System.Drawing.Size(112, 23)
+        Me.lbl_Frame.TabIndex = 19
+        Me.lbl_Frame.Text = "Frame #00000"
+        '
+        'btnEmailPopup
+        '
+        Me.btnEmailPopup.Location = New System.Drawing.Point(124, 19)
+        Me.btnEmailPopup.Name = "btnEmailPopup"
+        Me.btnEmailPopup.Size = New System.Drawing.Size(75, 23)
+        Me.btnEmailPopup.TabIndex = 18
+        Me.btnEmailPopup.Text = "Email "
+        Me.btnEmailPopup.UseVisualStyleBackColor = True
+        '
         'pbPostView
         '
         Me.pbPostView.Location = New System.Drawing.Point(116, 108)
@@ -284,23 +317,23 @@ Partial Class PostView
         Me.pbPostView.TabStop = False
         Me.pbPostView.Tag = ""
         '
-        'btnPaste
+        'ckb_PostOptin
         '
-        Me.btnPaste.Image = Global.WindowsApplication1.My.Resources.Resources.paste
-        Me.btnPaste.Location = New System.Drawing.Point(513, 76)
-        Me.btnPaste.Name = "btnPaste"
-        Me.btnPaste.Size = New System.Drawing.Size(28, 28)
-        Me.btnPaste.TabIndex = 17
-        Me.btnPaste.UseVisualStyleBackColor = True
+        Me.ckb_PostOptin.Location = New System.Drawing.Point(65, 122)
+        Me.ckb_PostOptin.Name = "ckb_PostOptin"
+        Me.ckb_PostOptin.Size = New System.Drawing.Size(160, 24)
+        Me.ckb_PostOptin.TabIndex = 18
+        Me.ckb_PostOptin.Text = "I OPT-IN for future emails"
+        Me.ckb_PostOptin.UseVisualStyleBackColor = True
         '
-        'btnCopy
+        'ckb_PostPermit
         '
-        Me.btnCopy.Image = Global.WindowsApplication1.My.Resources.Resources.copy
-        Me.btnCopy.Location = New System.Drawing.Point(479, 76)
-        Me.btnCopy.Name = "btnCopy"
-        Me.btnCopy.Size = New System.Drawing.Size(28, 28)
-        Me.btnCopy.TabIndex = 16
-        Me.btnCopy.UseVisualStyleBackColor = True
+        Me.ckb_PostPermit.Location = New System.Drawing.Point(229, 122)
+        Me.ckb_PostPermit.Name = "ckb_PostPermit"
+        Me.ckb_PostPermit.Size = New System.Drawing.Size(295, 24)
+        Me.ckb_PostPermit.TabIndex = 19
+        Me.ckb_PostPermit.Text = "I give permission to use my image for promotional use"
+        Me.ckb_PostPermit.UseVisualStyleBackColor = True
         '
         'PostView
         '
@@ -320,12 +353,12 @@ Partial Class PostView
         Me.PostEmailGroup.ResumeLayout(False)
         Me.PostEmailGroup.PerformLayout()
         Me.gbThumbBox.ResumeLayout(False)
-        Me.grpButtons.ResumeLayout(False)
-        Me.grpButtons.PerformLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PbThumb3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.pbThumb4, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpButtons.ResumeLayout(False)
+        Me.grpButtons.PerformLayout()
         CType(Me.pbPostView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
@@ -355,4 +388,7 @@ Partial Class PostView
     Friend WithEvents btnEmailClose As System.Windows.Forms.Button
     Friend WithEvents btnPaste As System.Windows.Forms.Button
     Friend WithEvents btnCopy As System.Windows.Forms.Button
+    Friend WithEvents lbl_Frame As System.Windows.Forms.Label
+    Friend WithEvents ckb_PostOptin As System.Windows.Forms.CheckBox
+    Friend WithEvents ckb_PostPermit As System.Windows.Forms.CheckBox
 End Class

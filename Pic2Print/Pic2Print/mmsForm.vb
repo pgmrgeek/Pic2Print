@@ -22,6 +22,11 @@ Public Class mmsForm
         Globals.ImageCache.carrierSelector(Globals.FileIndexSelected) = CarrierCB.SelectedIndex
         'Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
         Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
+
+        ' save the optin & permission
+        Globals.ImageCache.OptIn(Globals.ScreenBase + Globals.PictureBoxSelected) = False
+        Globals.ImageCache.permit(Globals.FileIndexSelected) = False
+
         Globals.fPic2Print.SaveFileNameData(Globals.ImageCache, Globals.ScreenBase + Globals.PictureBoxSelected)
 
         Me.Hide()

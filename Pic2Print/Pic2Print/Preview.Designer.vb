@@ -47,6 +47,8 @@ Partial Class Preview
         Me.usrEmail2 = New System.Windows.Forms.TextBox()
         Me.emaillabel = New System.Windows.Forms.Label()
         Me.Form2PictureBox = New System.Windows.Forms.PictureBox()
+        Me.ckb_PreOptin = New System.Windows.Forms.CheckBox()
+        Me.ckb_PrePermit = New System.Windows.Forms.CheckBox()
         Me.gbOptions.SuspendLayout()
         Me.PreEmailGroup.SuspendLayout()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -182,6 +184,8 @@ Partial Class Preview
         '
         'PreEmailGroup
         '
+        Me.PreEmailGroup.Controls.Add(Me.ckb_PrePermit)
+        Me.PreEmailGroup.Controls.Add(Me.ckb_PreOptin)
         Me.PreEmailGroup.Controls.Add(Me.btnPaste)
         Me.PreEmailGroup.Controls.Add(Me.btnCopy)
         Me.PreEmailGroup.Controls.Add(Me.btnApply)
@@ -192,9 +196,9 @@ Partial Class Preview
         Me.PreEmailGroup.Controls.Add(Me.btnPostSend)
         Me.PreEmailGroup.Controls.Add(Me.usrEmail2)
         Me.PreEmailGroup.Controls.Add(Me.emaillabel)
-        Me.PreEmailGroup.Location = New System.Drawing.Point(35, 141)
+        Me.PreEmailGroup.Location = New System.Drawing.Point(40, 114)
         Me.PreEmailGroup.Name = "PreEmailGroup"
-        Me.PreEmailGroup.Size = New System.Drawing.Size(563, 134)
+        Me.PreEmailGroup.Size = New System.Drawing.Size(563, 170)
         Me.PreEmailGroup.TabIndex = 9
         Me.PreEmailGroup.TabStop = False
         Me.PreEmailGroup.Visible = False
@@ -298,6 +302,24 @@ Partial Class Preview
         Me.Form2PictureBox.TabIndex = 0
         Me.Form2PictureBox.TabStop = False
         '
+        'ckb_PreOptin
+        '
+        Me.ckb_PreOptin.Location = New System.Drawing.Point(63, 130)
+        Me.ckb_PreOptin.Name = "ckb_PreOptin"
+        Me.ckb_PreOptin.Size = New System.Drawing.Size(160, 24)
+        Me.ckb_PreOptin.TabIndex = 10
+        Me.ckb_PreOptin.Text = "I OPT-IN for future emails"
+        Me.ckb_PreOptin.UseVisualStyleBackColor = True
+        '
+        'ckb_PrePermit
+        '
+        Me.ckb_PrePermit.Location = New System.Drawing.Point(257, 130)
+        Me.ckb_PrePermit.Name = "ckb_PrePermit"
+        Me.ckb_PrePermit.Size = New System.Drawing.Size(295, 24)
+        Me.ckb_PrePermit.TabIndex = 16
+        Me.ckb_PrePermit.Text = "I give permission to use my image for promotional use"
+        Me.ckb_PrePermit.UseVisualStyleBackColor = True
+        '
         'Preview
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -347,4 +369,6 @@ Partial Class Preview
     Friend WithEvents btnApply As System.Windows.Forms.Button
     Friend WithEvents btnCopy As System.Windows.Forms.Button
     Friend WithEvents btnPaste As System.Windows.Forms.Button
+    Friend WithEvents ckb_PrePermit As System.Windows.Forms.CheckBox
+    Friend WithEvents ckb_PreOptin As System.Windows.Forms.CheckBox
 End Class
