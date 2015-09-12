@@ -1095,7 +1095,7 @@ Public Class Pic2Print
     ' show 2nd form button event handler - opens the window, shows the focused image
     Public Sub ShowForm1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviewButton.Click
 
-        ' if its visible, hide it then pop it up to the top
+        ' if its visible, hide it, then it will pop up to the top
         If Preview.Visible Then
             Preview.Hide()
         End If
@@ -1361,13 +1361,18 @@ Public Class Pic2Print
             If Globals.tmpEmailCloudEnabled Then
 
                 ' copy it to the dropbox folder, let dropbox sync it to the cloud
-                If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                    CopyFileToCloudDir(newNam)
+                If Globals.fForm4.SyncFolderPath1.Text <> "" Then
+                    CopyFileToCloudDir(Globals.fForm4.SyncFolderPath1.Text, newNam)
                 End If
 
-                ' copy it to the dropbox folder, let dropbox sync it to the cloud
+                ' copy it again to another folder
+                If Globals.fForm4.SyncFolderPath2.Text <> "" Then
+                    CopyFileToCloudDir(Globals.fForm4.SyncFolderPath2.Text, newNam)
+                End If
+
+                ' copy it to the Post View folder, let the target sync to where ever..
                 'If Globals.fForm4.syncPostPath.Text <> "" Then
-                'CopyFileToPostCloudDir(newNam)
+                'CopyFileToPostCloudDir(Globals.fForm4.syncPostPath.Text, newNam)
                 'End If
 
                 ' send out email..
@@ -1584,7 +1589,7 @@ Public Class Pic2Print
         Dim optin As Boolean
         Dim permit As Boolean
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
-        Dim trgp As String = Globals.fForm4.SyncFolderPath.Text
+        Dim trgp As String = Globals.fForm4.SyncFolderPath1.Text
 
         ' special case .GIFs due to the photoshop CS2 bug of truncating file names
         gifnam = Microsoft.VisualBasic.Mid(fnam, srcp.Length + 1, 6) & "*.gif"
@@ -1606,12 +1611,16 @@ Public Class Pic2Print
 
                 If LoadPrintedTxtFile(fnam, email1, phone1, sel, optin, permit) = True Then
 
-                    Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
+                    If email1 <> "" Then
 
-                    ReBuildUserEmails(email1, phone1, sel)
-                    EmailSendRequest(email1, fnam, Globals.tmpSubject)          ' the jpg
-                    If gifnam <> "" Then
-                        EmailSendRequest(email1, srcp & gifnam, Globals.tmpSubject)        ' the .GIF
+                        Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
+
+                        ReBuildUserEmails(email1, phone1, sel)
+                        EmailSendRequest(email1, fnam, Globals.tmpSubject)          ' the jpg
+                        If gifnam <> "" Then
+                            EmailSendRequest(email1, srcp & gifnam, Globals.tmpSubject)        ' the .GIF
+                        End If
+
                     End If
 
                 End If
@@ -2094,6 +2103,7 @@ Public Class Pic2Print
         If lastEmail = email Then
             ' same email, now check for the same file name.  
             If tempFname = lastFname Then
+                Globals.fDebug.txtPrintLn("Email duplication - skipping 2nd send")
                 Return
             End If
         End If
@@ -2214,7 +2224,7 @@ Public Class Pic2Print
     ' ----====< PrintThisCount >====----
     ' A print count button was clicked.  Copy the source image to the target printer folder X number of times
     '
-    Private Function PrintThisCount(ByVal idx As Int16, ByVal count As Int16, ByVal mode As Integer) As Boolean
+    Public Function PrintThisCount(ByVal idx As Int16, ByVal count As Int16, ByVal mode As Integer) As Boolean
         Dim prtfnam As String
         Dim printpath As String
         Dim phone As String = ""
@@ -2769,9 +2779,9 @@ Public Class Pic2Print
     '
     ' subroutine to copy the final output file from the printed folder to the cloud folder
     '
-    Private Sub CopyFileToCloudDir(ByRef fnam As String)
+    Private Sub CopyFileToCloudDir(ByRef trgp As String, ByRef fnam As String)
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
-        Dim trgp As String = Globals.fForm4.SyncFolderPath.Text
+        'Dim trgp As String = Globals.fForm4.SyncFolderPath1.Text
         Dim srcnam As String
         'Dim i As Int16
 
@@ -2804,17 +2814,22 @@ Public Class Pic2Print
     '
     ' subroutine to copy the final output file from the printed folder to the cloud folder
     '
-    Public Sub CopyFileToPostCloudDir(ByRef fnam As String)
+    Public Sub CopyFileToPostCloudDir(ByRef fpath As String, ByRef fnam As String)
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
-        Dim trgp As String = Globals.fForm4.syncPostPath.Text
+        Dim trgp As String = fpath ' Globals.fForm4.syncPostPath.Text
+        Dim trgf As String
         Dim srcnam As String
         'Dim i As Int16
         Dim l As Integer
 
         ' exit if this is the overloaded call, just to clear the last name
-        If fnam = "" Then
+        If fnam = "" Or trgp = "" Then
             Return
         End If
+
+        ' trgf = Microsoft.VisualBasic.Left(Globals.fForm4.syncPostPath.Text, Len(Globals.fForm4.syncPostPath.Text) - 1)
+
+        trgf = Microsoft.VisualBasic.Left(trgp, Len(trgp) - 1)
 
         ' calc the right most part of the file name (less paths)
         l = Len(srcp)
@@ -2832,6 +2847,32 @@ Public Class Pic2Print
 
         ' debug msg
         Globals.fDebug.txtPrintLn("CopyFileToPostCloudDir:" & fnam & " to " & trgp)
+
+        ' copy if the target folder exists, else give a warning
+
+        While Not IO.Directory.Exists(trgf)
+
+            ' Define a title for the message box. 
+            Dim title = "Post View Cloud Copy"
+
+            ' Now define a style for the message box. In this example, the 
+            ' message box will have Yes and No buttons, the default will be 
+            ' the No button, and a Critical Message icon will be present. 
+            Dim style = MsgBoxStyle.OkCancel
+
+            Dim response = MsgBox("PostView  folder" & trgp & " is missing!" & _
+                                 " " & vbCrLf & _
+                                 "Click [OK] to retry, or [CANCEL] to not copy", style, title)
+
+            ' if okay to kill email, start the exit process. 
+            If response = MsgBoxResult.Cancel Then
+
+                Globals.fDebug.txtPrintLn("Post View cloud folder missing, skipping the copy")
+                Return
+
+            End If
+
+        End While
 
         My.Computer.FileSystem.CopyFile(
            fnam,
@@ -3329,7 +3370,7 @@ Public Class Pic2Print
     ' ----====< show busy >====---- 
     ' text box shows "BUSY" when we're reading the images in
 
-    Private Sub ShowBusy(ByVal state As Boolean)
+    Public Sub ShowBusy(ByVal state As Boolean)
         'Static SaveCursor As Cursor = Cursors.Default
 
         ' Run query here
@@ -3361,7 +3402,7 @@ Public Class Pic2Print
 
         If i = -1 Then
 
-            i = i And 31
+            i = i And 63
 
             ' image folder and printer #1 folder are required
             Call _checkthispath("Incoming Image Folder:", _
@@ -3381,24 +3422,45 @@ Public Class Pic2Print
                 i = i And (Not 4)
             End If
 
-            ' optional Sync Folder needs to be validated
-            If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                _checkthispath("Cloud Config:", _
-                               Globals.fForm4.SyncFolderPath.Text, "", 8, verbose)
-            Else
-                ' not enabled, drop this check
-                Globals.PathsValidated = Globals.PathsValidated And (Not 8)    ' clears this validated bit
-                i = i And (Not 8)
-            End If
+            If Globals.fForm3.EmailCloudEnabled.Checked = True Then
 
-            ' optional Postview Folder needs to be validated
-            If Globals.fForm4.syncPostPath.Text <> "" Then
-                _checkthispath("PostView Cloud Config:", _
-                               Globals.fForm4.syncPostPath.Text, "", 16, verbose)
+
+                ' optional Sync Folder needs to be validated
+                If Globals.fForm4.SyncFolderPath1.Text <> "" Then
+                    _checkthispath("Cloud Config #1:", _
+                                   Globals.fForm4.SyncFolderPath1.Text, "", 8, verbose)
+                Else
+                    ' not enabled, drop this check
+                    Globals.PathsValidated = Globals.PathsValidated And (Not 8)    ' clears this validated bit
+                    i = i And (Not 8)
+                End If
+
+                ' optional Postview Folder needs to be validated
+                If Globals.fForm4.syncPostPath.Text <> "" Then
+                    _checkthispath("PostView Cloud Config:", _
+                                   Globals.fForm4.syncPostPath.Text, "", 16, verbose)
+                Else
+                    ' not enabled, drop this check
+                    Globals.PathsValidated = Globals.PathsValidated And (Not 16)    ' clears this validated bit
+                    i = i And (Not 16)
+                End If
+
+                ' optional Sync Folder needs to be validated
+                If Globals.fForm4.SyncFolderPath2.Text <> "" Then
+                    _checkthispath("Cloud Config #2:", _
+                                   Globals.fForm4.SyncFolderPath2.Text, "", 32, verbose)
+                Else
+                    ' not enabled, drop this check
+                    Globals.PathsValidated = Globals.PathsValidated And (Not 32)    ' clears this validated bit
+                    i = i And (Not 32)
+                End If
+
             Else
-                ' not enabled, drop this check
-                Globals.PathsValidated = Globals.PathsValidated And (Not 16)    ' clears this validated bit
-                i = i And (Not 16)
+
+                ' clear all the copy paths if not enabled
+
+                i = i And (Not (8 + 16 + 32))
+
             End If
 
             ' now after the checks, see if we have all the paths validated
@@ -3410,41 +3472,50 @@ Public Class Pic2Print
 
         End If
 
-        If i = 1 Then
-            Return _checkthispath("Incoming Image Folder:", _
-                                  Globals.fForm3.Image_Folder.Text, "c:\onsite\capture\", 1, verbose)
-        End If
-
-        If i = 2 Then
-            Return _checkthispath("Printer Destination Folder #1:", _
-                                  Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
-        End If
-
-        If i = 4 Then
-            Return _checkthispath("Printer Destination Folder #2", _
-                                  Globals.fForm3.Print_Folder_2.Text, "c:\onsite\", 4, verbose)
-            _warnSamePaths()
-        End If
-
-        If i = 8 Then
-            If Globals.fForm4.SyncFolderPath.Text <> "" Then
-                Return _checkthispath("Cloud Config:", _
-                                      Globals.fForm4.SyncFolderPath.Text, "", 8, verbose)
-            Else
-                Return True
+            If i = 1 Then
+                Return _checkthispath("Incoming Image Folder:", _
+                                      Globals.fForm3.Image_Folder.Text, "c:\onsite\capture\", 1, verbose)
             End If
-        End If
 
-        If i = 16 Then
-            If Globals.fForm4.syncPostPath.Text <> "" Then
-                Return _checkthispath("Postview Cloud Config:", _
-                                      Globals.fForm4.syncPostPath.Text, "", 16, verbose)
-            Else
-                Return True
+            If i = 2 Then
+                Return _checkthispath("Printer Destination Folder #1:", _
+                                      Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
             End If
-        End If
 
-        Return False
+            If i = 4 Then
+                Return _checkthispath("Printer Destination Folder #2", _
+                                      Globals.fForm3.Print_Folder_2.Text, "c:\onsite\", 4, verbose)
+                _warnSamePaths()
+            End If
+
+            If i = 8 Then
+                If Globals.fForm4.SyncFolderPath1.Text <> "" Then
+                Return _checkthispath("Cloud Path #1:", _
+                                          Globals.fForm4.SyncFolderPath1.Text, "", 8, verbose)
+                Else
+                    Return True
+                End If
+            End If
+
+            If i = 16 Then
+                If Globals.fForm4.syncPostPath.Text <> "" Then
+                Return _checkthispath("Post View Cloud Path:", _
+                                          Globals.fForm4.syncPostPath.Text, "", 16, verbose)
+                Else
+                    Return True
+                End If
+            End If
+
+            If i = 32 Then
+                If Globals.fForm4.SyncFolderPath2.Text <> "" Then
+                Return _checkthispath("Cloud Path #2:", _
+                                          Globals.fForm4.SyncFolderPath2.Text, "", 32, verbose)
+                Else
+                    Return True
+                End If
+            End If
+
+            Return False
 
     End Function
 
@@ -3554,18 +3625,22 @@ Public Class Pic2Print
 
 
     Public Function PathsAreValid() As Boolean
-        Dim i As Int16 = Globals.PathsValidated And 31
+        Dim i As Int16 = Globals.PathsValidated And 63
 
         If Globals.fForm3.Print2Enabled.Checked = False Then
             i = i And (Not 4)
         End If
 
-        If Globals.fForm4.SyncFolderPath.Text = "" Then
+        If Globals.fForm4.SyncFolderPath1.Text = "" Then
             i = i And (Not 8)
         End If
 
         If Globals.fForm4.syncPostPath.Text = "" Then
             i = i And (Not 16)
+        End If
+
+        If Globals.fForm4.SyncFolderPath2.Text = "" Then
+            i = i And (Not 32)
         End If
 
         If Globals.PathsValidated <> i Then
@@ -3621,6 +3696,11 @@ Public Class Pic2Print
 
     Private Sub PostViewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PostViewButton.Click
 
+        ' if its visible, its probably behind windows. This will cause it to come to the top
+        If PostView.Visible Then
+            PostView.Hide()
+        End If
+
         ' Dont execute if form3 & 4 are open!
         If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
@@ -3644,106 +3724,11 @@ Public Class Pic2Print
             Return
         End If
 
-        If PathsAreValid() Then
-
-            Globals.fSendEmails.CancelSend.Text = "Cancel"
-            Globals.fSendEmails.Show()
-
-            ShowBusy(True)
-
-            Globals.SendEmailsAgain = 2
-            If Globals.ImageCache.maxIndex > 0 Then
-
-                ' add wait time so the printing and emails running in the background have time to work
-                Globals.SendEmailsDownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text
-
-                ' scan through all the file names to find the saved email addresses.
-
-                For idx = 0 To Globals.ImageCache.maxIndex
-
-                    ' do this as long as we're in a running state (cancel button stops this..)
-                    If Globals.SendEmailsAgain = 2 Then
-
-                        ' pause if the FIFO is full
-                        Do While Globals.EmailFifoCount = Globals.EmailFifoMax
-
-                            sendemailsmgs("email FIFO full, waiting for room..")
-
-                            If Globals.EmailFifoCount = Globals.EmailFifoMax Then
-                                System.Threading.Thread.Sleep(200)
-                                Application.DoEvents()
-                            End If
-
-                            Globals.fDebug.txtPrintLn(vbCrLf)
-                            Globals.fSendEmails.TextMsgs.AppendText(vbCrLf)
-                        Loop
-
-                        If Globals.ImageCache.fileName(idx) <> "" Then
-                            If Globals.ImageCache.emailAddr(idx) <> "" Then
-
-                                ' add time to the wait
-                                Globals.SendEmailsDownCount += Globals.fForm3.Printer1ProfileTimeSeconds.Text
-
-                                ' we found one, let the user know..
-                                sendemailsmgs( _
-                                    "emailing " & _
-                                    Globals.ImageCache.fileName(idx) & " to " & _
-                                    Globals.ImageCache.emailAddr(idx) & vbCrLf)
-
-                                ' process the file and email it
-                                Call PrintThisCount(idx, 1, PRT_PRINT)
-
-                            End If
-
-                        End If
-
-                    End If
-
-                Next
-
-                ' wait while emails are being sent out
-                If Globals.SendEmailsDownCount > 0 Then
-
-                    sendemailsmgs("Waiting for emails to complete sending" & vbCrLf)
-
-                    Do While Globals.EmailSendActive Or (Globals.EmailFifoCount > 0) Or (Globals.SendEmailsDownCount > 0)
-                        System.Threading.Thread.Sleep(200)
-                        Application.DoEvents()
-                    Loop
-
-                End If
-
-                sendemailsmgs("Finished" & vbCrLf)
-
-                If Globals.SendEmailsAgain = 2 Then
-
-                    Globals.fSendEmails.CancelSend.Text = "Okay"
-
-                    Do While Globals.SendEmailsAgain > 0
-                        System.Threading.Thread.Sleep(200)
-                        Application.DoEvents()
-                    Loop
-
-                End If
-
-            End If
-
-        End If
-
-        Globals.fSendEmails.CancelSend.Text = "Okay"
-        Globals.fSendEmails.Hide()
-        ShowBusy(False)
+        Globals.fSendEmails.Show()
 
     End Sub
 
-    Private Sub sendemailsmgs(ByRef msg As String)
-        Globals.fDebug.txtPrintLn("Finished" & vbCrLf)
-        Globals.fSendEmails.TextMsgs.AppendText("Finished" & vbCrLf)
-        If Globals.fForm4.chkMakeEmailLog.Checked Then
-            My.Computer.FileSystem.WriteAllText("C:\OnSite\software\sendemails.log", msg & vbCrLf, True)
-        End If
-    End Sub
-
+    
 
     Private Sub ButtonsGroup_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonsGroup.Enter
 
@@ -3844,7 +3829,7 @@ Public Class Pic2Print
                 ' wait while emails are being sent out
                 If Globals.SendEmailsDownCount > 0 Then
 
-                    sendemailsmgs("Waiting for emails to complete sending" & vbCrLf)
+                    'sendemailsmgs("Waiting for emails to complete sending" & vbCrLf)
 
                     Do While Globals.EmailSendActive Or (Globals.EmailFifoCount > 0) Or (Globals.SendEmailsDownCount > 0)
                         System.Threading.Thread.Sleep(200)
@@ -3853,11 +3838,11 @@ Public Class Pic2Print
 
                 End If
 
-                sendemailsmgs("Finished" & vbCrLf)
+                ' sendemailsmgs("Finished" & vbCrLf)
 
                 If Globals.SendEmailsAgain = 2 Then
 
-                    Globals.fSendEmails.CancelSend.Text = "Okay"
+                    Globals.fSendEmails.btnStartSendingEmails.Text = "Okay"
 
                     Do While Globals.SendEmailsAgain > 0
                         System.Threading.Thread.Sleep(200)
@@ -3879,7 +3864,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.04"    ' Version string
+    Public Shared Version As String = "Version 12.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

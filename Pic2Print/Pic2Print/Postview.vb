@@ -81,11 +81,14 @@ Public Class PostView
             Globals.PrintCache.OptIn(screenBase + ThumbSelect) = ckb_PostOptin.Checked
             Globals.PrintCache.permit(screenBase + ThumbSelect) = ckb_PostPermit.Checked
 
+            ' save this data on a send, to reduce steps in copy/paste
+            Call _CopyData()
+
             ' save the data to disk too
             Globals.fPic2Print.SaveFileNameData(Globals.PrintCache, screenBase + ThumbSelect)
             ' send via email now too
             Pic2Print.PostProcessEmail(Globals.PrintCache.fullName(screenBase + ThumbSelect))
-            Pic2Print.CopyFileToPostCloudDir(Globals.PrintCache.fullName(screenBase + ThumbSelect))
+            Pic2Print.CopyFileToPostCloudDir(Globals.fForm4.syncPostPath.Text, Globals.PrintCache.fullName(screenBase + ThumbSelect))
 
             PostEmailGroup.Visible = False
             grpButtons.Visible = True
@@ -313,7 +316,7 @@ Public Class PostView
 
     Private Sub btnReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReprint.Click
         Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
-        Pic2Print.CopyFileToPostCloudDir(Globals.PrintCache.fullName(screenBase + ThumbSelect))
+        Pic2Print.CopyFileToPostCloudDir(Globals.fForm4.syncPostPath.Text, Globals.PrintCache.fullName(screenBase + ThumbSelect))
     End Sub
 
     Private Sub btnEmailPopup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailPopup.Click
@@ -327,19 +330,28 @@ Public Class PostView
     End Sub
 
     Private Sub btnCopy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCopy.Click
+        Call _CopyData()
+
+    End Sub
+
+    Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
+        Call _PasteData()
+    End Sub
+
+    Private Sub _CopyData()
         lastEmail = usrEmail2.Text
         lastPhone = tbPhoneNum.Text
         lastCarrier = CarrierCB.SelectedIndex
         lastOptIn = ckb_PostOptin.Checked
         lastPermit = ckb_PostPermit.Checked
-
     End Sub
 
-    Private Sub btnPaste_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPaste.Click
+    Private Sub _PasteData()
         usrEmail2.Text = lastEmail
         tbPhoneNum.Text = lastPhone
         CarrierCB.SelectedIndex = lastCarrier
         ckb_PostOptin.Checked = lastOptIn
         ckb_PostPermit.Checked = lastPermit
     End Sub
+
 End Class

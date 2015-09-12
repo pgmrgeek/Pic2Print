@@ -52,6 +52,7 @@ Partial Class Form3
         Me.cbTimingRun = New System.Windows.Forms.CheckBox()
         Me.btnFolderDialog2 = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.btnFolderDialog3 = New System.Windows.Forms.Button()
         Me.Print2Enabled = New System.Windows.Forms.CheckBox()
         Me.LoadBalancing = New System.Windows.Forms.CheckBox()
@@ -125,7 +126,6 @@ Partial Class Form3
         Me.FilterDescription = New System.Windows.Forms.Label()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.lblFilterSelection = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -256,6 +256,7 @@ Partial Class Form3
         'Image_Folder
         '
         Me.Image_Folder.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SourcePath", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.Image_Folder.Enabled = False
         Me.Image_Folder.Location = New System.Drawing.Point(10, 36)
         Me.Image_Folder.Name = "Image_Folder"
         Me.Image_Folder.Size = New System.Drawing.Size(288, 20)
@@ -456,6 +457,16 @@ Partial Class Form3
         Me.GroupBox2.TabIndex = 67
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Printer #2 KIOSK folder -  Network shared folder"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label7.Location = New System.Drawing.Point(15, 38)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(293, 13)
+        Me.Label7.TabIndex = 66
+        Me.Label7.Text = "Path for networked shared folder for 2nd printer KIOSK mode"
         '
         'btnFolderDialog3
         '
@@ -741,9 +752,9 @@ Partial Class Form3
         '
         Me.GroupBoxBKFG.Controls.Add(Me.tbBKFG)
         Me.GroupBoxBKFG.Controls.Add(Me.ComboBoxBKFG)
-        Me.GroupBoxBKFG.Location = New System.Drawing.Point(656, 83)
+        Me.GroupBoxBKFG.Location = New System.Drawing.Point(658, 83)
         Me.GroupBoxBKFG.Name = "GroupBoxBKFG"
-        Me.GroupBoxBKFG.Size = New System.Drawing.Size(255, 47)
+        Me.GroupBoxBKFG.Size = New System.Drawing.Size(255, 49)
         Me.GroupBoxBKFG.TabIndex = 72
         Me.GroupBoxBKFG.TabStop = False
         Me.GroupBoxBKFG.Text = "Layout Selection"
@@ -1178,7 +1189,7 @@ Partial Class Form3
         Me.GroupBox5.Controls.Add(Me.EmailCloudEnabled)
         Me.GroupBox5.Controls.Add(Me.EnaEmailLabel)
         Me.GroupBox5.Controls.Add(Me.EmailConfigBtn)
-        Me.GroupBox5.Location = New System.Drawing.Point(382, 441)
+        Me.GroupBox5.Location = New System.Drawing.Point(383, 441)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Size = New System.Drawing.Size(253, 82)
         Me.GroupBox5.TabIndex = 124
@@ -1193,16 +1204,6 @@ Partial Class Form3
         Me.lblFilterSelection.Size = New System.Drawing.Size(81, 13)
         Me.lblFilterSelection.TabIndex = 125
         Me.lblFilterSelection.Text = "Filter Selections"
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label7.Location = New System.Drawing.Point(15, 38)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(293, 13)
-        Me.Label7.TabIndex = 66
-        Me.Label7.Text = "Path for networked shared folder for 2nd printer KIOSK mode"
         '
         'Form3
         '

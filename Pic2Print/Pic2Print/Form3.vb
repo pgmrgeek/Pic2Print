@@ -144,7 +144,12 @@ Public Class Form3
     Private Sub OKay_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OKay.Click
         Dim i As Integer
 
-        ' validate the three paths
+        ' if no email or cloud paths, clear the validated bits 
+        If Globals.fForm3.EmailCloudEnabled.Checked = False Then
+            Globals.PathsValidated = Globals.PathsValidated And (Not (8 + 16 + 32))
+        End If
+
+        ' validate all the paths
         If Globals.fPic2Print.ValidatePaths(-1, True) Then
 
             ' make sure the print size matches the layout
@@ -244,7 +249,7 @@ Public Class Form3
             Me.Hide()
 
         Else
-            'MessageBox.Show("errors, can't close yet..")
+            MessageBox.Show("errors, can't close yet..")
         End If
 
     End Sub

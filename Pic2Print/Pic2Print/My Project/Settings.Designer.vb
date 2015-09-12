@@ -893,6 +893,18 @@ Namespace My
                 Me("syncPostPathvalue") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property SyncFolderPth2() As String
+            Get
+                Return CType(Me("SyncFolderPth2"),String)
+            End Get
+            Set
+                Me("SyncFolderPth2") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

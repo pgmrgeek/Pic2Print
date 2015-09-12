@@ -40,14 +40,17 @@ Partial Class Form4
         Me.txtServerURL = New System.Windows.Forms.TextBox()
         Me.lblServerURL = New System.Windows.Forms.Label()
         Me.grpCloudConfig = New System.Windows.Forms.GroupBox()
+        Me.SyncFolderPath2 = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.syncPostLabel = New System.Windows.Forms.Label()
+        Me.btnPostViewFinder = New System.Windows.Forms.Button()
+        Me.syncPostPath = New System.Windows.Forms.TextBox()
         Me.btnEmailFolderDialog1 = New System.Windows.Forms.Button()
         Me.lblSyncLa = New System.Windows.Forms.Label()
-        Me.SyncFolderPath = New System.Windows.Forms.TextBox()
+        Me.SyncFolderPath1 = New System.Windows.Forms.TextBox()
         Me.btnOKay = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.syncPostPath = New System.Windows.Forms.TextBox()
-        Me.btnPostViewFinder = New System.Windows.Forms.Button()
-        Me.syncPostLabel = New System.Windows.Forms.Label()
+        Me.btnEmailFolderDialog2 = New System.Windows.Forms.Button()
         Me.grpEmailConfig.SuspendLayout()
         Me.grpCloudConfig.SuspendLayout()
         Me.SuspendLayout()
@@ -227,18 +230,66 @@ Partial Class Form4
         '
         'grpCloudConfig
         '
+        Me.grpCloudConfig.Controls.Add(Me.btnEmailFolderDialog2)
+        Me.grpCloudConfig.Controls.Add(Me.SyncFolderPath2)
+        Me.grpCloudConfig.Controls.Add(Me.Label1)
         Me.grpCloudConfig.Controls.Add(Me.syncPostLabel)
         Me.grpCloudConfig.Controls.Add(Me.btnPostViewFinder)
         Me.grpCloudConfig.Controls.Add(Me.syncPostPath)
         Me.grpCloudConfig.Controls.Add(Me.btnEmailFolderDialog1)
         Me.grpCloudConfig.Controls.Add(Me.lblSyncLa)
-        Me.grpCloudConfig.Controls.Add(Me.SyncFolderPath)
+        Me.grpCloudConfig.Controls.Add(Me.SyncFolderPath1)
         Me.grpCloudConfig.Location = New System.Drawing.Point(328, 9)
         Me.grpCloudConfig.Name = "grpCloudConfig"
-        Me.grpCloudConfig.Size = New System.Drawing.Size(345, 159)
+        Me.grpCloudConfig.Size = New System.Drawing.Size(345, 223)
         Me.grpCloudConfig.TabIndex = 86
         Me.grpCloudConfig.TabStop = False
         Me.grpCloudConfig.Text = "Cloud Config"
+        '
+        'SyncFolderPath2
+        '
+        Me.SyncFolderPath2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderPth2", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.SyncFolderPath2.Location = New System.Drawing.Point(9, 86)
+        Me.SyncFolderPath2.Name = "SyncFolderPath2"
+        Me.SyncFolderPath2.Size = New System.Drawing.Size(283, 20)
+        Me.SyncFolderPath2.TabIndex = 93
+        Me.SyncFolderPath2.Text = Global.WindowsApplication1.My.MySettings.Default.SyncFolderPth2
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(6, 69)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(310, 13)
+        Me.Label1.TabIndex = 92
+        Me.Label1.Text = "Path to Dropbox/Slideshow Folder #2 for KIOSK. Blank=no path"
+        '
+        'syncPostLabel
+        '
+        Me.syncPostLabel.AutoSize = True
+        Me.syncPostLabel.Location = New System.Drawing.Point(6, 146)
+        Me.syncPostLabel.Name = "syncPostLabel"
+        Me.syncPostLabel.Size = New System.Drawing.Size(257, 13)
+        Me.syncPostLabel.TabIndex = 91
+        Me.syncPostLabel.Text = "Post View Email Copy-to-Cloud folder. Blank=no copy"
+        '
+        'btnPostViewFinder
+        '
+        Me.btnPostViewFinder.Location = New System.Drawing.Point(295, 164)
+        Me.btnPostViewFinder.Name = "btnPostViewFinder"
+        Me.btnPostViewFinder.Size = New System.Drawing.Size(33, 20)
+        Me.btnPostViewFinder.TabIndex = 90
+        Me.btnPostViewFinder.Text = "..."
+        Me.btnPostViewFinder.UseVisualStyleBackColor = True
+        '
+        'syncPostPath
+        '
+        Me.syncPostPath.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "syncPostPathvalue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.syncPostPath.Location = New System.Drawing.Point(6, 165)
+        Me.syncPostPath.Name = "syncPostPath"
+        Me.syncPostPath.Size = New System.Drawing.Size(283, 20)
+        Me.syncPostPath.TabIndex = 89
+        Me.syncPostPath.Text = Global.WindowsApplication1.My.MySettings.Default.syncPostPathvalue
         '
         'btnEmailFolderDialog1
         '
@@ -254,18 +305,18 @@ Partial Class Form4
         Me.lblSyncLa.AutoSize = True
         Me.lblSyncLa.Location = New System.Drawing.Point(6, 25)
         Me.lblSyncLa.Name = "lblSyncLa"
-        Me.lblSyncLa.Size = New System.Drawing.Size(304, 13)
+        Me.lblSyncLa.Size = New System.Drawing.Size(310, 13)
         Me.lblSyncLa.TabIndex = 87
-        Me.lblSyncLa.Text = "Path to Dropbox or Slideshow Folder for KIOSK. Blank=no path"
+        Me.lblSyncLa.Text = "Path to Dropbox/Slideshow Folder #1 for KIOSK. Blank=no path"
         '
-        'SyncFolderPath
+        'SyncFolderPath1
         '
-        Me.SyncFolderPath.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderPth", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.SyncFolderPath.Location = New System.Drawing.Point(9, 41)
-        Me.SyncFolderPath.Name = "SyncFolderPath"
-        Me.SyncFolderPath.Size = New System.Drawing.Size(283, 20)
-        Me.SyncFolderPath.TabIndex = 9
-        Me.SyncFolderPath.Text = Global.WindowsApplication1.My.MySettings.Default.SyncFolderPth
+        Me.SyncFolderPath1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderPth", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.SyncFolderPath1.Location = New System.Drawing.Point(9, 41)
+        Me.SyncFolderPath1.Name = "SyncFolderPath1"
+        Me.SyncFolderPath1.Size = New System.Drawing.Size(283, 20)
+        Me.SyncFolderPath1.TabIndex = 9
+        Me.SyncFolderPath1.Text = Global.WindowsApplication1.My.MySettings.Default.SyncFolderPth
         '
         'btnOKay
         '
@@ -276,32 +327,14 @@ Partial Class Form4
         Me.btnOKay.Text = "OK"
         Me.btnOKay.UseVisualStyleBackColor = True
         '
-        'syncPostPath
+        'btnEmailFolderDialog2
         '
-        Me.syncPostPath.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "syncPostPathvalue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.syncPostPath.Location = New System.Drawing.Point(6, 109)
-        Me.syncPostPath.Name = "syncPostPath"
-        Me.syncPostPath.Size = New System.Drawing.Size(283, 20)
-        Me.syncPostPath.TabIndex = 89
-        Me.syncPostPath.Text = Global.WindowsApplication1.My.MySettings.Default.syncPostPathvalue
-        '
-        'btnPostViewFinder
-        '
-        Me.btnPostViewFinder.Location = New System.Drawing.Point(295, 108)
-        Me.btnPostViewFinder.Name = "btnPostViewFinder"
-        Me.btnPostViewFinder.Size = New System.Drawing.Size(33, 20)
-        Me.btnPostViewFinder.TabIndex = 90
-        Me.btnPostViewFinder.Text = "..."
-        Me.btnPostViewFinder.UseVisualStyleBackColor = True
-        '
-        'syncPostLabel
-        '
-        Me.syncPostLabel.AutoSize = True
-        Me.syncPostLabel.Location = New System.Drawing.Point(6, 90)
-        Me.syncPostLabel.Name = "syncPostLabel"
-        Me.syncPostLabel.Size = New System.Drawing.Size(287, 13)
-        Me.syncPostLabel.TabIndex = 91
-        Me.syncPostLabel.Text = "Path to Dropbox or Slideshow for Post View. Blank=no path"
+        Me.btnEmailFolderDialog2.Location = New System.Drawing.Point(298, 85)
+        Me.btnEmailFolderDialog2.Name = "btnEmailFolderDialog2"
+        Me.btnEmailFolderDialog2.Size = New System.Drawing.Size(33, 20)
+        Me.btnEmailFolderDialog2.TabIndex = 94
+        Me.btnEmailFolderDialog2.Text = "..."
+        Me.btnEmailFolderDialog2.UseVisualStyleBackColor = True
         '
         'Form4
         '
@@ -337,7 +370,7 @@ Partial Class Form4
     Friend WithEvents txtServerURL As System.Windows.Forms.TextBox
     Friend WithEvents lblServerURL As System.Windows.Forms.Label
     Friend WithEvents grpCloudConfig As System.Windows.Forms.GroupBox
-    Friend WithEvents SyncFolderPath As System.Windows.Forms.TextBox
+    Friend WithEvents SyncFolderPath1 As System.Windows.Forms.TextBox
     Friend WithEvents lblSyncLa As System.Windows.Forms.Label
     Friend WithEvents btnOKay As System.Windows.Forms.Button
     Friend WithEvents txtSubject As System.Windows.Forms.TextBox
@@ -347,4 +380,7 @@ Partial Class Form4
     Friend WithEvents btnPostViewFinder As System.Windows.Forms.Button
     Friend WithEvents syncPostPath As System.Windows.Forms.TextBox
     Friend WithEvents syncPostLabel As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents SyncFolderPath2 As System.Windows.Forms.TextBox
+    Friend WithEvents btnEmailFolderDialog2 As System.Windows.Forms.Button
 End Class

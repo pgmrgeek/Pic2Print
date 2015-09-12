@@ -23,6 +23,8 @@ Partial Class PostView
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.PostEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.ckb_PostPermit = New System.Windows.Forms.CheckBox()
+        Me.ckb_PostOptin = New System.Windows.Forms.CheckBox()
         Me.btnPaste = New System.Windows.Forms.Button()
         Me.btnCopy = New System.Windows.Forms.Button()
         Me.btnEmailClose = New System.Windows.Forms.Button()
@@ -48,8 +50,6 @@ Partial Class PostView
         Me.lbl_Frame = New System.Windows.Forms.Label()
         Me.btnEmailPopup = New System.Windows.Forms.Button()
         Me.pbPostView = New System.Windows.Forms.PictureBox()
-        Me.ckb_PostOptin = New System.Windows.Forms.CheckBox()
-        Me.ckb_PostPermit = New System.Windows.Forms.CheckBox()
         Me.PostEmailGroup.SuspendLayout()
         Me.gbThumbBox.SuspendLayout()
         CType(Me.pbThumb1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -78,6 +78,24 @@ Partial Class PostView
         Me.PostEmailGroup.Size = New System.Drawing.Size(583, 170)
         Me.PostEmailGroup.TabIndex = 7
         Me.PostEmailGroup.TabStop = False
+        '
+        'ckb_PostPermit
+        '
+        Me.ckb_PostPermit.Location = New System.Drawing.Point(229, 122)
+        Me.ckb_PostPermit.Name = "ckb_PostPermit"
+        Me.ckb_PostPermit.Size = New System.Drawing.Size(295, 24)
+        Me.ckb_PostPermit.TabIndex = 19
+        Me.ckb_PostPermit.Text = "I give permission to use my image for promotional use"
+        Me.ckb_PostPermit.UseVisualStyleBackColor = True
+        '
+        'ckb_PostOptin
+        '
+        Me.ckb_PostOptin.Location = New System.Drawing.Point(65, 122)
+        Me.ckb_PostOptin.Name = "ckb_PostOptin"
+        Me.ckb_PostOptin.Size = New System.Drawing.Size(160, 24)
+        Me.ckb_PostOptin.TabIndex = 18
+        Me.ckb_PostOptin.Text = "I OPT-IN for future emails"
+        Me.ckb_PostOptin.UseVisualStyleBackColor = True
         '
         'btnPaste
         '
@@ -283,7 +301,7 @@ Partial Class PostView
         Me.grpButtons.Controls.Add(Me.PostCloseButton1)
         Me.grpButtons.Controls.Add(Me.chkAutoScroll)
         Me.grpButtons.Controls.Add(Me.btnReprint)
-        Me.grpButtons.Location = New System.Drawing.Point(84, 477)
+        Me.grpButtons.Location = New System.Drawing.Point(84, 473)
         Me.grpButtons.Name = "grpButtons"
         Me.grpButtons.Size = New System.Drawing.Size(540, 56)
         Me.grpButtons.TabIndex = 17
@@ -317,30 +335,12 @@ Partial Class PostView
         Me.pbPostView.TabStop = False
         Me.pbPostView.Tag = ""
         '
-        'ckb_PostOptin
-        '
-        Me.ckb_PostOptin.Location = New System.Drawing.Point(65, 122)
-        Me.ckb_PostOptin.Name = "ckb_PostOptin"
-        Me.ckb_PostOptin.Size = New System.Drawing.Size(160, 24)
-        Me.ckb_PostOptin.TabIndex = 18
-        Me.ckb_PostOptin.Text = "I OPT-IN for future emails"
-        Me.ckb_PostOptin.UseVisualStyleBackColor = True
-        '
-        'ckb_PostPermit
-        '
-        Me.ckb_PostPermit.Location = New System.Drawing.Point(229, 122)
-        Me.ckb_PostPermit.Name = "ckb_PostPermit"
-        Me.ckb_PostPermit.Size = New System.Drawing.Size(295, 24)
-        Me.ckb_PostPermit.TabIndex = 19
-        Me.ckb_PostPermit.Text = "I give permission to use my image for promotional use"
-        Me.ckb_PostPermit.UseVisualStyleBackColor = True
-        '
         'PostView
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveBorder
-        Me.ClientSize = New System.Drawing.Size(696, 534)
+        Me.ClientSize = New System.Drawing.Size(696, 541)
         Me.ControlBox = False
         Me.Controls.Add(Me.grpButtons)
         Me.Controls.Add(Me.gbThumbBox)

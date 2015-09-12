@@ -28,7 +28,7 @@ Public Class Form4
         End If
     End Sub
 
-    Private Sub SyncFolderPath_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SyncFolderPath.TextChanged
+    Private Sub SyncFolderPath_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SyncFolderPath1.TextChanged
 
     End Sub
 
@@ -46,7 +46,7 @@ Public Class Form4
 
         If Globals.fForm3.EmailCloudEnabled.Checked = True Then
 
-            If SyncFolderPath.Text <> "" Then
+            If SyncFolderPath1.Text <> "" Then
 
                 If Globals.fPic2Print.ValidatePaths(8, True) = False Then
                     'MessageBox.Show("Sync Path NOT VALID" & vbCrLf & "Try Again!")
@@ -54,14 +54,18 @@ Public Class Form4
                 Else
 
                     ' the sync folder can't equal the print folders
-                    If (SyncFolderPath.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath.Text = Globals.fForm3.Print_Folder_2.Text) Then
-                        MessageBox.Show("Warning! Sync Folder and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
+                    If (SyncFolderPath1.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath1.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                        MessageBox.Show("Warning! Sync Folder #1 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
                         Return
                     End If
 
                     'MessageBox.Show("All paths are good")
 
                 End If
+
+            End If
+
+            If syncPostPath.Text <> "" Then
 
                 If Globals.fPic2Print.ValidatePaths(16, True) = False Then
                     'MessageBox.Show("Postview Sync Path NOT VALID" & vbCrLf & "Try Again!")
@@ -80,6 +84,41 @@ Public Class Form4
 
             End If
 
+            If SyncFolderPath2.Text <> "" Then
+
+                If Globals.fPic2Print.ValidatePaths(32, True) = False Then
+                    'MessageBox.Show("Sync Path NOT VALID" & vbCrLf & "Try Again!")
+                    Return
+                Else
+
+                    ' the sync folder can't equal the print folders
+                    If (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                        MessageBox.Show("Warning! Sync Folder #1 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
+                        Return
+                    End If
+
+                    'MessageBox.Show("All paths are good")
+
+                End If
+            End If
+
+            If SyncFolderPath2.Text <> "" Then
+
+                If Globals.fPic2Print.ValidatePaths(32, True) = False Then
+                    'MessageBox.Show("Sync Path NOT VALID" & vbCrLf & "Try Again!")
+                    Return
+                Else
+
+                    ' the sync folder can't equal the print folders
+                    If (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                        MessageBox.Show("Warning! Sync Folder #2 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
+                        Return
+                    End If
+
+                    'MessageBox.Show("All paths are good")
+
+                End If
+            End If
         End If
 
         ' hide the form
@@ -137,10 +176,19 @@ Public Class Form4
 
     Private Sub btnEmailFolderDialog1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailFolderDialog1.Click
         Dim str As String
-        FolderBrowserDialog1.SelectedPath = SyncFolderPath.Text
+        FolderBrowserDialog1.SelectedPath = SyncFolderPath1.Text
         If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
             str = FolderBrowserDialog1.SelectedPath
-            SyncFolderPath.Text = str
+            SyncFolderPath1.Text = str
+        End If
+    End Sub
+
+    Private Sub btnEmailFolderDialog2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEmailFolderDialog2.Click
+        Dim str As String
+        FolderBrowserDialog1.SelectedPath = SyncFolderPath2.Text
+        If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
+            str = FolderBrowserDialog1.SelectedPath
+            SyncFolderPath2.Text = str
         End If
     End Sub
 
@@ -160,7 +208,5 @@ Public Class Form4
         End If
     End Sub
 
-    Private Sub syncPostLabel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles syncPostLabel.Click
-
-    End Sub
+   
 End Class
