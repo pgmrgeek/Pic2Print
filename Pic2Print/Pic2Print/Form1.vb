@@ -1611,7 +1611,7 @@ Public Class Pic2Print
 
                 If LoadPrintedTxtFile(fnam, email1, phone1, sel, optin, permit) = True Then
 
-                    If email1 <> "" Then
+                    If ((email1 <> "") Or (phone1 <> "")) Then
 
                         Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
 
@@ -2530,7 +2530,21 @@ Public Class Pic2Print
         Dim data As String
 
         ' trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), Microsoft.VisualBasic.Len(cache.fileName(idx)) - 4)
-        trgf = Microsoft.VisualBasic.Left(cache.fileName(idx), InStr(cache.fileName(idx), ".jp", CompareMethod.Text) - 1)
+
+        ' extract up to the .jpg extention
+        trgf = Strings.LCase(cache.fileName(idx))
+        If (trgf.Contains(".jpg") Or trgf.Contains(".jpeg")) Then
+            trgf = Microsoft.VisualBasic.Left(trgf, InStr(trgf, ".jp", CompareMethod.Text) - 1)
+        Else
+            ' or extract up to the .gif extention
+            If (trgf.Contains(".gif")) Then
+                trgf = Microsoft.VisualBasic.Left(trgf, InStr(trgf, ".gif", CompareMethod.Text) - 1)
+            Else
+                Globals.fDebug.txtPrintLn("ERR: SaveFielNameData: Bad Extension.")
+            End If
+        End If
+
+
 
         ' write out the count to the file
         data = cache.maxPrintCount(idx) & vbCrLf & _
@@ -3864,7 +3878,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.05"    ' Version string
+    Public Shared Version As String = "Version 12.06"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
