@@ -162,6 +162,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Settings.vb" />
+    <Compile Include="UserTrigger.Designer.vb">
+      <DependentUpon>UserTrigger.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserTrigger.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="debug.resx">
@@ -195,6 +201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SendEmails.resx">
       <DependentUpon>SendEmails.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserTrigger.resx">
+      <DependentUpon>UserTrigger.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

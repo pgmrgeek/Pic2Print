@@ -2,7 +2,6 @@
 Imports System.IO
 Imports System.Threading
 
-
 '
 '====================================================================
 '                              Pic2Print
@@ -81,6 +80,7 @@ Public Class Pic2Print
         Dim fDebug As New debug
         Dim fSendEmails As New SendEmails
         Dim fmmsForm As New mmsForm
+        Dim UserButtonForm As New UserTrigger
         Dim dateStr As String
 
         Globals.fPic2Print = Me
@@ -93,6 +93,7 @@ Public Class Pic2Print
         Globals.fmmsForm = fmmsForm
         Globals.ImageCache = New ImageCaching
         Globals.PrintCache = New ImageCaching
+        Globals.fUserButton = UserButtonForm
 
         ' cursor timeclock..
         ShowBusy(True)
@@ -230,6 +231,7 @@ Public Class Pic2Print
         ' setup the background thread to watch the 1st print folder for incoming JPGs copied there by the foreground
 
         Globals.alarm = New Threading.Timer(AddressOf OurTimerTick, Nothing, 1000, 1000)
+        Globals.CameraTrigger = New Threading.Timer(AddressOf CameraTriggerTimerTick, Nothing, 1000, 1000)
         Globals.PrintProcessor = New Threading.Thread(AddressOf PrintProcessorThread)
         Globals.PrintedFolderProcessor = New Threading.Thread(AddressOf PrintedFolderThread)
         Globals.EmailProcessor = New Threading.Thread(AddressOf EmailProcessorThread)
@@ -2207,6 +2209,184 @@ Public Class Pic2Print
 
     End Sub
 
+    Private Sub CameraTriggerTimerTick(ByVal state As Object)
+        ' stages
+        Static Dim sema As Integer = -1 ' semaphore not to allow reentry of the body of code on timer ticks
+        Static Dim stage As Integer = 1 ' controls the event input to the proper running functionality
+        Static Dim secondcountdown As Integer = 0 ' # of seconds per stage
+        Static Dim fnamcntr As Integer = 1100 ' new file name counter
+        Static Dim TrigCnt As Integer = -1 ' counts # of frames needed from the camera, IE, # of loops through this event
+
+        ' user hits space bar setting triggerprocessrun to two, else bail if we've not been requested to run 
+        If Globals.TriggerProcessRun < 2 Then
+            Return
+        End If
+
+        sema += 1
+        If sema = 0 Then
+
+            ' ==========================================================================
+            ' Stage #1 was idle, we have a run request, or add'l images. load the variables ============= 
+            If stage = 1 Then
+
+                Globals.fDebug.txtPrintLn("Camera trigger stage 1")
+
+                ' reset the trigger counter if this is the first time in
+                If TrigCnt = -1 Then
+                    TrigCnt = Globals.fForm3.txtLayersPerCust.Text ' set the trigger counter to default
+                End If
+
+                fnamcntr = ((fnamcntr / 10) * 10) + 10 ' FIX: make this the current file decoration counter
+
+                secondcountdown = 6
+                Globals.fUserButton.trgSetFont(128)
+                Globals.fUserButton.trgSetButtonText("5")
+                Globals.fUserButton.trgSetFrameCount(TrigCnt)
+
+                stage = 2
+
+            End If
+
+            ' ===========================================================================
+            ' Stage #2 is 5 second count down to trigger ==============================
+            If stage = 2 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 2")
+
+                ' any countdown, decrement one..
+                If secondcountdown > 0 Then
+
+                    ' HACK! At 2 second(s), fire off the camera external module since its *SO* freakin' slow..
+                    If secondcountdown = 2 Then
+                        _TriggerCamera(fnamcntr)
+                        fnamcntr += 1 ' advance the file name
+                    End If
+
+                    ' one less second to wait
+                    secondcountdown -= 1
+
+                    ' we're done with this pass.load the next second character or a smile!
+                    If secondcountdown > 0 Then
+                        Globals.fUserButton.trgSetButtonText(secondcountdown)
+                        'Globals.fUserButton.TriggerBtn.Text = secondcountdown
+                    Else
+                        ' at zero seconds, load a big happy smile for stage #3
+                        Globals.fUserButton.trgSetButtonText(":D")
+                        'Globals.fUserButton.TriggerBtn.Text = ":D"
+                        secondcountdown = 2 + 1
+                        stage = 3
+                    End If
+
+                End If
+            End If
+
+            ' =========================================================================
+            ' Stage #3 Last two seconds, put up a BIG SMILEY face! ====================
+            If stage = 3 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 3")
+
+                ' still waiting for this to finish
+                If secondcountdown > 0 Then
+                    secondcountdown -= 1
+
+                    ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
+                    If secondcountdown = 0 Then
+                        If TrigCnt > 1 Then
+                            secondcountdown = 7
+                        Else
+
+                            ' no printing countdown at 10 seconds
+                            secondcountdown = 10
+
+                            ' if printing add 10 more seconds of time
+                            If Globals.fForm3.NoPrint.Checked = False Then
+                                secondcountdown += 10
+                            End If
+
+                        End If
+
+                        stage = 4
+
+                    End If
+                End If
+            End If
+
+            ' =========================================================================
+            ' Stage 4 - wait for printing to complete =========================
+
+            If stage = 4 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 4")
+
+                If secondcountdown > 0 Then
+                    secondcountdown -= 1
+
+                    ' if we reach 0, then this image is done.  Restart for subsequent images
+                    If secondcountdown = 0 Then
+
+                        ' count down the number of frames we need (trigger count)
+                        If TrigCnt > 0 Then
+                            TrigCnt -= 1
+                        End If
+
+                        If TrigCnt = 0 Then
+                            ' we're all done, clear all control variables
+                            TrigCnt = -1
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("CLICK TO START")
+                            Globals.fUserButton.trgSetFrameCount(-1)
+                            Globals.TriggerProcessRun = 1
+                            Globals.fDebug.txtPrintLn("Camera trigger - all done")
+                        Else
+                            Globals.fDebug.txtPrintLn("Camera trigger - next trigger")
+                        End If
+
+                        stage = 1
+
+                    Else
+
+                        If TrigCnt = 1 Then
+                            ' make sure this control has the focus for the next keyboard event
+                            'Globals.fUserButton.trgSetFocus()
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("Finishing")
+                            Globals.fUserButton.trgSetFrameCount(0)
+
+                        Else
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("Get Ready")
+                            Globals.fUserButton.trgSetFrameCount(TrigCnt - 1)
+                        End If
+
+                    End If
+                End If
+            End If
+
+        End If
+
+        sema -= 1
+
+    End Sub
+
+    Private Sub _TriggerCamera(ByRef cnt As Integer)
+        Dim fnam = "c:\Onsite\" & Globals.fForm3.txtMachineName.Text & "_" & cnt & ".jpg"
+        Dim cmd As String
+
+        ' build the DigiCamControl command line
+        cmd = "/capturenoaf /filename " & fnam
+
+        Dim compiler As New Process()
+        compiler.StartInfo.FileName = "C:\onsite\cameras\dcc\cameracontrolcmd.exe"
+        compiler.StartInfo.Arguments = cmd
+        compiler.StartInfo.UseShellExecute = False
+        compiler.StartInfo.RedirectStandardOutput = True
+        compiler.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
+        compiler.StartInfo.CreateNoWindow = True
+        compiler.Start()
+        'compiler.WaitForExit()
+
+        'Globals.fDebug.txtPrintLn("Photoshop Complete")
+
+    End Sub
+
     Private Sub SetEmailQueueTextBox(ByVal str As String)
 
         ' InvokeRequired required compares the thread ID of the
@@ -3872,13 +4052,31 @@ Public Class Pic2Print
         ShowBusy(False)
 
     End Sub
+
+    Private Sub TrigDialog_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TrigDialog.Click
+
+        ' if the dialogs are open, the paths might change on us. 
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
+                             "open the trigger dialog.")
+            Return
+        End If
+
+        ' open or close the big button dialog 
+        If Globals.fUserButton.Visible = True Then
+            Globals.fUserButton.Visible = False
+        Else
+            Globals.fUserButton.Visible = True
+        End If
+
+    End Sub
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 12.06"    ' Version string
+    Public Shared Version As String = "Version 13.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -3891,6 +4089,7 @@ Public Class Globals
     Public Shared fSendEmails As New SendEmails
     Public Shared fmmsForm As New mmsForm
     Public Shared Form3Loading As Boolean
+    Public Shared fUserButton As New UserTrigger
 
     Public Delegate Sub SetTextCallback(ByVal str As String)
     Public Delegate Sub SetPostViewCallback(ByRef pb As PictureBox, ByRef fnam As String, ByRef mask As Int16)
@@ -3939,6 +4138,7 @@ Public Class Globals
 
     ' timer stuff
     Public Shared alarm As Threading.Timer                      ' VB control structure
+    Public Shared CameraTrigger As Threading.Timer              ' timer tick to trigger camera shutter
     Public Shared Printer1DownCount As Int16 = 0                ' set to a second count to decrement to zero
     Public Shared Printer2DownCount As Int16 = 0                ' set to a second count to decrement to zero
     Public Shared SendEmailsDownCount As Int16 = 0              ' send emails dialog down counter
@@ -3949,6 +4149,7 @@ Public Class Globals
     Public Shared PrintedFolderProcessor As System.Threading.Thread     ' background thread control
 
     Public Shared PrintProcessRun As Int16 = 0                  ' States: 0=dead,1=paused,2=running
+    Public Shared TriggerProcessRun As Int16 = 0                ' States: 0=dead,1=idle,2=running
 
     Public Shared EmailProcessor As System.Threading.Thread     ' email background thread control
     Public Shared EmailProcessRun As Int16 = 0                  ' States: 0=dead,1=paused,2=running

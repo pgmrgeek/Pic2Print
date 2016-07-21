@@ -84,6 +84,7 @@ Partial Class Pic2Print
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.ButtonsGroup = New System.Windows.Forms.GroupBox()
+        Me.TrigDialog = New System.Windows.Forms.Button()
         Me.cbFilesOnly = New System.Windows.Forms.CheckBox()
         Me.cbQuickBG = New System.Windows.Forms.CheckBox()
         Me.cbQuickFG = New System.Windows.Forms.CheckBox()
@@ -738,6 +739,7 @@ Partial Class Pic2Print
         '
         'ButtonsGroup
         '
+        Me.ButtonsGroup.Controls.Add(Me.TrigDialog)
         Me.ButtonsGroup.Controls.Add(Me.cbFilesOnly)
         Me.ButtonsGroup.Controls.Add(Me.cbQuickBG)
         Me.ButtonsGroup.Controls.Add(Me.cbQuickFG)
@@ -770,6 +772,15 @@ Partial Class Pic2Print
         Me.ButtonsGroup.Size = New System.Drawing.Size(578, 104)
         Me.ButtonsGroup.TabIndex = 61
         Me.ButtonsGroup.TabStop = False
+        '
+        'TrigDialog
+        '
+        Me.TrigDialog.Location = New System.Drawing.Point(14, 78)
+        Me.TrigDialog.Name = "TrigDialog"
+        Me.TrigDialog.Size = New System.Drawing.Size(66, 23)
+        Me.TrigDialog.TabIndex = 61
+        Me.TrigDialog.Text = "Guest UI"
+        Me.TrigDialog.UseVisualStyleBackColor = True
         '
         'cbFilesOnly
         '
@@ -1092,5 +1103,6 @@ Partial Class Pic2Print
     Friend WithEvents lblBkFgSel1 As System.Windows.Forms.Label
     Friend WithEvents gbPhotoList As System.Windows.Forms.GroupBox
     Friend WithEvents SaveEmailAddrs As System.Windows.Forms.Button
+    Friend WithEvents TrigDialog As System.Windows.Forms.Button
 
 End Class
