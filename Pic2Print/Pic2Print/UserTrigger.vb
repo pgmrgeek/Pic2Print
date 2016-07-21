@@ -2,6 +2,12 @@
 
     Private Sub UserTrigger_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+        If My.Computer.FileSystem.FileExists("C:\onsite\cameras\dcc\cameracontrolcmd.exe") Then
+            CameraFound = True
+        Else
+            CameraFound = False
+            trgSetFrameCount(-2)
+        End If
         Call _UserTrigger_Resized()
 
     End Sub
@@ -13,7 +19,12 @@
     End Sub
 
     Private Sub TriggerBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TriggerBtn.Click
+        ' If no camera found we have to bail
 
+        If CameraFound = False Then
+            MsgBox("Cannot start until DigiCamControl Camera software is installed")
+            Return
+        End If
         ' first input, trigger the camera trigger timer
 
         If Globals.TriggerProcessRun < 2 Then
@@ -91,6 +102,7 @@
     End Sub
 
     Public Delegate Sub trgSetFrameCountdel(ByVal cnt As Integer)
+    Public CameraFound As Boolean = True
 
     Public Sub trgSetFrameCount(ByVal cnt As Integer)
 
@@ -102,10 +114,18 @@
             Me.Invoke(d, New Object() {cnt})
         Else
 
+            ' -2 No camera found!
             ' -1 clear out the message
             '  0 Pictures Done
             '  1 Picture to go
             '  2+ Pictures to go
+
+            If cnt = -2 Then
+                lblPicsToGoMsg.Text = "No Camera Found!"
+                CameraFound = False
+            End If
+
+            If CameraFound = False Then Return
 
             If cnt = -1 Then
                 lblPicsToGoMsg.Text = " "
@@ -144,4 +164,7 @@
         Me.Hide()
     End Sub
 
+    Private Sub lblPicsToGoMsg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblPicsToGoMsg.Click
+
+    End Sub
 End Class
