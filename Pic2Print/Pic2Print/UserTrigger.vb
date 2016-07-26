@@ -58,8 +58,8 @@
 
         ' reposition the hide button, hiding it mostly off screen so the users dont find it
 
-        x = Me.Size.Width - 20
-        y = Me.Size.Height - 30
+        x = Me.Size.Width - 28
+        y = Me.Size.Height - 34
         If x < 0 Then x = 0
         If y < 0 Then y = 0
 

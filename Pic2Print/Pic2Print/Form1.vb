@@ -2238,7 +2238,7 @@ Public Class Pic2Print
 
                 fnamcntr = ((fnamcntr / 10) * 10) + 10 ' FIX: make this the current file decoration counter
 
-                secondcountdown = 6
+                secondcountdown = 3 + 1
                 Globals.fUserButton.trgSetFont(128)
                 Globals.fUserButton.trgSetButtonText("5")
                 Globals.fUserButton.trgSetFrameCount(TrigCnt)
@@ -2291,16 +2291,16 @@ Public Class Pic2Print
                     ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
                     If secondcountdown = 0 Then
                         If TrigCnt > 1 Then
-                            secondcountdown = 7
+                            secondcountdown = 4
                         Else
 
                             ' no printing countdown at 10 seconds
-                            secondcountdown = 10
+                            secondcountdown = 4
 
-                            ' if printing add 10 more seconds of time
-                            If Globals.fForm3.NoPrint.Checked = False Then
-                                secondcountdown += 10
-                            End If
+                            '' if printing add 10 more seconds of time
+                            'If Globals.fForm3.NoPrint.Checked = False Then
+                            'secondcountdown += 10
+                            'End If
 
                         End If
 
@@ -4076,7 +4076,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.02"    ' Version string
+    Public Shared Version As String = "Version 13.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
