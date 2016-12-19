@@ -304,6 +304,9 @@ Public Class Form3
         txtLayoutTxTLen.Text = i
         Globals.fPreview.txtPrintMsg.MaxLength = i
 
+        ' write out the configuration data
+        Call WriteConfigurationFiles()
+
         ' start the background cloud copy thread..
 
         If Globals.PrintProcessRun = 0 Then
@@ -319,9 +322,6 @@ Public Class Form3
             Globals.EmailProcessor.Start()
         End If
         Globals.EmailProcessRun = 2     ' 2 says state is running
-
-        ' write out the configuration data
-        Call WriteConfigurationFiles()
 
     End Sub
 

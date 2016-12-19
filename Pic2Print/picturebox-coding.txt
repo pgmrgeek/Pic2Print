@@ -1,0 +1,29 @@
+drawing in a picture box
+
+http://www.visual-basic-tutorials.com/Tutorials/Controls/PictureBox.html
+
+
+Private Sub WatermarkButton_Click(sender As Object, e As EventArgs) _
+ Handles WatermarkButton.Click
+    Dim bmp As New Bitmap(PictureBox1.Width, PictureBox1.Height)
+    'create a new graphics from the bmp
+    Dim grf As Graphics = Graphics.FromImage(bmp)
+ 
+    ' set the rendering quality
+    grf.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+    grf.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
+    grf.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+    grf.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
+ 
+    Dim font As Font = New Font("Arial", 12)
+    grf.FillRectangle(Brushes.White, 0, 0, PictureBox1.Width, _
+     PictureBox1.Height)
+    grf.DrawImage(PictureBox1.Image, 0, 0)
+    ' draw the string at the bottom of the image
+    grf.DrawString("www.visual-basic-tutorials.com", font, _
+     Brushes.Black, 200, 300)
+ 
+    ' set the image property
+    PictureBox1.Image = bmp
+End Sub
+- See more at: http://www.visual-basic-tutorials.com/Tutorials/Controls/PictureBox.html#sthash.EQlrfcvR.dpuf

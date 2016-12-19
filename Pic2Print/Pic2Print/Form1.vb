@@ -205,6 +205,8 @@ Public Class Pic2Print
         Call ReadFilterFile()
         Call ReadCarrierFile()
 
+        ' read in all the possible layouts, and all the add-on packs
+
         If Globals.fForm3.tbBKFG.Text = "" Then
             Globals.fForm3.tbBKFG.Text = "0"
         End If
@@ -3347,11 +3349,17 @@ Public Class Pic2Print
             (Globals.FileIndexSelected <= Globals.ScreenBase + 6) Then
 
             pb.BorderStyle = BorderStyle.Fixed3D
+
             Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
+
+                localBMP.Dispose()
+                localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
+            End If
+
+            pbPreview.Image = localBMP
 
             ' Whatever the picture box owns, the 2nd form will own..
             Preview.Form2PictureBox.Image = pb.Image
-            pbPreview.Image = pb.Image
             Preview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
         Else
@@ -3666,50 +3674,50 @@ Public Class Pic2Print
 
         End If
 
-            If i = 1 Then
-                Return _checkthispath("Incoming Image Folder:", _
-                                      Globals.fForm3.Image_Folder.Text, "c:\onsite\capture\", 1, verbose)
-            End If
+        If i = 1 Then
+            Return _checkthispath("Incoming Image Folder:", _
+                                  Globals.fForm3.Image_Folder.Text, "c:\onsite\capture\", 1, verbose)
+        End If
 
-            If i = 2 Then
-                Return _checkthispath("Printer Destination Folder #1:", _
-                                      Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
-            End If
+        If i = 2 Then
+            Return _checkthispath("Printer Destination Folder #1:", _
+                                  Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
+        End If
 
-            If i = 4 Then
-                Return _checkthispath("Printer Destination Folder #2", _
-                                      Globals.fForm3.Print_Folder_2.Text, "c:\onsite\", 4, verbose)
-                _warnSamePaths()
-            End If
+        If i = 4 Then
+            Return _checkthispath("Printer Destination Folder #2", _
+                                  Globals.fForm3.Print_Folder_2.Text, "c:\onsite\", 4, verbose)
+            _warnSamePaths()
+        End If
 
-            If i = 8 Then
-                If Globals.fForm4.SyncFolderPath1.Text <> "" Then
+        If i = 8 Then
+            If Globals.fForm4.SyncFolderPath1.Text <> "" Then
                 Return _checkthispath("Cloud Path #1:", _
                                           Globals.fForm4.SyncFolderPath1.Text, "", 8, verbose)
-                Else
-                    Return True
-                End If
+            Else
+                Return True
             End If
+        End If
 
-            If i = 16 Then
-                If Globals.fForm4.syncPostPath.Text <> "" Then
+        If i = 16 Then
+            If Globals.fForm4.syncPostPath.Text <> "" Then
                 Return _checkthispath("Post View Cloud Path:", _
                                           Globals.fForm4.syncPostPath.Text, "", 16, verbose)
-                Else
-                    Return True
-                End If
+            Else
+                Return True
             End If
+        End If
 
-            If i = 32 Then
-                If Globals.fForm4.SyncFolderPath2.Text <> "" Then
+        If i = 32 Then
+            If Globals.fForm4.SyncFolderPath2.Text <> "" Then
                 Return _checkthispath("Cloud Path #2:", _
                                           Globals.fForm4.SyncFolderPath2.Text, "", 32, verbose)
-                Else
-                    Return True
-                End If
+            Else
+                Return True
             End If
+        End If
 
-            Return False
+        Return False
 
     End Function
 
@@ -3922,7 +3930,7 @@ Public Class Pic2Print
 
     End Sub
 
-    
+
 
     Private Sub ButtonsGroup_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonsGroup.Enter
 
@@ -4070,13 +4078,105 @@ Public Class Pic2Print
         End If
 
     End Sub
+
+    '
+    Private Sub DrawPaperCrop(ByRef src As Image, ByRef trg As Image)
+        Dim vert As Boolean = False
+        Dim img As Image
+        Dim ratio As Single
+        Dim h As Int16      ' height
+        Dim w As Int16      ' width
+        Dim xh As Int16     ' target h
+        Dim xw As Int16     ' target w
+        Dim xc As Int16     ' target center point
+        Dim g As Graphics
+        Dim rect As New Rectangle(0, 0, 0, 0)
+        Dim r As New Rectangle
+
+        ' this is the original full length of the image. Match it to a print ratio
+
+        h = src.Height
+        w = src.Width
+        g = Graphics.FromImage(trg)
+
+        ' if veritcal normalize the image to a horizontal for the code below, 
+        ' then swap it back before exiting
+
+        If h > w Then
+            vert = True
+            xh = w
+            w = h
+            h = xh
+        End If
+
+        ':  Print sizes are: 	
+        ':    7 = 8x10          = 1.25
+        ':   11 = 640x480       = 1.25
+        ':   12 = 800x600       = 1.25
+        ':   13 = 1024x768      = 1.25
+
+        Select Case prtsiz
+            Case 7              ': 00000001 - 1.25 = 4x5, 5x4, 8x10, 10x8
+                ratio = 1.25
+
+            Case 5, 11, 12, 13  ': 00000010 - 1.33 = 3x4, 4x3, 6x8, 8x6
+                ratio = 1.33
+
+            Case 1, 4           ': 00000100 - 1.40 = 3.5x5, 5x3.5, 5x7, 7x5
+                ratio = 1.4
+
+            Case 3, 6, 8, 9, 10 ': 00001000 - 1.50 = 4x6, 6x4, 6x9, 9x6, 8x12, 12x8
+                ratio = 1.5
+
+            Case 2              ': 00010000 - 3.00 = 2x6, 6x
+                ratio = 3.0
+
+            Case Else           ': missing
+                ratio = 1.0
+
+        End Select
+
+        ' this is how wide the target is
+        xw = h * ratio
+
+        ' this is how tall the target is
+        xh = h
+
+        ' this is the horizontal center
+        xc = w / 2
+
+        ' we will use w for the horizontal starting point and h at top left
+
+        w = xc - (xw / 2)
+        If w < 0 Then w = 0
+
+        If vert Then
+            ' portrait image
+            'rect = New Rectangle(xw, h, w, 0)
+            rect = New Rectangle(0, w, h, xw)
+        Else
+            ' landscape image
+            rect = New Rectangle(w, 0, xw, h)
+        End If
+
+        r = New Rectangle(0, 0, src.Width, src.Height)
+
+        ' draw it..
+
+        Using p As New Pen(Color.Blue, 4)
+            g.DrawImage(src, r, r, GraphicsUnit.Pixel)
+            g.DrawRectangle(p, rect)
+        End Using
+
+    End Sub
+
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.03"    ' Version string
+    Public Shared Version As String = "Version 13.04"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
