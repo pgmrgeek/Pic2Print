@@ -204,7 +204,6 @@ Partial Class PostView
         Me.chkAutoScroll.TabIndex = 16
         Me.chkAutoScroll.Text = "AutoScroll"
         Me.chkAutoScroll.UseVisualStyleBackColor = True
-        Me.chkAutoScroll.Visible = False
         '
         'btnLeft
         '

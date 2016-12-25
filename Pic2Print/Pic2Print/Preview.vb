@@ -35,7 +35,7 @@ Public Class Preview
 
         ' load the carrier names, etc into local storage
 
-        For Each str In Globals.fmmsForm.CarrierCB.Items
+        For Each str In Globals.fmmsForm.mmsCarrierCB.Items
             CarrierCB.Items.Add(str)
         Next
 

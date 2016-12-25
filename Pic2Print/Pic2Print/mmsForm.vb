@@ -19,7 +19,7 @@ Public Class mmsForm
 
         ' save the phone #, carrier info..
         Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPhoneNum.Text
-        Globals.ImageCache.carrierSelector(Globals.FileIndexSelected) = CarrierCB.SelectedIndex
+        Globals.ImageCache.carrierSelector(Globals.FileIndexSelected) = mmsCarrierCB.SelectedIndex
         'Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
         Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
 
@@ -42,5 +42,19 @@ Public Class mmsForm
     End Sub
 
     'Dim lastUserEmail As String
+
+    Private Sub mmsForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim n As Integer
+
+        If Globals.carrierMax > 0 Then
+            For n = 0 To Globals.carrierMax - 1 '  
+                'Globals.fmmsForm.mmsCarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
+                mmsCarrierCB.Items.Add(Globals.carrierName(n))
+            Next
+        Else
+            mmsCarrierCB.Items.Add("Missing carriers.csv")
+        End If
+
+    End Sub
 
 End Class

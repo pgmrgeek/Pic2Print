@@ -27,29 +27,44 @@ Public Class PostView
     End Sub
 
     Private Sub PostView_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim str As String
+        'Globals.fPostView.CarrierCB = New ComboBox
+        Dim n As Integer
 
-        ' if the user sent in a reset, then reposition on the desktop
+        ' if the user sent in a reset, then move the form to a default location
+
         If Globals.cmdLineReset Then
-
-            ' move the form.
             SetDesktopLocation(20, 20)
+        End If
 
+        If CarrierCB.Created = False Then
+            Globals.fDebug.TxtPrint("Postview Form not loaded" & vbCrLf)
         End If
 
         ' establish the default size
 
         Call Postview_Resized()
+       
+        Globals.fDebug.TxtPrint("Globals.CarrierMax = " & Globals.carrierMax & vbCrLf)
 
-        For Each str In Globals.fmmsForm.CarrierCB.Items
-            CarrierCB.Items.Add(str)
-        Next
+        If Globals.carrierMax > 0 Then
+            For n = 0 To Globals.carrierMax - 1 '  Each str In Globals.carrierDomain   '.carrierDomain.Items
+                Globals.fDebug.TxtPrint("Postview Item.Add #" & n & vbCrLf)
+                CarrierCB.Items.Add(Globals.carrierName(n))
+            Next
+        Else
+            CarrierCB.Items.Add("Missing carriers.csv")
+        End If
+
+        PostEmailGroup.Visible = False
+        grpButtons.Visible = True
 
         Call doReloadImages()
         'Call postLoadThumbs(True)
         Globals.fPostViewHasLoaded = True
 
     End Sub
+
+
 
     Private Sub PostView_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
 
@@ -222,7 +237,7 @@ Public Class PostView
     Public Sub chkAutoScrolltoNewImages()
 
         '''''''''''' commented out, its not working, theres some sort of VB problems here, skipping for now ''''''''''''''''''''
-        Return
+        'Return
 
         If chkAutoScroll.InvokeRequired Then
             Dim d As New chkAutoScrollDelegate(AddressOf chkAutoScrolltoNewImages)
@@ -231,18 +246,20 @@ Public Class PostView
 
             ' if autoscroll checked, then scroll the post view window with incoming images.
 
-            'If cbAutoScroll.Checked Then
+            If chkAutoScroll.Checked Then
 
-            If (screenBase + 3 + 1) < Globals.PrintCache.maxIndex Then
-                screenBase = Globals.PrintCache.maxIndex - 4
-                If screenBase < 0 Then screenBase = 0
+                If (screenBase + 3 + 1) < Globals.PrintCache.maxIndex Then
+                    screenBase = Globals.PrintCache.maxIndex - 4
+                    If screenBase < 0 Then screenBase = 0
 
-                ' release the butterflys, see which will return..
-                Globals.PrintCache.FreeAllPictures()
-                Call postLoadThumbs(True)
-                'Me.Invalidate()
-                'Application.DoEvents()
-                'Thread.Sleep(200)
+                    ' release the butterflys, see which will return..
+                    Globals.PrintCache.FreeAllPictures()
+                    Call postLoadThumbs(True)
+                    'Me.Invalidate()
+                    'Application.DoEvents()
+                    'Thread.Sleep(200)
+                End If
+
             End If
 
         End If
@@ -314,6 +331,32 @@ Public Class PostView
 
     End Sub
 
+    Public Delegate Sub postReprintCallback()
+
+    Public Sub postReprintLast()
+        Dim so As New System.Object
+        Dim e As New System.EventArgs
+
+        ' InvokeRequired required compares the thread ID of the
+        ' calling thread to the thread ID of the creating thread.
+        ' If these threads are different, it returns true.
+        If btnReprint.InvokeRequired Then
+            Dim d As New postReprintCallback(AddressOf postReprintLast)
+            Me.Invoke(d, New Object() {})
+        Else
+            ' add new files to the list and move to the right end
+            Button1_Click(Me, e)
+
+            ' set the thumbselect to the right most image
+            ThumbSelect = Globals.PrintCache.maxIndex - screenBase - 1
+            If ThumbSelect < 0 Then ThumbSelect = 0
+
+            ' then reprint the last one
+            btnReprint_Click(Me, e)
+
+        End If
+    End Sub
+
     Private Sub btnReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReprint.Click
         Globals.fPic2Print.CopyReprintToPrintDir(screenBase + ThumbSelect)
         Pic2Print.CopyFileToPostCloudDir(Globals.fForm4.syncPostPath.Text, Globals.PrintCache.fullName(screenBase + ThumbSelect))
@@ -354,4 +397,7 @@ Public Class PostView
         ckb_PostPermit.Checked = lastPermit
     End Sub
 
+    Private Sub chkAutoScroll_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkAutoScroll.CheckedChanged
+
+    End Sub
 End Class

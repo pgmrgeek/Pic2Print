@@ -913,6 +913,7 @@ Partial Class Pic2Print
         Me.btnTestRun.TabIndex = 65
         Me.btnTestRun.Text = "Test Run"
         Me.btnTestRun.UseVisualStyleBackColor = True
+        Me.btnTestRun.Visible = False
         '
         'gbPreview
         '

@@ -8,6 +8,7 @@
             CameraFound = False
             trgSetFrameCount(-2)
         End If
+
         Call _UserTrigger_Resized()
 
     End Sub
@@ -34,7 +35,9 @@
     End Sub
 
     Private Sub _UserTrigger_Resized()
-        Dim s As Point ' size
+        Dim tl As Point ' trigger button location
+        Dim rl As Point ' reprint button location
+        Dim ll As Point ' label location
         'Dim l As Point ' location
         Dim x As Integer
         Dim y As Integer
@@ -48,13 +51,21 @@
         If y < lblY Then y = lblY
 
         ' float the button in the center
-        s.Y = y
-        s.X = x
-        TriggerBtn.Location = s
+        tl.Y = y
+        tl.X = x
+        TriggerBtn.Location = tl
+
+        ' now move the reprint button horizontally
+        rl = UserReprint.Location
+        rl.X = (Me.Size.Width / 2) - (UserReprint.Width / 2)
+        rl.Y = tl.Y + TriggerBtn.Height + 34
+        UserReprint.Location = rl
 
         ' keep the vertical, just change the horizontal
-        s.Y = lblPicsToGoMsg.Location.Y
-        lblPicsToGoMsg.Location = s
+        ll.Y = tl.Y / 2 - lblPicsToGoMsg.Height / 2
+        If ll.Y < 0 Then ll.Y = 0
+        ll.X = tl.X
+        lblPicsToGoMsg.Location = ll
 
         ' reposition the hide button, hiding it mostly off screen so the users dont find it
 
@@ -62,10 +73,9 @@
         y = Me.Size.Height - 34
         If x < 0 Then x = 0
         If y < 0 Then y = 0
-
-        s.Y = y
-        s.X = x
-        HideButton.Location = s
+        tl.Y = y
+        tl.X = x
+        HideButton.Location = tl
 
     End Sub
 
@@ -104,6 +114,7 @@
     Public Delegate Sub trgSetFrameCountdel(ByVal cnt As Integer)
     Public CameraFound As Boolean = True
 
+    Private frmnum As Integer
     Public Sub trgSetFrameCount(ByVal cnt As Integer)
 
         ' InvokeRequired required compares the thread ID of the
@@ -128,6 +139,7 @@
             If CameraFound = False Then Return
 
             If cnt = -1 Then
+                frmnum = 0
                 lblPicsToGoMsg.Text = " "
             End If
 
@@ -136,14 +148,27 @@
             End If
 
             If cnt = 1 Then
-                lblPicsToGoMsg.Text = "1 More Picture"
+                If frmnum = 0 Then
+                    lblPicsToGoMsg.Text = "Get Ready - Look Up!"
+                    frmnum += 1
+                Else
+                    frmnum += 1
+                    lblPicsToGoMsg.Text = "Final Picture - Look Up!"
+                End If
             End If
 
             If cnt > 1 Then
-                lblPicsToGoMsg.Text = cnt & " More Pictures"
+                If frmnum = 0 Then
+                    lblPicsToGoMsg.Text = "First Picture - Look Up!"
+                    frmnum += 1
+                Else
+                    lblPicsToGoMsg.Text = "Next Picture - Look Up!"
+                    frmnum += 1
+                End If
             End If
 
         End If
+
     End Sub
 
     'Public Delegate Sub trgSetFocusCallback()
@@ -166,5 +191,9 @@
 
     Private Sub lblPicsToGoMsg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblPicsToGoMsg.Click
 
+    End Sub
+
+    Private Sub UserReprint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles UserReprint.Click
+        Globals.fPostView.postReprintLast()
     End Sub
 End Class

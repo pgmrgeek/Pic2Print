@@ -72,14 +72,13 @@ Public Class Pic2Print
     ' ================================== Startup/End Code ===================================================
     '
     Private Sub Pic2Print_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim fpostview As New PostView
         Dim fForm3 As New Form3
         Dim fForm4 As New Form4
-        Dim fPic2Print As New Pic2Print
         Dim fPreview As New Preview
         Dim fDebug As New debug
         Dim fSendEmails As New SendEmails
         Dim fmmsForm As New mmsForm
+        Dim fpostview As New PostView
         Dim UserButtonForm As New UserTrigger
         Dim dateStr As String
 
@@ -126,14 +125,15 @@ Public Class Pic2Print
             End If
         Next
 
-        If Globals.cmdLineDebug Then
-            Stats.Visible = True
-            btnTestRun.Visible = True
-        End If
-
         If Globals.cmdSendEmails Then
             SendEmails.Visible = True
             SaveEmailAddrs.Visible = True
+        End If
+
+        If Globals.cmdLineDebug Then
+            Stats.Visible = True
+            btnTestRun.Visible = True
+            'Globals.fDebug.Show()
         End If
 
         ' setup the background colors on the printer controls as green, ready to go..
@@ -201,9 +201,13 @@ Public Class Pic2Print
 
         ' read all the possible printers into the combobox
 
+        ' Globals.fDebug.TxtPrint("Loading CSV files")
+
         Call ReadPrinterFile()
         Call ReadFilterFile()
         Call ReadCarrierFile()
+
+        'Globals.fDebug.TxtPrint("..done" & vbCrLf)
 
         ' read in all the possible layouts, and all the add-on packs
 
@@ -269,6 +273,8 @@ Public Class Pic2Print
         ' pop up the config window on start
 
         fForm3.Show()
+
+        'Globals.fDebug.TxtPrint("Form1 Load done" & vbCrLf)
 
     End Sub
 
@@ -456,7 +462,8 @@ Public Class Pic2Print
 
                         Globals.carrierName(Globals.carrierMax) = arrCurrentRow(0)
                         Globals.carrierDomain(Globals.carrierMax) = arrCurrentRow(1)
-                        Globals.fmmsForm.CarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
+                        'Globals.fmmsForm.mmsCarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
+                        'Globals.fPostView.CarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
                         Globals.carrierMax += 1
 
                     End If
@@ -469,10 +476,9 @@ Public Class Pic2Print
 
         Else
 
-            Globals.carrierName(Globals.carrierMax) = "Missing carriers.cvs"
-            Globals.carrierDomain(Globals.carrierMax) = "Missing carriers.cvs"
-            Globals.fmmsForm.CarrierCB.Items.Add(Globals.carrierName(Globals.carrierMax))
-            Globals.carrierMax += 1
+            'Globals.carrierName(Globals.carrierMax) = "Missing carriers.cvs"
+            'Globals.carrierDomain(Globals.carrierMax) = "Missing carriers.cvs"
+            Globals.carrierMax = 0
 
         End If
 
@@ -3327,6 +3333,7 @@ Public Class Pic2Print
     End Sub
 
     Private Sub UpdateScreenPictureBoxFocus(ByRef pb As PictureBox, ByVal idx As Int16)
+        Static localBMP As Bitmap = Nothing
 
         ' reset all boxes to non-selection
         PictureBox1.BorderStyle = BorderStyle.FixedSingle
@@ -3350,12 +3357,27 @@ Public Class Pic2Print
 
             pb.BorderStyle = BorderStyle.Fixed3D
 
-            Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
+            ' Here we make a local copy of the image and draw a rectangle over the image to match the 
+            ' the target printed paper size.
 
+            ' first create a local static variable holding our local copy
+
+            Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
+            If localBMP Is Nothing Then
+                localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
+            End If
+
+            ' resize the bitmap if its not the same size as the incoming copy
+
+            If Not ((localBMP.Height = pb.Image.Height) And (localBMP.Width = pb.Image.Width)) Then
+                pbPreview.Image = Nothing
                 localBMP.Dispose()
                 localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
             End If
 
+            ' call the drawing function to give us a copy of the image with a rectangle draw overtop
+            ' This takes the incoming image and draws a rectangle to show how the image will print
+            DrawPaperCrop(pb.Image, localBMP)
             pbPreview.Image = localBMP
 
             ' Whatever the picture box owns, the 2nd form will own..
@@ -3899,8 +3921,8 @@ Public Class Pic2Print
     Private Sub PostViewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PostViewButton.Click
 
         ' if its visible, its probably behind windows. This will cause it to come to the top
-        If PostView.Visible Then
-            PostView.Hide()
+        If Globals.fPostView.Visible Then
+            Globals.fPostView.Hide()
         End If
 
         ' Dont execute if form3 & 4 are open!
@@ -3910,8 +3932,8 @@ Public Class Pic2Print
             Return
         End If
 
-        PostView.postLoadThumbs(True)
-        PostView.Show()
+        Globals.fPostView.Show()
+        Globals.fPostView.postLoadThumbs(True)
 
     End Sub
 
@@ -4079,10 +4101,14 @@ Public Class Pic2Print
 
     End Sub
 
+    ' 
+    ' this routine will copy the src image to the target, then draw a rectangle from the center outwards.
+    ' Ths shows the crop lines of the printed image.  This gives the photographer a visual clue before printing.
     '
     Private Sub DrawPaperCrop(ByRef src As Image, ByRef trg As Image)
+        Dim prtsiz = Globals.prtrSize(Globals.fForm3.prtrSelect1.Text)
         Dim vert As Boolean = False
-        Dim img As Image
+        'Dim img As Image
         Dim ratio As Single
         Dim h As Int16      ' height
         Dim w As Int16      ' width
@@ -4110,7 +4136,16 @@ Public Class Pic2Print
         End If
 
         ':  Print sizes are: 	
+        ':    1 = 3.5x5         = 1.40
+        ':    2 = 2x6           = 3.0
+        ':    3 = 4x6           = 1.5
+        ':    4 = 5x7           = 1.40
+        ':    5 = 6x8           = 1.33
+        ':    6 = 6x9           = 1.5
         ':    7 = 8x10          = 1.25
+        ':    8 = 8x12          = 1.5
+        ':    9 = 480x320       = 1.5
+        ':   10 = 640x427(3x2)  = 1.5
         ':   11 = 640x480       = 1.25
         ':   12 = 800x600       = 1.25
         ':   13 = 1024x768      = 1.25
@@ -4176,7 +4211,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.04"    ' Version string
+    Public Shared Version As String = "Version 13.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

@@ -25,6 +25,7 @@ Partial Class UserTrigger
         Me.TriggerBtn = New System.Windows.Forms.Button()
         Me.HideButton = New System.Windows.Forms.Button()
         Me.lblPicsToGoMsg = New System.Windows.Forms.Label()
+        Me.UserReprint = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'TriggerBtn
@@ -55,7 +56,8 @@ Partial Class UserTrigger
         '
         'lblPicsToGoMsg
         '
-        Me.lblPicsToGoMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPicsToGoMsg.BackColor = System.Drawing.SystemColors.Control
+        Me.lblPicsToGoMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 32.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblPicsToGoMsg.Location = New System.Drawing.Point(69, 13)
         Me.lblPicsToGoMsg.Name = "lblPicsToGoMsg"
         Me.lblPicsToGoMsg.Size = New System.Drawing.Size(480, 76)
@@ -63,12 +65,22 @@ Partial Class UserTrigger
         Me.lblPicsToGoMsg.Text = "  "
         Me.lblPicsToGoMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'UserReprint
+        '
+        Me.UserReprint.Location = New System.Drawing.Point(254, 446)
+        Me.UserReprint.Name = "UserReprint"
+        Me.UserReprint.Size = New System.Drawing.Size(111, 40)
+        Me.UserReprint.TabIndex = 3
+        Me.UserReprint.Text = "Reprint Last"
+        Me.UserReprint.UseVisualStyleBackColor = True
+        '
         'UserTrigger
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(673, 423)
+        Me.ClientSize = New System.Drawing.Size(694, 515)
         Me.ControlBox = False
+        Me.Controls.Add(Me.UserReprint)
         Me.Controls.Add(Me.lblPicsToGoMsg)
         Me.Controls.Add(Me.HideButton)
         Me.Controls.Add(Me.TriggerBtn)
@@ -84,4 +96,5 @@ Partial Class UserTrigger
     Friend WithEvents TriggerBtn As System.Windows.Forms.Button
     Friend WithEvents HideButton As System.Windows.Forms.Button
     Friend WithEvents lblPicsToGoMsg As System.Windows.Forms.Label
+    Friend WithEvents UserReprint As System.Windows.Forms.Button
 End Class
