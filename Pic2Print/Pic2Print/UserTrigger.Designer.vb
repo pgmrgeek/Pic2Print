@@ -45,13 +45,13 @@ Partial Class UserTrigger
         'HideButton
         '
         Me.HideButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.HideButton.ForeColor = System.Drawing.Color.DimGray
+        Me.HideButton.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.HideButton.Location = New System.Drawing.Point(640, 388)
         Me.HideButton.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.HideButton.Name = "HideButton"
         Me.HideButton.Size = New System.Drawing.Size(20, 24)
         Me.HideButton.TabIndex = 1
-        Me.HideButton.Text = "X"
+        Me.HideButton.Text = " "
         Me.HideButton.UseVisualStyleBackColor = True
         '
         'lblPicsToGoMsg

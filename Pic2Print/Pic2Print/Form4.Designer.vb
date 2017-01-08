@@ -40,6 +40,7 @@ Partial Class Form4
         Me.txtServerURL = New System.Windows.Forms.TextBox()
         Me.lblServerURL = New System.Windows.Forms.Label()
         Me.grpCloudConfig = New System.Windows.Forms.GroupBox()
+        Me.btnEmailFolderDialog2 = New System.Windows.Forms.Button()
         Me.SyncFolderPath2 = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.syncPostLabel = New System.Windows.Forms.Label()
@@ -50,7 +51,6 @@ Partial Class Form4
         Me.SyncFolderPath1 = New System.Windows.Forms.TextBox()
         Me.btnOKay = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.btnEmailFolderDialog2 = New System.Windows.Forms.Button()
         Me.grpEmailConfig.SuspendLayout()
         Me.grpCloudConfig.SuspendLayout()
         Me.SuspendLayout()
@@ -246,6 +246,15 @@ Partial Class Form4
         Me.grpCloudConfig.TabStop = False
         Me.grpCloudConfig.Text = "Cloud Config"
         '
+        'btnEmailFolderDialog2
+        '
+        Me.btnEmailFolderDialog2.Location = New System.Drawing.Point(298, 85)
+        Me.btnEmailFolderDialog2.Name = "btnEmailFolderDialog2"
+        Me.btnEmailFolderDialog2.Size = New System.Drawing.Size(33, 20)
+        Me.btnEmailFolderDialog2.TabIndex = 94
+        Me.btnEmailFolderDialog2.Text = "..."
+        Me.btnEmailFolderDialog2.UseVisualStyleBackColor = True
+        '
         'SyncFolderPath2
         '
         Me.SyncFolderPath2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "SyncFolderPth2", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
@@ -260,9 +269,9 @@ Partial Class Form4
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(6, 69)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(310, 13)
+        Me.Label1.Size = New System.Drawing.Size(316, 13)
         Me.Label1.TabIndex = 92
-        Me.Label1.Text = "Path to Dropbox/Slideshow Folder #2 for KIOSK. Blank=no path"
+        Me.Label1.Text = "Path to 2nd Dropbox/Slide show/Email Computer. Blank=no copy"
         '
         'syncPostLabel
         '
@@ -275,7 +284,7 @@ Partial Class Form4
         '
         'btnPostViewFinder
         '
-        Me.btnPostViewFinder.Location = New System.Drawing.Point(295, 164)
+        Me.btnPostViewFinder.Location = New System.Drawing.Point(298, 164)
         Me.btnPostViewFinder.Name = "btnPostViewFinder"
         Me.btnPostViewFinder.Size = New System.Drawing.Size(33, 20)
         Me.btnPostViewFinder.TabIndex = 90
@@ -285,7 +294,7 @@ Partial Class Form4
         'syncPostPath
         '
         Me.syncPostPath.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "syncPostPathvalue", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.syncPostPath.Location = New System.Drawing.Point(6, 165)
+        Me.syncPostPath.Location = New System.Drawing.Point(9, 165)
         Me.syncPostPath.Name = "syncPostPath"
         Me.syncPostPath.Size = New System.Drawing.Size(283, 20)
         Me.syncPostPath.TabIndex = 89
@@ -305,9 +314,9 @@ Partial Class Form4
         Me.lblSyncLa.AutoSize = True
         Me.lblSyncLa.Location = New System.Drawing.Point(6, 25)
         Me.lblSyncLa.Name = "lblSyncLa"
-        Me.lblSyncLa.Size = New System.Drawing.Size(310, 13)
+        Me.lblSyncLa.Size = New System.Drawing.Size(312, 13)
         Me.lblSyncLa.TabIndex = 87
-        Me.lblSyncLa.Text = "Path to Dropbox/Slideshow Folder #1 for KIOSK. Blank=no path"
+        Me.lblSyncLa.Text = "Path to 1st Dropbox/Slide show/Email Computer. Blank=no copy"
         '
         'SyncFolderPath1
         '
@@ -326,15 +335,6 @@ Partial Class Form4
         Me.btnOKay.TabIndex = 88
         Me.btnOKay.Text = "OK"
         Me.btnOKay.UseVisualStyleBackColor = True
-        '
-        'btnEmailFolderDialog2
-        '
-        Me.btnEmailFolderDialog2.Location = New System.Drawing.Point(298, 85)
-        Me.btnEmailFolderDialog2.Name = "btnEmailFolderDialog2"
-        Me.btnEmailFolderDialog2.Size = New System.Drawing.Size(33, 20)
-        Me.btnEmailFolderDialog2.TabIndex = 94
-        Me.btnEmailFolderDialog2.Text = "..."
-        Me.btnEmailFolderDialog2.UseVisualStyleBackColor = True
         '
         'Form4
         '

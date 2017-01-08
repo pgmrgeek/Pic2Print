@@ -198,6 +198,8 @@ Partial Class PostView
         'chkAutoScroll
         '
         Me.chkAutoScroll.AutoSize = True
+        Me.chkAutoScroll.Checked = Global.WindowsApplication1.My.MySettings.Default.pvAutoScroll
+        Me.chkAutoScroll.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "pvAutoScroll", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.chkAutoScroll.Location = New System.Drawing.Point(438, 23)
         Me.chkAutoScroll.Name = "chkAutoScroll"
         Me.chkAutoScroll.Size = New System.Drawing.Size(74, 17)

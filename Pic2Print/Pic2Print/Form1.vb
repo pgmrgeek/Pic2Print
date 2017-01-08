@@ -881,7 +881,7 @@ Public Class Pic2Print
         Dim bits = Globals.BkFgRatio(Globals.fForm3.tbBKFG.Text)
 
         ' if vertical, return True if supported.
-        If Globals.PicBoxes(Globals.PictureBoxSelected).Image.Height >= Globals.PicBoxes(Globals.PictureBoxSelected).Image.Width Then
+        If Globals.PicBoxes(Globals.PictureBoxSelected).Image.Height > Globals.PicBoxes(Globals.PictureBoxSelected).Image.Width Then
             If bits And &H100 Then
                 Return True
             End If
@@ -4211,7 +4211,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.05"    ' Version string
+    Public Shared Version As String = "Version 13.07"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
