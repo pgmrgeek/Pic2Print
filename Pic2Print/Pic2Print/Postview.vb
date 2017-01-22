@@ -236,9 +236,6 @@ Public Class PostView
     Public Delegate Sub chkAutoScrollDelegate()
     Public Sub chkAutoScrolltoNewImages()
 
-        '''''''''''' commented out, its not working, theres some sort of VB problems here, skipping for now ''''''''''''''''''''
-        'Return
-
         If chkAutoScroll.InvokeRequired Then
             Dim d As New chkAutoScrollDelegate(AddressOf chkAutoScrolltoNewImages)
             Me.Invoke(d, New Object() {})
@@ -248,19 +245,24 @@ Public Class PostView
 
             If chkAutoScroll.Checked Then
 
-                If (screenBase + 3 + 1) < Globals.PrintCache.maxIndex Then
-                    screenBase = Globals.PrintCache.maxIndex - 4
-                    If screenBase < 0 Then screenBase = 0
+                'If (screenBase + 3 + 1) < Globals.PrintCache.maxIndex Then
 
-                    ' release the butterflys, see which will return..
-                    Globals.PrintCache.FreeAllPictures()
-                    Call postLoadThumbs(True)
-                    'Me.Invalidate()
-                    'Application.DoEvents()
-                    'Thread.Sleep(200)
+                screenBase = Globals.PrintCache.maxIndex - 4
+                If screenBase < 0 Then screenBase = 0
+                If Globals.PrintCache.maxIndex <= 4 Then
+                    ThumbSelect = Globals.PrintCache.maxIndex - 1
+                Else
+                    ThumbSelect = Globals.PrintCache.maxIndex - screenBase - 1
                 End If
+                If ThumbSelect < 0 Then ThumbSelect = 0
 
-            End If
+                ' release the butterflys, see which will return..
+                Globals.PrintCache.FreeAllPictures()
+                Call postLoadThumbs(True)
+
+                'End If
+
+        End If
 
         End If
 
@@ -348,7 +350,11 @@ Public Class PostView
             Button1_Click(Me, e)
 
             ' set the thumbselect to the right most image
-            ThumbSelect = Globals.PrintCache.maxIndex - screenBase - 1
+            If Globals.PrintCache.maxIndex <= 4 Then
+                ThumbSelect = Globals.PrintCache.maxIndex - 1
+            Else
+                ThumbSelect = Globals.PrintCache.maxIndex - screenBase - 1
+            End If
             If ThumbSelect < 0 Then ThumbSelect = 0
 
             ' then reprint the last one

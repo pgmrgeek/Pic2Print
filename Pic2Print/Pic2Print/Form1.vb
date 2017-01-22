@@ -2225,7 +2225,7 @@ Public Class Pic2Print
         Static Dim fnamcntr As Integer = 1100 ' new file name counter
         Static Dim TrigCnt As Integer = -1 ' counts # of frames needed from the camera, IE, # of loops through this event
 
-        ' user hits space bar setting triggerprocessrun to two, else bail if we've not been requested to run 
+        ' user clicks the red button to set triggerprocessrun to two, else bail if we've not been requested to run 
         If Globals.TriggerProcessRun < 2 Then
             Return
         End If
@@ -2242,135 +2242,139 @@ Public Class Pic2Print
                 ' reset the trigger counter if this is the first time in
                 If TrigCnt = -1 Then
                     TrigCnt = Globals.fForm3.txtLayersPerCust.Text ' set the trigger counter to default
-                End If
 
-                fnamcntr = ((fnamcntr / 10) * 10) + 10 ' FIX: make this the current file decoration counter
+                    ' first trigger in a sequence, use our global file name prefix counter
+                    fnamcntr = Globals.FileNamePrefix
+                Else
+                    ' subsequent triggers, just increment the count
+                    fnamcntr += 1
+                End If
 
                 secondcountdown = 3 + 1
                 Globals.fUserButton.trgSetFont(128)
-                Globals.fUserButton.trgSetButtonText("5")
-                Globals.fUserButton.trgSetFrameCount(TrigCnt)
+                Globals.fUserButton.trgSetButtonText("3")
+                Globals.fUserButton.trgUpdateUserMessage(TrigCnt)
 
                 stage = 2
 
             End If
 
-            ' ===========================================================================
-            ' Stage #2 is 5 second count down to trigger ==============================
-            If stage = 2 Then
-                Globals.fDebug.txtPrintLn("Camera trigger stage 2")
+                ' ===========================================================================
+                ' Stage #2 is 5 second count down to trigger ==============================
+                If stage = 2 Then
+                    Globals.fDebug.txtPrintLn("Camera trigger stage 2")
 
-                ' any countdown, decrement one..
-                If secondcountdown > 0 Then
-
-                    ' HACK! At 2 second(s), fire off the camera external module since its *SO* freakin' slow..
-                    If secondcountdown = 2 Then
-                        _TriggerCamera(fnamcntr)
-                        fnamcntr += 1 ' advance the file name
-                    End If
-
-                    ' one less second to wait
-                    secondcountdown -= 1
-
-                    ' we're done with this pass.load the next second character or a smile!
+                    ' any countdown, decrement one..
                     If secondcountdown > 0 Then
-                        Globals.fUserButton.trgSetButtonText(secondcountdown)
-                        'Globals.fUserButton.TriggerBtn.Text = secondcountdown
-                    Else
-                        ' at zero seconds, load a big happy smile for stage #3
-                        Globals.fUserButton.trgSetButtonText(":D")
-                        'Globals.fUserButton.TriggerBtn.Text = ":D"
-                        secondcountdown = 2 + 1
-                        stage = 3
-                    End If
 
-                End If
-            End If
-
-            ' =========================================================================
-            ' Stage #3 Last two seconds, put up a BIG SMILEY face! ====================
-            If stage = 3 Then
-                Globals.fDebug.txtPrintLn("Camera trigger stage 3")
-
-                ' still waiting for this to finish
-                If secondcountdown > 0 Then
-                    secondcountdown -= 1
-
-                    ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
-                    If secondcountdown = 0 Then
-                        If TrigCnt > 1 Then
-                            secondcountdown = 4
-                        Else
-
-                            ' no printing countdown at 10 seconds
-                            secondcountdown = 4
-
-                            '' if printing add 10 more seconds of time
-                            'If Globals.fForm3.NoPrint.Checked = False Then
-                            'secondcountdown += 10
-                            'End If
-
+                        ' HACK! At 2 second(s), fire off the camera external module since its *SO* freakin' slow..
+                        If secondcountdown = 2 Then
+                            _TriggerCamera(fnamcntr)
+                            fnamcntr += 1 ' advance the file name
                         End If
 
-                        stage = 4
+                        ' one less second to wait
+                        secondcountdown -= 1
 
-                    End If
-                End If
-            End If
-
-            ' =========================================================================
-            ' Stage 4 - wait for printing to complete =========================
-
-            If stage = 4 Then
-                Globals.fDebug.txtPrintLn("Camera trigger stage 4")
-
-                If secondcountdown > 0 Then
-                    secondcountdown -= 1
-
-                    ' if we reach 0, then this image is done.  Restart for subsequent images
-                    If secondcountdown = 0 Then
-
-                        ' count down the number of frames we need (trigger count)
-                        If TrigCnt > 0 Then
-                            TrigCnt -= 1
-                        End If
-
-                        If TrigCnt = 0 Then
-                            ' we're all done, clear all control variables
-                            TrigCnt = -1
-                            Globals.fUserButton.trgSetFont(56)
-                            Globals.fUserButton.trgSetButtonText("CLICK TO START")
-                            Globals.fUserButton.trgSetFrameCount(-1)
-                            Globals.TriggerProcessRun = 1
-                            Globals.fDebug.txtPrintLn("Camera trigger - all done")
+                        ' we're done with this pass.load the next second character or a smile!
+                        If secondcountdown > 0 Then
+                            Globals.fUserButton.trgSetButtonText(secondcountdown)
+                            'Globals.fUserButton.TriggerBtn.Text = secondcountdown
                         Else
-                            Globals.fDebug.txtPrintLn("Camera trigger - next trigger")
-                        End If
-
-                        stage = 1
-
-                    Else
-
-                        If TrigCnt = 1 Then
-                            ' make sure this control has the focus for the next keyboard event
-                            'Globals.fUserButton.trgSetFocus()
-                            Globals.fUserButton.trgSetFont(56)
-                            Globals.fUserButton.trgSetButtonText("Finishing")
-                            Globals.fUserButton.trgSetFrameCount(0)
-
-                        Else
-                            Globals.fUserButton.trgSetFont(56)
-                            Globals.fUserButton.trgSetButtonText("Get Ready")
-                            Globals.fUserButton.trgSetFrameCount(TrigCnt - 1)
+                            ' at zero seconds, load a big happy smile for stage #3
+                            Globals.fUserButton.trgSetButtonText(":D")
+                            'Globals.fUserButton.TriggerBtn.Text = ":D"
+                            secondcountdown = 2 + 1
+                            stage = 3
                         End If
 
                     End If
                 End If
+
+                ' =========================================================================
+                ' Stage #3 Last two seconds, put up a BIG SMILEY face! ====================
+                If stage = 3 Then
+                    Globals.fDebug.txtPrintLn("Camera trigger stage 3")
+
+                    ' still waiting for this to finish
+                    If secondcountdown > 0 Then
+                        secondcountdown -= 1
+
+                        ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
+                        If secondcountdown = 0 Then
+                            If TrigCnt > 1 Then
+                                secondcountdown = 2  ' 4
+                            Else
+
+                                ' no printing countdown at 10 seconds
+                                secondcountdown = 2  ' 4
+
+                                '' if printing add 10 more seconds of time
+                                'If Globals.fForm3.NoPrint.Checked = False Then
+                                'secondcountdown += 10
+                                'End If
+
+                            End If
+
+                            stage = 4
+
+                        End If
+                    End If
+                End If
+
+                ' =========================================================================
+                ' Stage 4 - wait for printing to complete =========================
+
+                If stage = 4 Then
+                    Globals.fDebug.txtPrintLn("Camera trigger stage 4")
+
+                    If secondcountdown > 0 Then
+                        secondcountdown -= 1
+
+                        ' if we reach 0, then this image is done.  Restart for subsequent images
+                        If secondcountdown = 0 Then
+
+                            ' count down the number of frames we need (trigger count)
+                            If TrigCnt > 0 Then
+                                TrigCnt -= 1
+                            End If
+
+                            If TrigCnt = 0 Then
+                                ' we're all done, clear all control variables
+                                TrigCnt = -1
+                                Globals.fUserButton.trgSetFont(56)
+                                Globals.fUserButton.trgSetButtonText("CLICK TO START")
+                                Globals.fUserButton.trgUpdateUserMessage(-1)
+                                Globals.TriggerProcessRun = 1
+                                Globals.fDebug.txtPrintLn("Camera trigger - all done")
+                            Else
+                                Globals.fDebug.txtPrintLn("Camera trigger - next trigger")
+                            End If
+
+                            stage = 1
+
+                        Else
+
+                            If TrigCnt = 1 Then
+                                ' make sure this control has the focus for the next keyboard event
+                                'Globals.fUserButton.trgSetFocus()
+                                Globals.fUserButton.trgSetFont(56)
+                                Globals.fUserButton.trgSetButtonText("Finishing")
+                                Globals.fUserButton.trgUpdateUserMessage(0)
+
+                            Else
+                                Globals.fUserButton.trgSetFont(56)
+                                Globals.fUserButton.trgSetButtonText("Get Ready")
+                                Globals.fUserButton.trgUpdateUserMessage(TrigCnt - 1)
+                            End If
+
+                        End If
+                    End If
+                End If
+
             End If
 
-        End If
-
-        sema -= 1
+            sema -= 1
 
     End Sub
 
@@ -4211,7 +4215,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.07"    ' Version string
+    Public Shared Version As String = "Version 13.08"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

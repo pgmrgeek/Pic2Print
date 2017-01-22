@@ -6,7 +6,7 @@
             CameraFound = True
         Else
             CameraFound = False
-            trgSetFrameCount(-2)
+            trgUpdateUserMessage(-2)
         End If
 
         Call _UserTrigger_Resized()
@@ -115,13 +115,13 @@
     Public CameraFound As Boolean = True
 
     Private frmnum As Integer
-    Public Sub trgSetFrameCount(ByVal cnt As Integer)
+    Public Sub trgUpdateUserMessage(ByVal cnt As Integer)
 
         ' InvokeRequired required compares the thread ID of the
         ' calling thread to the thread ID of the creating thread.
         ' If these threads are different, it returns true.
         If lblPicsToGoMsg.InvokeRequired Then
-            Dim d As New trgSetFrameCountdel(AddressOf trgSetFrameCount)
+            Dim d As New trgSetFrameCountdel(AddressOf trgUpdateUserMessage)
             Me.Invoke(d, New Object() {cnt})
         Else
 
