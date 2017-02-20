@@ -1,0 +1,3 @@
+if vb2010 gets very slow (30 seconds+) in starting the debugging. Exit the software,
+then in ..\bin rename debug & release to something else.  Start the program, and
+in the solutions explore, click the top button "refresh" 

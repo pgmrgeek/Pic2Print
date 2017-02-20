@@ -245,6 +245,16 @@ Public Class Form3
                 Globals.fPic2Print.PrinterSelect2.Enabled = True
             End If
 
+            ' disable/enable email buttons according if enabled at setup
+
+            If EmailCloudEnabled.Checked Then
+                Globals.fPreview.btnEmailDlg.Enabled = True
+                Globals.fPostView.btnEmailPopup.Enabled = True
+            Else
+                Globals.fPreview.btnEmailDlg.Enabled = False
+                Globals.fPostView.btnEmailPopup.Enabled = False
+            End If
+
             ' hide this dialog, never close it..
             Me.Hide()
 

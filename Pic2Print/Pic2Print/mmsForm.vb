@@ -21,7 +21,7 @@ Public Class mmsForm
         Globals.ImageCache.phoneNumber(Globals.ScreenBase + Globals.PictureBoxSelected) = txtPhoneNum.Text
         Globals.ImageCache.carrierSelector(Globals.FileIndexSelected) = mmsCarrierCB.SelectedIndex
         'Globals.FileNameMessage(Globals.FileIndexSelected) = "Test Message" ' DSC save the actual text
-        Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = Globals.fmmsForm.txtMessage.Text
+        Globals.ImageCache.message(Globals.ScreenBase + Globals.PictureBoxSelected) = "debug this.." ' Globals.fmmsForm.txtMessage.Text
 
         ' save the optin & permission
         Globals.ImageCache.OptIn(Globals.ScreenBase + Globals.PictureBoxSelected) = False

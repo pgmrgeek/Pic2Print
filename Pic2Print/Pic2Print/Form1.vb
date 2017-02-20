@@ -68,6 +68,9 @@ Public Class Pic2Print
     Public Const PRT_GIF = 2
     'Public Const PRT_POST = 3
     Public Const PRT_REPRINT = 4
+
+    Public Const VIEW_PREVIEW = 1
+    Public Const VIEW_POSTVIEW = 2
     '
     ' ================================== Startup/End Code ===================================================
     '
@@ -77,7 +80,7 @@ Public Class Pic2Print
         Dim fPreview As New Preview
         Dim fDebug As New debug
         Dim fSendEmails As New SendEmails
-        Dim fmmsForm As New mmsForm
+        'Dim fmmsForm As New mmsForm
         Dim fpostview As New PostView
         Dim UserButtonForm As New UserTrigger
         Dim dateStr As String
@@ -89,7 +92,7 @@ Public Class Pic2Print
         Globals.fDebug = fDebug
         Globals.fPreview = fPreview
         Globals.fSendEmails = fSendEmails
-        Globals.fmmsForm = fmmsForm
+        'Globals.fmmsForm = fmmsForm
         Globals.ImageCache = New ImageCaching
         Globals.PrintCache = New ImageCaching
         Globals.fUserButton = UserButtonForm
@@ -133,7 +136,6 @@ Public Class Pic2Print
         If Globals.cmdLineDebug Then
             Stats.Visible = True
             btnTestRun.Visible = True
-            'Globals.fDebug.Show()
         End If
 
         ' setup the background colors on the printer controls as green, ready to go..
@@ -626,24 +628,31 @@ Public Class Pic2Print
 
     Public Sub PictureBox1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox1.Click
         Call SetPictureBoxFocus(PictureBox1, 0)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Private Sub PictureBox2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox2.Click
         Call SetPictureBoxFocus(PictureBox2, 1)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Private Sub PictureBox3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3.Click
         Call SetPictureBoxFocus(PictureBox3, 2)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Public Sub PictureBox4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox4.Click
         Call SetPictureBoxFocus(PictureBox4, 3)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Private Sub PictureBox5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox5.Click
         Call SetPictureBoxFocus(PictureBox5, 4)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Private Sub PictureBox6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox6.Click
         Call SetPictureBoxFocus(PictureBox6, 5)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
     Public Sub PictureBox7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox7.Click
         Call SetPictureBoxFocus(PictureBox7, 6)
+        Call ChangeViewWindow(VIEW_PREVIEW)
     End Sub
 
     '----====< Print count Buttons >====----
@@ -669,46 +678,57 @@ Public Class Pic2Print
     Private Sub GifButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GifButton.Click
         Call Validate_and_PrintThisCount(1, PRT_GIF)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Public Sub print1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print1.Click
         Call Validate_and_PrintThisCount(1, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print2.Click
         Call Validate_and_PrintThisCount(2, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print3.Click
         Call Validate_and_PrintThisCount(3, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print4.Click
         Call Validate_and_PrintThisCount(4, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print5.Click
         Call Validate_and_PrintThisCount(5, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print6.Click
         Call Validate_and_PrintThisCount(6, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print7.Click
         Call Validate_and_PrintThisCount(7, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print8.Click
         Call Validate_and_PrintThisCount(8, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print9_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print9.Click
         Call Validate_and_PrintThisCount(9, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
     Private Sub print10_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles print10.Click
         Call Validate_and_PrintThisCount(10, PRT_PRINT)
         Call resetlayercounter()
+        Call ChangeViewWindow(VIEW_POSTVIEW)
     End Sub
 
     Private Sub btClearList_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btClearList.Click
@@ -778,6 +798,52 @@ Public Class Pic2Print
             End If
 
         Loop
+    End Sub
+
+    Public Sub ChangeViewWindow(ByVal view As Integer)
+
+        ' we only do this if the autoview checkbox is checked
+        If Globals.fPic2Print.cbAutoToggle.Checked Then
+            ' if requesting postview, see if the preview is visible
+            If view = VIEW_POSTVIEW Then
+
+                ' only close preview if its visible
+                If Globals.fPreview.Visible = True Then
+                    Globals.fPreview.Hide()
+                    PreviewButton.Text = "preview"
+                Else
+                    ' dont do anything if the alternate window is not shown
+                    Return
+                End If
+
+                If Globals.fPostView.Visible = False Then
+                    Globals.fPostView.Show()
+                    PostViewButton.Text = "POSTVW"
+                End If
+
+            End If
+
+            ' if requesting preview, see if the postview is visible
+            If view = VIEW_PREVIEW Then
+
+                ' only close preview if its visible
+                If Globals.fPostView.Visible = True Then
+                    Globals.fPostView.Hide()
+                    PostViewButton.Text = "postview"
+                Else
+                    ' dont do anything if the alternate window is not shown
+                    Return
+                End If
+
+                If Globals.fPreview.Visible = False Then
+                    Globals.fPreview.Show()
+                    PreviewButton.Text = "PREVIEW"
+                End If
+
+            End If
+
+        End If
+
     End Sub
 
     Public Sub resetlayercounter()
@@ -981,10 +1047,9 @@ Public Class Pic2Print
             ' the image may not be valid.  
             Globals.PicBoxes(Globals.PictureBoxSelected).Image = My.Resources.blank
 
-            If Preview.Visible Then
-                Preview.Form2PictureBox.Image = My.Resources.blank
-                'Preview.usrEmail1.Text = ""
-            End If
+            'If Preview.Visible Then
+            Preview.Form2PictureBox.Image = My.Resources.blank
+            'End If
 
             ' 9.05 forgot to add this blanking out while editing.
             pbPreview.Image = My.Resources.blank
@@ -1053,6 +1118,41 @@ Public Class Pic2Print
         Call PerformRefresh()
     End Sub
 
+    ' this is called via the timer routine in so not to miss files
+    Public Delegate Sub PerformRefreshDelCallback()
+    Public Sub PerformRefreshDel()
+        Dim n As Integer
+
+        If New_Files.InvokeRequired Then
+            Dim d As New PerformRefreshDelCallback(AddressOf PerformRefreshDel)
+            Me.Invoke(d, New Object() {})
+        Else
+
+            ' don't do this if dialogs are open. try again on next tick
+            If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+                Return
+            End If
+
+            ' refresh the file list
+            Call PerformRefresh()
+
+            ' Set the focus on the last image so it propagates to other windows.
+            n = Globals.ImageCache.maxIndex
+
+            If (n > 7) Then
+                n = n Mod 7
+            Else
+                n = n - 1
+            End If
+
+            Call SetPictureBoxFocus(Globals.PicBoxes(n), n)
+            Call ChangeViewWindow(VIEW_PREVIEW)
+
+        End If
+
+    End Sub
+
+
     Public Sub PerformRefresh()
         Dim idx As Int16
         Dim wasGreen As Boolean = False
@@ -1105,11 +1205,6 @@ Public Class Pic2Print
     ' show 2nd form button event handler - opens the window, shows the focused image
     Public Sub ShowForm1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviewButton.Click
 
-        ' if its visible, hide it, then it will pop up to the top
-        If Preview.Visible Then
-            Preview.Hide()
-        End If
-
         ' Dont execute if form3 & 4 are open!
         If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
@@ -1117,21 +1212,28 @@ Public Class Pic2Print
             Return
         End If
 
+        ' if its visible, hide it, then it will pop up to the top
+        If Globals.fPreview.Visible Then
+            Globals.fPreview.Hide()
+            PreviewButton.Text = "preview"
+            Return
+        End If
+
         If (Globals.FileIndexSelected >= Globals.ScreenBase) And
             (Globals.FileIndexSelected <= Globals.ScreenBase + 6) Then
 
-            Preview.Form2PictureBox.Image = Globals.PicBoxes(Globals.PictureBoxSelected).Image
+            Globals.fPreview.Form2PictureBox.Image = Globals.PicBoxes(Globals.PictureBoxSelected).Image
 
         Else
 
             ' not guarranteed to be loaded, so we have to free this up
 
-            Preview.Form2PictureBox.Image = Nothing
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
 
         End If
 
-        'cbAutoFollow.Checked = False
-        Preview.Show()
+        Globals.fPreview.Show()
+        PreviewButton.Text = "PREVIEW"
 
     End Sub
 
@@ -2181,6 +2283,7 @@ Public Class Pic2Print
 
     Private Sub OurTimerTick(ByVal state As Object)
         Static lastemailqcnt As Integer = -1
+        Static lastautofollow As Integer = -1
 
         'Globals.fDebug.txtPrintLn("timer tick..")
 
@@ -2213,6 +2316,19 @@ Public Class Pic2Print
             lastemailqcnt = Globals.EmailFifoCountChanged
             Dim str As String = Globals.EmailFifoCount
             Call SetEmailQueueTextBox(str)
+        End If
+
+        ' if the refresh button turns green, and the auto track button is clicked, call the delegate to update the list
+
+        If Globals.fPic2Print.New_Files.BackColor = Color.LightGreen Then
+            If (Globals.fPic2Print.cbAutoFollow.Checked = True) Then
+                lastautofollow += 1
+                If lastautofollow = 0 Then
+                    Call Globals.fPic2Print.PerformRefreshDel()
+                End If
+                lastautofollow -= 1
+
+            End If
         End If
 
     End Sub
@@ -2259,122 +2375,122 @@ Public Class Pic2Print
 
             End If
 
-                ' ===========================================================================
-                ' Stage #2 is 5 second count down to trigger ==============================
-                If stage = 2 Then
-                    Globals.fDebug.txtPrintLn("Camera trigger stage 2")
+            ' ===========================================================================
+            ' Stage #2 is 5 second count down to trigger ==============================
+            If stage = 2 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 2")
 
-                    ' any countdown, decrement one..
-                    If secondcountdown > 0 Then
+                ' any countdown, decrement one..
+                If secondcountdown > 0 Then
 
-                        ' HACK! At 2 second(s), fire off the camera external module since its *SO* freakin' slow..
-                        If secondcountdown = 2 Then
-                            _TriggerCamera(fnamcntr)
-                            fnamcntr += 1 ' advance the file name
-                        End If
-
-                        ' one less second to wait
-                        secondcountdown -= 1
-
-                        ' we're done with this pass.load the next second character or a smile!
-                        If secondcountdown > 0 Then
-                            Globals.fUserButton.trgSetButtonText(secondcountdown)
-                            'Globals.fUserButton.TriggerBtn.Text = secondcountdown
-                        Else
-                            ' at zero seconds, load a big happy smile for stage #3
-                            Globals.fUserButton.trgSetButtonText(":D")
-                            'Globals.fUserButton.TriggerBtn.Text = ":D"
-                            secondcountdown = 2 + 1
-                            stage = 3
-                        End If
-
+                    ' HACK! At 2 second(s), fire off the camera external module since its *SO* freakin' slow..
+                    If secondcountdown = 2 Then
+                        _TriggerCamera(fnamcntr)
+                        fnamcntr += 1 ' advance the file name
                     End If
-                End If
 
-                ' =========================================================================
-                ' Stage #3 Last two seconds, put up a BIG SMILEY face! ====================
-                If stage = 3 Then
-                    Globals.fDebug.txtPrintLn("Camera trigger stage 3")
+                    ' one less second to wait
+                    secondcountdown -= 1
 
-                    ' still waiting for this to finish
+                    ' we're done with this pass.load the next second character or a smile!
                     If secondcountdown > 0 Then
-                        secondcountdown -= 1
-
-                        ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
-                        If secondcountdown = 0 Then
-                            If TrigCnt > 1 Then
-                                secondcountdown = 2  ' 4
-                            Else
-
-                                ' no printing countdown at 10 seconds
-                                secondcountdown = 2  ' 4
-
-                                '' if printing add 10 more seconds of time
-                                'If Globals.fForm3.NoPrint.Checked = False Then
-                                'secondcountdown += 10
-                                'End If
-
-                            End If
-
-                            stage = 4
-
-                        End If
+                        Globals.fUserButton.trgSetButtonText(secondcountdown)
+                        'Globals.fUserButton.TriggerBtn.Text = secondcountdown
+                    Else
+                        ' at zero seconds, load a big happy smile for stage #3
+                        Globals.fUserButton.trgSetButtonText(":D")
+                        'Globals.fUserButton.TriggerBtn.Text = ":D"
+                        secondcountdown = 2 + 1
+                        stage = 3
                     End If
+
                 End If
-
-                ' =========================================================================
-                ' Stage 4 - wait for printing to complete =========================
-
-                If stage = 4 Then
-                    Globals.fDebug.txtPrintLn("Camera trigger stage 4")
-
-                    If secondcountdown > 0 Then
-                        secondcountdown -= 1
-
-                        ' if we reach 0, then this image is done.  Restart for subsequent images
-                        If secondcountdown = 0 Then
-
-                            ' count down the number of frames we need (trigger count)
-                            If TrigCnt > 0 Then
-                                TrigCnt -= 1
-                            End If
-
-                            If TrigCnt = 0 Then
-                                ' we're all done, clear all control variables
-                                TrigCnt = -1
-                                Globals.fUserButton.trgSetFont(56)
-                                Globals.fUserButton.trgSetButtonText("CLICK TO START")
-                                Globals.fUserButton.trgUpdateUserMessage(-1)
-                                Globals.TriggerProcessRun = 1
-                                Globals.fDebug.txtPrintLn("Camera trigger - all done")
-                            Else
-                                Globals.fDebug.txtPrintLn("Camera trigger - next trigger")
-                            End If
-
-                            stage = 1
-
-                        Else
-
-                            If TrigCnt = 1 Then
-                                ' make sure this control has the focus for the next keyboard event
-                                'Globals.fUserButton.trgSetFocus()
-                                Globals.fUserButton.trgSetFont(56)
-                                Globals.fUserButton.trgSetButtonText("Finishing")
-                                Globals.fUserButton.trgUpdateUserMessage(0)
-
-                            Else
-                                Globals.fUserButton.trgSetFont(56)
-                                Globals.fUserButton.trgSetButtonText("Get Ready")
-                                Globals.fUserButton.trgUpdateUserMessage(TrigCnt - 1)
-                            End If
-
-                        End If
-                    End If
-                End If
-
             End If
 
-            sema -= 1
+            ' =========================================================================
+            ' Stage #3 Last two seconds, put up a BIG SMILEY face! ====================
+            If stage = 3 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 3")
+
+                ' still waiting for this to finish
+                If secondcountdown > 0 Then
+                    secondcountdown -= 1
+
+                    ' if we reach 0, then this image is done, move to waiting 2 seconds for the prints
+                    If secondcountdown = 0 Then
+                        If TrigCnt > 1 Then
+                            secondcountdown = 2  ' 4
+                        Else
+
+                            ' no printing countdown at 10 seconds
+                            secondcountdown = 2  ' 4
+
+                            '' if printing add 10 more seconds of time
+                            'If Globals.fForm3.NoPrint.Checked = False Then
+                            'secondcountdown += 10
+                            'End If
+
+                        End If
+
+                        stage = 4
+
+                    End If
+                End If
+            End If
+
+            ' =========================================================================
+            ' Stage 4 - wait for printing to complete =========================
+
+            If stage = 4 Then
+                Globals.fDebug.txtPrintLn("Camera trigger stage 4")
+
+                If secondcountdown > 0 Then
+                    secondcountdown -= 1
+
+                    ' if we reach 0, then this image is done.  Restart for subsequent images
+                    If secondcountdown = 0 Then
+
+                        ' count down the number of frames we need (trigger count)
+                        If TrigCnt > 0 Then
+                            TrigCnt -= 1
+                        End If
+
+                        If TrigCnt = 0 Then
+                            ' we're all done, clear all control variables
+                            TrigCnt = -1
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("CLICK TO START")
+                            Globals.fUserButton.trgUpdateUserMessage(-1)
+                            Globals.TriggerProcessRun = 1
+                            Globals.fDebug.txtPrintLn("Camera trigger - all done")
+                        Else
+                            Globals.fDebug.txtPrintLn("Camera trigger - next trigger")
+                        End If
+
+                        stage = 1
+
+                    Else
+
+                        If TrigCnt = 1 Then
+                            ' make sure this control has the focus for the next keyboard event
+                            'Globals.fUserButton.trgSetFocus()
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("Finishing")
+                            Globals.fUserButton.trgUpdateUserMessage(0)
+
+                        Else
+                            Globals.fUserButton.trgSetFont(56)
+                            Globals.fUserButton.trgSetButtonText("Get Ready")
+                            Globals.fUserButton.trgUpdateUserMessage(TrigCnt - 1)
+                        End If
+
+                    End If
+                End If
+            End If
+
+        End If
+
+        sema -= 1
 
     End Sub
 
@@ -3382,17 +3498,17 @@ Public Class Pic2Print
             ' call the drawing function to give us a copy of the image with a rectangle draw overtop
             ' This takes the incoming image and draws a rectangle to show how the image will print
             DrawPaperCrop(pb.Image, localBMP)
-            pbPreview.Image = localBMP
+            pbPreview.Image = pb.Image
 
             ' Whatever the picture box owns, the 2nd form will own..
-            Preview.Form2PictureBox.Image = pb.Image
-            Preview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
+            Globals.fPreview.Form2PictureBox.Image = pb.Image
+            Globals.fPreview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
         Else
 
             ' not guarranteed to be loaded, so we have to free this up
 
-            Preview.Form2PictureBox.Image = My.Resources.blank
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
             pbPreview.Image = My.Resources.blank
 
         End If
@@ -3525,8 +3641,8 @@ Public Class Pic2Print
         Else
             Globals.PicBoxes(Globals.PictureBoxSelected).BorderStyle = BorderStyle.FixedSingle
             Globals.PicBoxCounts(Globals.PictureBoxSelected).BackColor = Color.White
-            Preview.Form2PictureBox.Image = Nothing
-            pbPreview.Image = Nothing
+            Preview.Form2PictureBox.Image = My.Resources.blank
+            pbPreview.Image = My.Resources.blank
         End If
 
     End Sub
@@ -3924,10 +4040,6 @@ Public Class Pic2Print
 
     Private Sub PostViewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PostViewButton.Click
 
-        ' if its visible, its probably behind windows. This will cause it to come to the top
-        If Globals.fPostView.Visible Then
-            Globals.fPostView.Hide()
-        End If
 
         ' Dont execute if form3 & 4 are open!
         If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
@@ -3936,7 +4048,15 @@ Public Class Pic2Print
             Return
         End If
 
+        ' if its visible, its probably behind windows. This will cause it to come to the top
+        If Globals.fPostView.Visible Then
+            Globals.fPostView.Hide()
+            PostViewButton.Text = "postview"
+            Return
+        End If
+
         Globals.fPostView.Show()
+        PostViewButton.Text = "POSTVW"
         Globals.fPostView.postLoadThumbs(True)
 
     End Sub
@@ -4209,13 +4329,20 @@ Public Class Pic2Print
 
     End Sub
 
+
+    Private Sub cbAutoToggle_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbAutoToggle.CheckedChanged
+    End Sub
+
+    Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
+
+    End Sub
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 13.08"    ' Version string
+    Public Shared Version As String = "Version 14.00"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -4223,10 +4350,11 @@ Public Class Globals
     Public Shared fForm4 As New Form4
     Public Shared fPostView As New PostView
     Public Shared fPostViewHasLoaded As Boolean = False
+    Public Shared fPreViewHasLoaded As Boolean = False
     Public Shared fDebug As New debug
     Public Shared fPreview As New Preview
     Public Shared fSendEmails As New SendEmails
-    Public Shared fmmsForm As New mmsForm
+    'Public Shared fmmsForm As New mmsForm
     Public Shared Form3Loading As Boolean
     Public Shared fUserButton As New UserTrigger
 

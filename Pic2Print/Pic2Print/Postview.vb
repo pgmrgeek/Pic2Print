@@ -59,12 +59,9 @@ Public Class PostView
         grpButtons.Visible = True
 
         Call doReloadImages()
-        'Call postLoadThumbs(True)
         Globals.fPostViewHasLoaded = True
 
     End Sub
-
-
 
     Private Sub PostView_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
 
@@ -82,6 +79,7 @@ Public Class PostView
 
     Private Sub PostCloseClick()
         Me.Hide()
+        Globals.fPic2Print.PostViewButton.Text = "postview"
     End Sub
 
     Private Sub btnPostSend_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostSend.Click
@@ -245,8 +243,6 @@ Public Class PostView
 
             If chkAutoScroll.Checked Then
 
-                'If (screenBase + 3 + 1) < Globals.PrintCache.maxIndex Then
-
                 screenBase = Globals.PrintCache.maxIndex - 4
                 If screenBase < 0 Then screenBase = 0
                 If Globals.PrintCache.maxIndex <= 4 Then
@@ -260,9 +256,7 @@ Public Class PostView
                 Globals.PrintCache.FreeAllPictures()
                 Call postLoadThumbs(True)
 
-                'End If
-
-        End If
+            End If
 
         End If
 
@@ -271,14 +265,6 @@ Public Class PostView
     Public Sub postLoadThumbs(ByVal doAll As Boolean)
         Dim img As Image
         Dim i As Integer
-
-        ' InvokeRequired required compares the thread ID of the
-        ' calling thread to the thread ID of the creating thread.
-        ' If these threads are different, it returns true.
-        'If pbThumb1.InvokeRequired Then
-        'Dim d As New postRefreshCallback(AddressOf postLoadThumbs)
-        ' Me.Invoke(d, New Object() {doAll})
-        ' Else
 
         If doAll = True Then
 
@@ -328,8 +314,6 @@ Public Class PostView
         If Globals.fPostViewHasLoaded Then
             CarrierCB.SelectedIndex = Globals.PrintCache.carrierSelector(screenBase + ThumbSelect)
         End If
-
-        'End If
 
     End Sub
 

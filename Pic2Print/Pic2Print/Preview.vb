@@ -25,7 +25,8 @@ Public Class Preview
     Dim lastPermit As Boolean
 
     Private Sub ThumbnailForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim str As String
+        'Dim str As String
+        Dim n As Integer
 
         ' if user reset, move the form to the top left corner - 2 positions
 
@@ -35,14 +36,21 @@ Public Class Preview
 
         ' load the carrier names, etc into local storage
 
-        For Each str In Globals.fmmsForm.mmsCarrierCB.Items
-            CarrierCB.Items.Add(str)
-        Next
+        If Globals.carrierMax > 0 Then
+            For n = 0 To Globals.carrierMax - 1 '  Each str In Globals.carrierDomain   '.carrierDomain.Items
+                Globals.fDebug.TxtPrint("Postview Item.Add #" & n & vbCrLf)
+                CarrierCB.Items.Add(Globals.carrierName(n))
+            Next
+        Else
+            'CarrierCB.Items.Add("Missing carriers.csv") ' postview will complain about this.
+        End If
+        'For Each str In Globals.fmmsForm.mmsCarrierCB.Items
+        'CarrierCB.Items.Add(str)
+        'Next
 
         ' relocate the objects in the form
 
         Call Form2_Resized()
-        ' Call SwapButtons(Form3.EmailCloudEnabled.Checked)
 
     End Sub
 
@@ -57,7 +65,7 @@ Public Class Preview
 
         ' show the file name in the window title
 
-        updateTitle()
+        'PreviewUpdateTitle()
 
         If PreEmailGroup.Visible = True Then
             PreEmailGroup.Visible = False
@@ -107,6 +115,7 @@ Public Class Preview
     Private Sub PrevClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PrevClose.Click
         SaveMessage()
         Me.Hide()
+        Globals.fPic2Print.PreviewButton.Text = "preview"
     End Sub
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSaveTxt.Click
@@ -125,7 +134,7 @@ Public Class Preview
     Private Sub btnLeftMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftMost.Click
         Globals.fPic2Print.ScreenMiddle(False, 0)
         Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(0), 0)
-        Call updateTitle()
+        'Call PreviewUpdateTitle()
     End Sub
 
     Private Sub btnRightMost_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightMost.Click
@@ -137,18 +146,18 @@ Public Class Preview
             idx = Globals.ImageCache.maxIndex - Globals.ScreenBase
         End If
         Call Globals.fPic2Print.SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
-        Call updateTitle()
+        'Call PreviewUpdateTitle()
     End Sub
 
     Private Sub btnLeftOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLeftOne.Click
         moveimagefocus(-1)
-        Call updateTitle()
+        'Call PreviewUpdateTitle()
         'Globals.fPic2Print.ScreenMiddle(True, -3)
     End Sub
 
     Private Sub btnRightOne_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRightOne.Click
         moveimagefocus(1)
-        Call updateTitle()
+        'Call PreviewUpdateTitle()
         'Globals.fPic2Print.ScreenMiddle(True, 3)
     End Sub
 
@@ -285,18 +294,17 @@ Public Class Preview
 
     End Function
 
-    Private Sub updateTitle()
-        Dim s As String = ""
+    'Public Sub PreviewUpdateTitle()
+    'Dim s As String = ""
 
-        ' append the file name to the preview window title
-        If Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) <> "" Then
-            s = " - " & Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected)
-        End If
+    ' append the file name to the preview window title
+    '    If Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected) <> "" Then
+    '        s = " - " & Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected)
+    '    End If
 
-        'Globals.fPreview.Text = "Preview " & s
-        Me.Text = "Preview " & s
+    '   Me.Text = "Preview " & s
 
-    End Sub
+    'End Sub
 
     Private Sub CopyEmailInfo()
         lastEmail = usrEmail2.Text
@@ -305,5 +313,6 @@ Public Class Preview
         lastOptin = ckb_PreOptin.Checked
         lastPermit = ckb_PrePermit.Checked
     End Sub
+
 
 End Class

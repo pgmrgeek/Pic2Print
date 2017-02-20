@@ -36,6 +36,8 @@ Partial Class Preview
         Me.btnRightOne = New System.Windows.Forms.Button()
         Me.btnLeftOne = New System.Windows.Forms.Button()
         Me.PreEmailGroup = New System.Windows.Forms.GroupBox()
+        Me.ckb_PrePermit = New System.Windows.Forms.CheckBox()
+        Me.ckb_PreOptin = New System.Windows.Forms.CheckBox()
         Me.btnPaste = New System.Windows.Forms.Button()
         Me.btnCopy = New System.Windows.Forms.Button()
         Me.btnApply = New System.Windows.Forms.Button()
@@ -47,8 +49,6 @@ Partial Class Preview
         Me.usrEmail2 = New System.Windows.Forms.TextBox()
         Me.emaillabel = New System.Windows.Forms.Label()
         Me.Form2PictureBox = New System.Windows.Forms.PictureBox()
-        Me.ckb_PreOptin = New System.Windows.Forms.CheckBox()
-        Me.ckb_PrePermit = New System.Windows.Forms.CheckBox()
         Me.gbOptions.SuspendLayout()
         Me.PreEmailGroup.SuspendLayout()
         CType(Me.Form2PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,7 +56,7 @@ Partial Class Preview
         '
         'PrevClose
         '
-        Me.PrevClose.Location = New System.Drawing.Point(516, 39)
+        Me.PrevClose.Location = New System.Drawing.Point(511, 10)
         Me.PrevClose.Name = "PrevClose"
         Me.PrevClose.Size = New System.Drawing.Size(75, 23)
         Me.PrevClose.TabIndex = 3
@@ -83,11 +83,11 @@ Partial Class Preview
         '
         'BtnSaveTxt
         '
-        Me.BtnSaveTxt.Location = New System.Drawing.Point(516, 10)
+        Me.BtnSaveTxt.Location = New System.Drawing.Point(511, 42)
         Me.BtnSaveTxt.Name = "BtnSaveTxt"
         Me.BtnSaveTxt.Size = New System.Drawing.Size(75, 23)
         Me.BtnSaveTxt.TabIndex = 6
-        Me.BtnSaveTxt.Text = "Save"
+        Me.BtnSaveTxt.Text = "Save Msg"
         Me.BtnSaveTxt.UseVisualStyleBackColor = True
         '
         'lblRemaining
@@ -203,6 +203,24 @@ Partial Class Preview
         Me.PreEmailGroup.TabStop = False
         Me.PreEmailGroup.Visible = False
         '
+        'ckb_PrePermit
+        '
+        Me.ckb_PrePermit.Location = New System.Drawing.Point(257, 130)
+        Me.ckb_PrePermit.Name = "ckb_PrePermit"
+        Me.ckb_PrePermit.Size = New System.Drawing.Size(295, 24)
+        Me.ckb_PrePermit.TabIndex = 16
+        Me.ckb_PrePermit.Text = "I give permission to use my image for promotional use"
+        Me.ckb_PrePermit.UseVisualStyleBackColor = True
+        '
+        'ckb_PreOptin
+        '
+        Me.ckb_PreOptin.Location = New System.Drawing.Point(63, 130)
+        Me.ckb_PreOptin.Name = "ckb_PreOptin"
+        Me.ckb_PreOptin.Size = New System.Drawing.Size(160, 24)
+        Me.ckb_PreOptin.TabIndex = 10
+        Me.ckb_PreOptin.Text = "I OPT-IN for future emails"
+        Me.ckb_PreOptin.UseVisualStyleBackColor = True
+        '
         'btnPaste
         '
         Me.btnPaste.Image = Global.WindowsApplication1.My.Resources.Resources.paste
@@ -301,24 +319,6 @@ Partial Class Preview
         Me.Form2PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.Form2PictureBox.TabIndex = 0
         Me.Form2PictureBox.TabStop = False
-        '
-        'ckb_PreOptin
-        '
-        Me.ckb_PreOptin.Location = New System.Drawing.Point(63, 130)
-        Me.ckb_PreOptin.Name = "ckb_PreOptin"
-        Me.ckb_PreOptin.Size = New System.Drawing.Size(160, 24)
-        Me.ckb_PreOptin.TabIndex = 10
-        Me.ckb_PreOptin.Text = "I OPT-IN for future emails"
-        Me.ckb_PreOptin.UseVisualStyleBackColor = True
-        '
-        'ckb_PrePermit
-        '
-        Me.ckb_PrePermit.Location = New System.Drawing.Point(257, 130)
-        Me.ckb_PrePermit.Name = "ckb_PrePermit"
-        Me.ckb_PrePermit.Size = New System.Drawing.Size(295, 24)
-        Me.ckb_PrePermit.TabIndex = 16
-        Me.ckb_PrePermit.Text = "I give permission to use my image for promotional use"
-        Me.ckb_PrePermit.UseVisualStyleBackColor = True
         '
         'Preview
         '

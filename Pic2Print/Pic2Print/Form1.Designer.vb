@@ -84,6 +84,7 @@ Partial Class Pic2Print
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.ButtonsGroup = New System.Windows.Forms.GroupBox()
+        Me.cbAutoToggle = New System.Windows.Forms.CheckBox()
         Me.TrigDialog = New System.Windows.Forms.Button()
         Me.cbFilesOnly = New System.Windows.Forms.CheckBox()
         Me.cbQuickBG = New System.Windows.Forms.CheckBox()
@@ -418,11 +419,12 @@ Partial Class Pic2Print
         '
         'PreviewButton
         '
-        Me.PreviewButton.Location = New System.Drawing.Point(14, 20)
+        Me.PreviewButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PreviewButton.Location = New System.Drawing.Point(14, 44)
         Me.PreviewButton.Name = "PreviewButton"
         Me.PreviewButton.Size = New System.Drawing.Size(66, 23)
         Me.PreviewButton.TabIndex = 45
-        Me.PreviewButton.Text = "Preview"
+        Me.PreviewButton.Text = "preview"
         Me.PreviewButton.UseVisualStyleBackColor = True
         '
         'ShowForm3
@@ -739,6 +741,7 @@ Partial Class Pic2Print
         '
         'ButtonsGroup
         '
+        Me.ButtonsGroup.Controls.Add(Me.cbAutoToggle)
         Me.ButtonsGroup.Controls.Add(Me.TrigDialog)
         Me.ButtonsGroup.Controls.Add(Me.cbFilesOnly)
         Me.ButtonsGroup.Controls.Add(Me.cbQuickBG)
@@ -773,9 +776,21 @@ Partial Class Pic2Print
         Me.ButtonsGroup.TabIndex = 61
         Me.ButtonsGroup.TabStop = False
         '
+        'cbAutoToggle
+        '
+        Me.cbAutoToggle.AutoSize = True
+        Me.cbAutoToggle.Checked = Global.WindowsApplication1.My.MySettings.Default.cbAutoViewTracking
+        Me.cbAutoToggle.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "cbAutoViewTracking", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbAutoToggle.Location = New System.Drawing.Point(93, 78)
+        Me.cbAutoToggle.Name = "cbAutoToggle"
+        Me.cbAutoToggle.Size = New System.Drawing.Size(71, 17)
+        Me.cbAutoToggle.TabIndex = 62
+        Me.cbAutoToggle.Text = "AutoView"
+        Me.cbAutoToggle.UseVisualStyleBackColor = True
+        '
         'TrigDialog
         '
-        Me.TrigDialog.Location = New System.Drawing.Point(14, 78)
+        Me.TrigDialog.Location = New System.Drawing.Point(14, 17)
         Me.TrigDialog.Name = "TrigDialog"
         Me.TrigDialog.Size = New System.Drawing.Size(66, 23)
         Me.TrigDialog.TabIndex = 61
@@ -848,11 +863,12 @@ Partial Class Pic2Print
         '
         'PostViewButton
         '
-        Me.PostViewButton.Location = New System.Drawing.Point(14, 48)
+        Me.PostViewButton.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PostViewButton.Location = New System.Drawing.Point(14, 72)
         Me.PostViewButton.Name = "PostViewButton"
         Me.PostViewButton.Size = New System.Drawing.Size(66, 23)
         Me.PostViewButton.TabIndex = 54
-        Me.PostViewButton.Text = "Post View"
+        Me.PostViewButton.Text = "postview"
         Me.PostViewButton.UseVisualStyleBackColor = True
         '
         'Quit_Button
@@ -1105,5 +1121,6 @@ Partial Class Pic2Print
     Friend WithEvents gbPhotoList As System.Windows.Forms.GroupBox
     Friend WithEvents SaveEmailAddrs As System.Windows.Forms.Button
     Friend WithEvents TrigDialog As System.Windows.Forms.Button
+    Friend WithEvents cbAutoToggle As System.Windows.Forms.CheckBox
 
 End Class
