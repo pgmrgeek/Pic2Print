@@ -71,6 +71,13 @@ Public Class Pic2Print
 
     Public Const VIEW_PREVIEW = 1
     Public Const VIEW_POSTVIEW = 2
+
+    Public Const PREVIEW_RELEASE = 0
+    Public Const PREVIEW_SHOW = 1
+    Public Const PREVIEW_SHOW_BLANK = 2
+    Public Const PREVIEW_SHOW_WAITING = 3
+    Public Const PREVIEW_SHOW_DISPOSABLE = 4
+
     '
     ' ================================== Startup/End Code ===================================================
     '
@@ -1047,12 +1054,12 @@ Public Class Pic2Print
             ' the image may not be valid.  
             Globals.PicBoxes(Globals.PictureBoxSelected).Image = My.Resources.blank
 
+            ManagePreviewImage(PREVIEW_SHOW_BLANK, Nothing)
             'If Preview.Visible Then
-            Preview.Form2PictureBox.Image = My.Resources.blank
+            'Preview.Form2PictureBox.Image = My.Resources.blank
             'End If
-
             ' 9.05 forgot to add this blanking out while editing.
-            pbPreview.Image = My.Resources.blank
+            'pbPreview.Image = My.Resources.blank
 
             ' release the image from the cache, kill it from our list
             Globals.ImageCache.FlushNamed(Globals.ImageCache.fileName(Globals.ScreenBase + Globals.PictureBoxSelected))
@@ -1072,6 +1079,7 @@ Public Class Pic2Print
         End If
 
     End Sub
+
 
     '----====< Scroll Buttons >====----
 
@@ -2852,8 +2860,6 @@ Public Class Pic2Print
             End If
         End If
 
-
-
         ' write out the count to the file
         data = cache.maxPrintCount(idx) & vbCrLf & _
             "0" & vbCrLf & _
@@ -2869,6 +2875,7 @@ Public Class Pic2Print
             cache.filePath & trgf & ".txt", data, False, System.Text.Encoding.ASCII)
 
     End Sub
+
 
     '
     ' Copy the file to either printer #1 or printer #2
@@ -3305,6 +3312,54 @@ Public Class Pic2Print
     Public Sub ToggleThePrinter()
 
     End Sub
+
+    '
+    '----====< ManagePreviewImage >====----
+    ' single point of managing both the preview window on the main panel and the
+    ' preview window.  Had to add this since a disposable image is gifted to this
+    ' routine and will have to know when to dispose of it to avoid a huge memory leak.
+    '
+    Private Sub ManagePreviewImage(ByVal cmd As Integer, ByRef img As Image)
+        Static lastcmd As Integer = -1
+
+        Preview.Form2PictureBox.Image = My.Resources.blank
+
+        ' new incoming setup, so handle the last one 
+        If lastcmd = PREVIEW_SHOW_DISPOSABLE Then
+            pbPreview.Image.Dispose()
+        End If
+
+        If lastcmd = PREVIEW_SHOW Then
+            pbPreview.Image = My.Resources.blank
+        End If
+
+        lastcmd = cmd
+
+        If cmd = PREVIEW_RELEASE Then Return
+
+        ' a new show command
+
+        If ((cmd = PREVIEW_SHOW) Or (cmd = PREVIEW_SHOW_DISPOSABLE)) Then
+            pbPreview.Image = img
+            Preview.Form2PictureBox.Image = img
+            Return
+        End If
+
+        If (cmd = PREVIEW_SHOW_BLANK) Then
+            pbPreview.Image = My.Resources.blank
+            Preview.Form2PictureBox.Image = My.Resources.blank
+            Return
+        End If
+
+        If (cmd = PREVIEW_SHOW_WAITING) Then
+            pbPreview.Image = My.Resources.blank
+            Preview.Form2PictureBox.Image = My.Resources.blank
+        End If
+
+    End Sub
+
+
+
     '
     '-----=====< ResetFilesArray >=====------
     '
@@ -3453,7 +3508,7 @@ Public Class Pic2Print
     End Sub
 
     Private Sub UpdateScreenPictureBoxFocus(ByRef pb As PictureBox, ByVal idx As Int16)
-        Static localBMP As Bitmap = Nothing
+        Dim localBMP As Bitmap = Nothing
 
         ' reset all boxes to non-selection
         PictureBox1.BorderStyle = BorderStyle.FixedSingle
@@ -3483,33 +3538,36 @@ Public Class Pic2Print
             ' first create a local static variable holding our local copy
 
             Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
-            If localBMP Is Nothing Then
-                localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
-            End If
+
+            ' release the last preview image
+            ManagePreviewImage(PREVIEW_RELEASE, Nothing)
+            localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
 
             ' resize the bitmap if its not the same size as the incoming copy
-
-            If Not ((localBMP.Height = pb.Image.Height) And (localBMP.Width = pb.Image.Width)) Then
-                pbPreview.Image = Nothing
-                localBMP.Dispose()
-                localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
-            End If
+            'If Not ((localBMP.Height = pb.Image.Height) And (localBMP.Width = pb.Image.Width)) Then
+            'ManagePreviewImage(PREVIEW_RELEASE, Nothing) ' pbPreview.Image = Nothing
+            'localBMP.Dispose() ' dispose is now done in the managepreviewimage routine
+            'localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
+            'End If
 
             ' call the drawing function to give us a copy of the image with a rectangle draw overtop
             ' This takes the incoming image and draws a rectangle to show how the image will print
             DrawPaperCrop(pb.Image, localBMP)
-            pbPreview.Image = pb.Image
 
+            ManagePreviewImage(PREVIEW_SHOW_DISPOSABLE, localBMP)
+            'pbPreview.Image = pb.Image
             ' Whatever the picture box owns, the 2nd form will own..
-            Globals.fPreview.Form2PictureBox.Image = pb.Image
+            'Globals.fPreview.Form2PictureBox.Image = pb.Image
+
             Globals.fPreview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
 
         Else
 
             ' not guarranteed to be loaded, so we have to free this up
 
-            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
-            pbPreview.Image = My.Resources.blank
+            ManagePreviewImage(PREVIEW_RELEASE, Nothing)
+            'Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
+            'pbPreview.Image = My.Resources.blank
 
         End If
 
@@ -3637,12 +3695,14 @@ Public Class Pic2Print
 
         If (idx >= 0) And (idx <= 6) Then
             Call SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
-            pbPreview.Image = Globals.PicBoxes(idx).Image
+            ManagePreviewImage(PREVIEW_SHOW, Globals.PicBoxes(idx).Image)
+            '.Image = Globals.PicBoxes(idx).Image
         Else
             Globals.PicBoxes(Globals.PictureBoxSelected).BorderStyle = BorderStyle.FixedSingle
             Globals.PicBoxCounts(Globals.PictureBoxSelected).BackColor = Color.White
-            Preview.Form2PictureBox.Image = My.Resources.blank
-            pbPreview.Image = My.Resources.blank
+            ManagePreviewImage(PREVIEW_SHOW_BLANK, Nothing)
+            'Preview.Form2PictureBox.Image = My.Resources.blank
+            'pbPreview.Image = My.Resources.blank
         End If
 
     End Sub
