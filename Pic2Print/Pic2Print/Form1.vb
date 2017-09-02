@@ -3112,6 +3112,7 @@ Public Class Pic2Print
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
         'Dim trgp As String = Globals.fForm4.SyncFolderPath1.Text
         Dim srcnam As String
+        Dim ext As String
         'Dim i As Int16
 
         ' exit if this is the overloaded call, just to clear the last name
@@ -3127,14 +3128,19 @@ Public Class Pic2Print
         For Each f In fi
 
             ' debug msg
-            Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & f.Name & " to " & trgp)
 
-            My.Computer.FileSystem.CopyFile(
-               srcp & f.Name, _
-               trgp & f.Name, _
-               Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
-               Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing
-            )
+            ext = Microsoft.VisualBasic.UCase(f.Extension)
+            If ((ext = ".JPG") Or (ext = ".JPEG")) Then
+
+                Globals.fDebug.txtPrintLn("CopyFileToCloudDir:" & f.Name & " to " & trgp)
+
+                My.Computer.FileSystem.CopyFile(
+                   srcp & f.Name, _
+                   trgp & f.Name, _
+                   Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, _
+                   Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing
+                )
+            End If
 
         Next
 
@@ -4402,7 +4408,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.00"    ' Version string
+    Public Shared Version As String = "Version 14.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
