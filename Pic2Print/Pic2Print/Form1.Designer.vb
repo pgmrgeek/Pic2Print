@@ -59,7 +59,7 @@ Partial Class Pic2Print
         Me.EditImage = New System.Windows.Forms.Button()
         Me.oldest = New System.Windows.Forms.Label()
         Me.newest = New System.Windows.Forms.Label()
-        Me.TotalPrinted = New System.Windows.Forms.Label()
+        Me.lblTotalPrinted = New System.Windows.Forms.Label()
         Me.PrinterSelect2 = New System.Windows.Forms.RadioButton()
         Me.PrinterSelect1 = New System.Windows.Forms.RadioButton()
         Me.PrinterGroupBoxPrinterGroupBox = New System.Windows.Forms.GroupBox()
@@ -475,14 +475,14 @@ Partial Class Pic2Print
         Me.newest.TabIndex = 52
         Me.newest.Text = "Newest"
         '
-        'TotalPrinted
+        'lblTotalPrinted
         '
-        Me.TotalPrinted.Location = New System.Drawing.Point(6, 80)
-        Me.TotalPrinted.Name = "TotalPrinted"
-        Me.TotalPrinted.Size = New System.Drawing.Size(107, 21)
-        Me.TotalPrinted.TabIndex = 53
-        Me.TotalPrinted.Text = "0 Printed"
-        Me.TotalPrinted.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblTotalPrinted.Location = New System.Drawing.Point(6, 80)
+        Me.lblTotalPrinted.Name = "lblTotalPrinted"
+        Me.lblTotalPrinted.Size = New System.Drawing.Size(107, 21)
+        Me.lblTotalPrinted.TabIndex = 53
+        Me.lblTotalPrinted.Text = "0 Printed"
+        Me.lblTotalPrinted.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'PrinterSelect2
         '
@@ -515,7 +515,7 @@ Partial Class Pic2Print
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.PrintCount1)
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.PrinterSelect1)
         Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.PrinterSelect2)
-        Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.TotalPrinted)
+        Me.PrinterGroupBoxPrinterGroupBox.Controls.Add(Me.lblTotalPrinted)
         Me.PrinterGroupBoxPrinterGroupBox.Location = New System.Drawing.Point(13, 153)
         Me.PrinterGroupBoxPrinterGroupBox.Name = "PrinterGroupBoxPrinterGroupBox"
         Me.PrinterGroupBoxPrinterGroupBox.Size = New System.Drawing.Size(122, 104)
@@ -1085,7 +1085,7 @@ Partial Class Pic2Print
     Friend WithEvents EditImage As System.Windows.Forms.Button
     Friend WithEvents oldest As System.Windows.Forms.Label
     Friend WithEvents newest As System.Windows.Forms.Label
-    Friend WithEvents TotalPrinted As System.Windows.Forms.Label
+    Friend WithEvents lblTotalPrinted As System.Windows.Forms.Label
     Friend WithEvents PrinterSelect2 As System.Windows.Forms.RadioButton
     Friend WithEvents PrinterSelect1 As System.Windows.Forms.RadioButton
     Friend WithEvents PrinterGroupBoxPrinterGroupBox As System.Windows.Forms.GroupBox

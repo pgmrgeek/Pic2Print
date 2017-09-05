@@ -233,6 +233,7 @@ Public Class Pic2Print
         If Globals.PathsValidated And 1 Then
             Call ResetFilesArray()
             Call AddFilesToArray()
+
         End If
 
         ' load the background images just in case they're called upon
@@ -1129,6 +1130,7 @@ Public Class Pic2Print
     ' this is called via the timer routine in so not to miss files
     Public Delegate Sub PerformRefreshDelCallback()
     Public Sub PerformRefreshDel()
+        Static Dim sema As Integer = -1
         Dim n As Integer
 
         If New_Files.InvokeRequired Then
@@ -1136,27 +1138,36 @@ Public Class Pic2Print
             Me.Invoke(d, New Object() {})
         Else
 
-            ' don't do this if dialogs are open. try again on next tick
-            If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
-                Return
+            ' avoid reentry
+
+            sema += 1
+            If sema = 0 Then
+
+
+                ' don't do this if dialogs are open. try again on next tick
+                If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+                    Return
+                End If
+
+                ' refresh the file list
+                Call PerformRefresh()
+
+                ' Set the focus on the last image so it propagates to other windows.
+                n = Globals.ImageCache.maxIndex
+
+                If (n > 7) Then
+                    n = n Mod 7
+                Else
+                    n = n - 1
+                End If
+
+                Call SetPictureBoxFocus(Globals.PicBoxes(n), n)
+                Call ChangeViewWindow(VIEW_PREVIEW)
+
             End If
-
-            ' refresh the file list
-            Call PerformRefresh()
-
-            ' Set the focus on the last image so it propagates to other windows.
-            n = Globals.ImageCache.maxIndex
-
-            If (n > 7) Then
-                n = n Mod 7
-            Else
-                n = n - 1
-            End If
-
-            Call SetPictureBoxFocus(Globals.PicBoxes(n), n)
-            Call ChangeViewWindow(VIEW_PREVIEW)
-
         End If
+
+        sema -= 1
 
     End Sub
 
@@ -1172,6 +1183,7 @@ Public Class Pic2Print
         End If
 
         ' load the new list
+
         Call ResetFilesArray()
         Call AddFilesToArray()
 
@@ -2795,7 +2807,7 @@ Public Class Pic2Print
             PrintCount1.Text = Globals.Printer1Remaining
             PrintCount2.Text = Globals.Printer2Remaining
             ' display the total print count
-            TotalPrinted.Text = Globals.TotalPrinted & " Printed"
+            lblTotalPrinted.Text = Globals.ImageCache.maxIndex & " / " & Globals.TotalPrinted & " Printed"
         End If
 
     End Sub
@@ -3495,7 +3507,7 @@ Public Class Pic2Print
         Call LoadThumbnails()
 
         ' display the total print count
-        TotalPrinted.Text = Globals.TotalPrinted & " Printed"
+        lblTotalPrinted.Text = Globals.ImageCache.maxIndex & " / " & Globals.TotalPrinted & " Printed"
 
     End Sub
 
@@ -3592,7 +3604,7 @@ Public Class Pic2Print
         Globals.PicBoxCounts(Globals.PictureBoxSelected).Text = s
 
         ' display the printed count
-        TotalPrinted.Text = Globals.TotalPrinted & " Printed"
+        lblTotalPrinted.Text = Globals.ImageCache.maxIndex & " / " & Globals.TotalPrinted & " Printed"
 
     End Sub
 
@@ -4402,13 +4414,14 @@ Public Class Pic2Print
     Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
 
     End Sub
+
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.01"    ' Version string
+    Public Shared Version As String = "Version 14.02"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
