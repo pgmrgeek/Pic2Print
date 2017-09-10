@@ -145,25 +145,6 @@ Public Class Pic2Print
             btnTestRun.Visible = True
         End If
 
-        ' setup the background colors on the printer controls as green, ready to go..
-
-        PrinterSelect1.BackColor = Color.LightGreen
-        PrinterSelect2.BackColor = Color.LightGreen
-
-        ' setup printer #2 radio button if the printer #1 saved state is false & the 2nd printer is enabled
-        If PrinterSelect1.Checked = False Then
-            If Globals.fForm3.Print2Enabled.Checked = True Then
-                PrinterSelect2.Checked = True
-            Else
-                PrinterSelect1.Checked = True
-            End If
-        End If
-
-        ' pull the last printer counts from the application settings storage
-
-        Globals.Printer1Remaining = PrintCount1.Text
-        Globals.Printer2Remaining = PrintCount2.Text
-
         ' setup our arrays of pointers to picture boxes, text boxes, etc.
 
         Globals.PicBoxes(0) = PictureBox1
@@ -271,6 +252,33 @@ Public Class Pic2Print
         Else
             ModifyForm(False)
         End If
+
+        ' setup the background colors on the printer controls as green, ready to go..
+
+        PrinterSelect1.BackColor = Color.LightGreen
+        PrinterSelect2.BackColor = Color.LightGreen
+
+        ' setup printer #2 radio button if the printer #1 saved state is false & the 2nd printer is enabled
+        If PrinterSelect1.Checked = False Then
+            If Globals.fForm3.Print2Enabled.Checked = True Then
+                PrinterSelect2.Checked = True
+            Else
+                PrinterSelect1.Checked = True
+            End If
+        End If
+
+        ' if no printer #2, disable the radio button on the operator panel
+
+        If Globals.fForm3.Print2Enabled.Checked = True Then
+            PrinterSelect2.Enabled = True
+        Else
+            PrinterSelect2.Enabled = False
+        End If
+
+        ' pull the last printer counts from the application settings storage
+
+        Globals.Printer1Remaining = PrintCount1.Text
+        Globals.Printer2Remaining = PrintCount2.Text
 
         ' off & running!  
 
@@ -4421,7 +4429,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.02"    ' Version string
+    Public Shared Version As String = "Version 14.03"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

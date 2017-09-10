@@ -242,7 +242,11 @@ Public Class Form3
                 Globals.fPic2Print.PrinterSelect1.Text = "Printer #1"
                 Globals.fPic2Print.PrinterSelect2.Text = "Printer #2"
                 Globals.fPic2Print.PrinterSelect1.Enabled = True
-                Globals.fPic2Print.PrinterSelect2.Enabled = True
+                If Print2Enabled.Checked = True Then
+                    Globals.fPic2Print.PrinterSelect2.Enabled = True
+                Else
+                    Globals.fPic2Print.PrinterSelect2.Enabled = False
+                End If
             End If
 
             ' disable/enable email buttons according if enabled at setup
@@ -352,6 +356,7 @@ Public Class Form3
             Printer2ProfileTimeSeconds.Enabled = True
             Print_Folder_2.Enabled = True
             LoadBalancing.Enabled = True
+            Globals.fPic2Print.PrinterSelect1.Checked = True
             'LoadBalancingMaxP.Enabled = True
 
             Globals.fPic2Print.PrinterSelect2.Enabled = True
@@ -363,6 +368,10 @@ Public Class Form3
 
             Printer2LB.Enabled = True
             prtrSelect2.Enabled = True
+
+            ' printer #2 is checked, enable the radio button on the operator panel
+
+            Globals.fPic2Print.PrinterSelect2.Enabled = True
 
         Else
 
@@ -377,6 +386,7 @@ Public Class Form3
 
             Globals.fPic2Print.PrinterSelect2.Enabled = False
             Globals.fPic2Print.PrinterSelect2.BackColor = Control.DefaultBackColor
+            Globals.fPic2Print.PrinterSelect1.Checked = True
 
             Printer2LB.Enabled = False
             prtrSelect2.Enabled = False
@@ -388,6 +398,11 @@ Public Class Form3
             ' kill loadbalancing if 2nd printer not enabled
 
             LoadBalancing.Checked = False
+
+            '  no printer #2, disable the radio button on the operator panel
+
+            Globals.fPic2Print.PrinterSelect2.Enabled = False
+
             'LoadBalancingMaxP.Checked = False
 
         End If
