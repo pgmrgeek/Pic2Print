@@ -107,7 +107,7 @@ Public Class Form3
         ' reset the paths to our defaults
         Image_Folder.Text = "c:\onsite\capture\"
         Print_Folder_1.Text = "c:\onsite\"
-        Print_Folder_2.Text = "c:\onsite\"
+        'Print_Folder_2.Text = "c:\onsite\"
 
     End Sub
 
