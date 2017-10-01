@@ -1132,17 +1132,24 @@ Public Class Pic2Print
 
     '----====< New Files load  button >====----
     Private Sub New_Files_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles New_Files.Click
+
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
+                             "click OKAY before continuing.")
+            Return
+        End If
+
         Call PerformRefresh()
     End Sub
 
     ' this is called via the timer routine in so not to miss files
     Public Delegate Sub PerformRefreshDelCallback()
-    Public Sub PerformRefreshDel()
+    Public Sub PerformRefreshDelegate()
         Static Dim sema As Integer = -1
         Dim n As Integer
 
-        If New_Files.InvokeRequired Then
-            Dim d As New PerformRefreshDelCallback(AddressOf PerformRefreshDel)
+        If Globals.fPic2Print.New_Files.InvokeRequired Then
+            Dim d As New PerformRefreshDelCallback(AddressOf PerformRefreshDelegate)
             Me.Invoke(d, New Object() {})
         Else
 
@@ -1150,7 +1157,6 @@ Public Class Pic2Print
 
             sema += 1
             If sema = 0 Then
-
 
                 ' don't do this if dialogs are open. try again on next tick
                 If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
@@ -1173,49 +1179,52 @@ Public Class Pic2Print
                 Call ChangeViewWindow(VIEW_PREVIEW)
 
             End If
-        End If
 
-        sema -= 1
+            sema -= 1
+
+        End If
 
     End Sub
 
 
     Public Sub PerformRefresh()
+        Static Dim sema As Integer = -1
         Dim idx As Int16
         Dim wasGreen As Boolean = False
 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
-            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
-                             "click OKAY before continuing.")
-            Return
-        End If
-
         ' load the new list
 
-        Call ResetFilesArray()
-        Call AddFilesToArray()
+        sema += 1
+        If sema = 0 Then
 
-        If New_Files.BackColor <> Control.DefaultBackColor Then wasGreen = True
+            Call ResetFilesArray()
+            Call AddFilesToArray()
 
-        ' turn off the background color on the button
-        New_Files.BackColor = Control.DefaultBackColor
-        'Globals.fPreview.btnRefresh.BackColor = Control.DefaultBackColor
+            If New_Files.BackColor <> Control.DefaultBackColor Then wasGreen = True
 
-        ' automatically move out to the left ONLY if the refresh button was green. don't change the screen otherwise
+            ' turn off the background color on the button
+            New_Files.BackColor = Control.DefaultBackColor
+            'Globals.fPreview.btnRefresh.BackColor = Control.DefaultBackColor
 
-        If wasGreen = True Then
-            If cbAutoFollow.Checked Then
-                idx = Globals.ImageCache.maxIndex - 7
-                If idx < 0 Then idx = 0
-                ScreenMiddle(False, idx)
+            ' automatically move out to the left ONLY if the refresh button was green. don't change the screen otherwise
+
+            If wasGreen = True Then
+                If Globals.fPic2Print.cbAutoFollow.Checked Then
+                    idx = Globals.ImageCache.maxIndex - 7
+                    If idx < 0 Then idx = 0
+                    ScreenMiddle(False, idx)
+                Else
+                    ' do this for the preview window on the form1
+                    Call HighlightLastSelection()
+                End If
             Else
                 ' do this for the preview window on the form1
                 Call HighlightLastSelection()
             End If
-        Else
-            ' do this for the preview window on the form1
-            Call HighlightLastSelection()
+
         End If
+
+        sema -= 1
 
     End Sub
 
@@ -2349,10 +2358,10 @@ Public Class Pic2Print
         ' if the refresh button turns green, and the auto track button is clicked, call the delegate to update the list
 
         If Globals.fPic2Print.New_Files.BackColor = Color.LightGreen Then
-            If (Globals.fPic2Print.cbAutoFollow.Checked = True) Then
+            If Globals.fPic2Print.cbAutoFollow.Checked Then
                 lastautofollow += 1
                 If lastautofollow = 0 Then
-                    Call Globals.fPic2Print.PerformRefreshDel()
+                    Call Globals.fPic2Print.PerformRefreshDelegate()
                 End If
                 lastautofollow -= 1
 
@@ -3345,46 +3354,50 @@ Public Class Pic2Print
     ' preview window.  Had to add this since a disposable image is gifted to this
     ' routine and will have to know when to dispose of it to avoid a huge memory leak.
     '
-    Private Sub ManagePreviewImage(ByVal cmd As Integer, ByRef img As Image)
-        Static lastcmd As Integer = -1
+    Private Sub ManagePreviewImage(ByVal cmd As Integer, ByRef srcimg As Image)
+        Static Dim localBMP As Bitmap = Nothing
+        Dim r As Rectangle
+        Dim g As Graphics
 
-        Preview.Form2PictureBox.Image = My.Resources.blank
-
-        ' new incoming setup, so handle the last one 
-        If lastcmd = PREVIEW_SHOW_DISPOSABLE Then
-            pbPreview.Image.Dispose()
-        End If
-
-        If lastcmd = PREVIEW_SHOW Then
-            pbPreview.Image = My.Resources.blank
-        End If
-
-        lastcmd = cmd
-
-        If cmd = PREVIEW_RELEASE Then Return
-
-        ' a new show command
+        ' a show command, so release the old bmp, and allocate a new one, then
+        ' copy to source into the new bmp
 
         If ((cmd = PREVIEW_SHOW) Or (cmd = PREVIEW_SHOW_DISPOSABLE)) Then
-            pbPreview.Image = img
-            Preview.Form2PictureBox.Image = img
+
+            If Not (localBMP Is Nothing) Then
+                pbPreview.Image = My.Resources.blank
+                Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
+                localBMP.Dispose()
+            End If
+
+            localBMP = New Bitmap(srcimg.Width, srcimg.Height)
+            g = Graphics.FromImage(localBMP)
+            r = New Rectangle(0, 0, srcimg.Width, srcimg.Height)
+            g.DrawImage(srcimg, r, r, GraphicsUnit.Pixel)
+
+            pbPreview.Image = localBMP
+            Globals.fPreview.Form2PictureBox.Image = localBMP
+            Return
+        End If
+
+        If cmd = PREVIEW_RELEASE Then
+            pbPreview.Image = My.Resources.blank
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
             Return
         End If
 
         If (cmd = PREVIEW_SHOW_BLANK) Then
             pbPreview.Image = My.Resources.blank
-            Preview.Form2PictureBox.Image = My.Resources.blank
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
             Return
         End If
 
         If (cmd = PREVIEW_SHOW_WAITING) Then
             pbPreview.Image = My.Resources.blank
-            Preview.Form2PictureBox.Image = My.Resources.blank
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
         End If
 
     End Sub
-
-
 
     '
     '-----=====< ResetFilesArray >=====------
@@ -3534,7 +3547,7 @@ Public Class Pic2Print
     End Sub
 
     Private Sub UpdateScreenPictureBoxFocus(ByRef pb As PictureBox, ByVal idx As Int16)
-        Dim localBMP As Bitmap = Nothing
+        'Dim localBMP As Bitmap = Nothing
 
         ' reset all boxes to non-selection
         PictureBox1.BorderStyle = BorderStyle.FixedSingle
@@ -3567,7 +3580,6 @@ Public Class Pic2Print
 
             ' release the last preview image
             ManagePreviewImage(PREVIEW_RELEASE, Nothing)
-            localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
 
             ' resize the bitmap if its not the same size as the incoming copy
             'If Not ((localBMP.Height = pb.Image.Height) And (localBMP.Width = pb.Image.Width)) Then
@@ -3578,9 +3590,10 @@ Public Class Pic2Print
 
             ' call the drawing function to give us a copy of the image with a rectangle draw overtop
             ' This takes the incoming image and draws a rectangle to show how the image will print
-            DrawPaperCrop(pb.Image, localBMP)
 
-            ManagePreviewImage(PREVIEW_SHOW_DISPOSABLE, localBMP)
+            DrawPaperCrop(pb.Image, pb.Image)
+            ManagePreviewImage(PREVIEW_SHOW_DISPOSABLE, pb.Image)
+
             'pbPreview.Image = pb.Image
             ' Whatever the picture box owns, the 2nd form will own..
             'Globals.fPreview.Form2PictureBox.Image = pb.Image
@@ -4423,13 +4436,16 @@ Public Class Pic2Print
 
     End Sub
 
+    Private Sub cbAutoFollow_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles cbAutoFollow.CheckedChanged
+
+    End Sub
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.04"    ' Version string
+    Public Shared Version As String = "Version 14.05"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -4606,9 +4622,9 @@ Public Class Globals
     Public Shared tmpPassword As String
     Public Shared tmpMachineName As String
     Public Shared tmpAcctEmailAddr As String
-    'Public Shared tmpBuildPostViews As Int16 = 0        ' 0 = idle, 1 = done, 2 = do build
+    'Public Shared tmpBuildPostViews As Int16 = 0       ' 0 = idle, 1 = done, 2 = do build
     Public Shared tmpAutoPrints As Integer = 1          ' # of prints for the automatic processing
-    Public Shared tmpSortByDate As Boolean             ' sort by date(true) or name(false)
+    Public Shared tmpSortByDate As Boolean              ' sort by date(true) or name(false)
 
 End Class
 

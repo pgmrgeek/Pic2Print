@@ -202,6 +202,13 @@ Public Class Preview
     End Sub
 
     Private Sub btnRefresh_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRefresh.Click
+
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+            MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
+                             "click OKAY before continuing.")
+            Return
+        End If
+
         Call Globals.fPic2Print.PerformRefresh()
     End Sub
 
