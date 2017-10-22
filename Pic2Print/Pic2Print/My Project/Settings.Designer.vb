@@ -929,6 +929,18 @@ Namespace My
                 Me("cbAutoViewTracking") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property cbAddaBoarder() As Boolean
+            Get
+                Return CType(Me("cbAddaBoarder"),Boolean)
+            End Get
+            Set
+                Me("cbAddaBoarder") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

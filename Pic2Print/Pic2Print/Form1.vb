@@ -1062,8 +1062,8 @@ Public Class Pic2Print
             ' FATAL BUG!!!  If we reload now, the thumbnail form can cause an exception because 
             ' the image may not be valid.  
             Globals.PicBoxes(Globals.PictureBoxSelected).Image = My.Resources.blank
-
             ManagePreviewImage(PREVIEW_SHOW_BLANK, Nothing)
+
             'If Preview.Visible Then
             'Preview.Form2PictureBox.Image = My.Resources.blank
             'End If
@@ -1140,6 +1140,7 @@ Public Class Pic2Print
         End If
 
         Call PerformRefresh()
+
     End Sub
 
     ' this is called via the timer routine in so not to miss files
@@ -3364,20 +3365,39 @@ Public Class Pic2Print
 
         If ((cmd = PREVIEW_SHOW) Or (cmd = PREVIEW_SHOW_DISPOSABLE)) Then
 
+            pbPreview.Image = My.Resources.blank
+            Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
+
+            ' if the local bmp has data, then..
             If Not (localBMP Is Nothing) Then
-                pbPreview.Image = My.Resources.blank
-                Globals.fPreview.Form2PictureBox.Image = My.Resources.blank
-                localBMP.Dispose()
+
+                ' if the incoming image is greater in size than the local version, reallocate a larger bmp
+                If ((srcimg.Height <> localBMP.Height) Or (srcimg.Width <> localBMP.Width)) Then
+                    ' let go of the old instance
+                    localBMP.Dispose()
+                    ' create a new
+                    localBMP = New Bitmap(srcimg.Width, srcimg.Height)
+                End If
+
+            Else ' no data, so create it
+                localBMP = New Bitmap(srcimg.Width, srcimg.Height)
             End If
 
-            localBMP = New Bitmap(srcimg.Width, srcimg.Height)
             g = Graphics.FromImage(localBMP)
             r = New Rectangle(0, 0, srcimg.Width, srcimg.Height)
+            'r = New Rectangle(0, 0, localBMP.Width, localBMP.Height)
             g.DrawImage(srcimg, r, r, GraphicsUnit.Pixel)
+            ' DSC should this be done here?
+            g.Dispose()
 
             pbPreview.Image = localBMP
             Globals.fPreview.Form2PictureBox.Image = localBMP
+
+            'pbPreview.Image = srcimg
+            'Globals.fPreview.Form2PictureBox.Image = srcimg
+
             Return
+
         End If
 
         If cmd = PREVIEW_RELEASE Then
@@ -3578,24 +3598,13 @@ Public Class Pic2Print
 
             Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
 
-            ' release the last preview image
-            ManagePreviewImage(PREVIEW_RELEASE, Nothing)
-
-            ' resize the bitmap if its not the same size as the incoming copy
-            'If Not ((localBMP.Height = pb.Image.Height) And (localBMP.Width = pb.Image.Width)) Then
-            'ManagePreviewImage(PREVIEW_RELEASE, Nothing) ' pbPreview.Image = Nothing
-            'localBMP.Dispose() ' dispose is now done in the managepreviewimage routine
-            'localBMP = New Bitmap(pb.Image.Width, pb.Image.Height)
-            'End If
-
             ' call the drawing function to give us a copy of the image with a rectangle draw overtop
             ' This takes the incoming image and draws a rectangle to show how the image will print
-
             DrawPaperCrop(pb.Image, pb.Image)
             ManagePreviewImage(PREVIEW_SHOW_DISPOSABLE, pb.Image)
 
             'pbPreview.Image = pb.Image
-            ' Whatever the picture box owns, the 2nd form will own..
+            'Whatever the picture box owns, the 2nd form will own..
             'Globals.fPreview.Form2PictureBox.Image = pb.Image
 
             Globals.fPreview.txtPrintMsg.Text = Globals.ImageCache.message(Globals.ScreenBase + idx)
@@ -3735,7 +3744,8 @@ Public Class Pic2Print
         If (idx >= 0) And (idx <= 6) Then
             Call SetPictureBoxFocus(Globals.PicBoxes(idx), idx)
             ManagePreviewImage(PREVIEW_SHOW, Globals.PicBoxes(idx).Image)
-            '.Image = Globals.PicBoxes(idx).Image
+            'pbPreview.Image = Globals.PicBoxes(idx).Image
+            'Preview.Form2PictureBox.Image = Globals.PicBoxes(idx).Image
         Else
             Globals.PicBoxes(Globals.PictureBoxSelected).BorderStyle = BorderStyle.FixedSingle
             Globals.PicBoxCounts(Globals.PictureBoxSelected).BackColor = Color.White
@@ -4346,6 +4356,8 @@ Public Class Pic2Print
 
         h = src.Height
         w = src.Width
+
+        ' DSC CRASH - handle bad formatted data!
         g = Graphics.FromImage(trg)
 
         ' if veritcal normalize the image to a horizontal for the code below, 
@@ -4410,7 +4422,6 @@ Public Class Pic2Print
 
         If vert Then
             ' portrait image
-            'rect = New Rectangle(xw, h, w, 0)
             rect = New Rectangle(0, w, h, xw)
         Else
             ' landscape image
@@ -4425,6 +4436,8 @@ Public Class Pic2Print
             g.DrawImage(src, r, r, GraphicsUnit.Pixel)
             g.DrawRectangle(p, rect)
         End Using
+
+        g.Dispose()
 
     End Sub
 
@@ -4445,7 +4458,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.05"    ' Version string
+    Public Shared Version As String = "Version 14.06"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print

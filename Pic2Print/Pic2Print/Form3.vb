@@ -435,6 +435,7 @@ Public Class Form3
         Dim prtrVpct As Integer
         Dim prtrHoff As Integer
         Dim prtrVoff As Integer
+        Dim pct As Integer
         Dim F1 As String
         Dim F1s As String
         Dim F2 As String
@@ -535,10 +536,13 @@ Public Class Form3
 
             ' ------------- #16, #17, #18, #19
 
-            prtrHpct = Globals.prtrHorzPCT(Printer1LB.SelectedIndex)
-            prtrVpct = Globals.prtrVertPCT(Printer1LB.SelectedIndex)
+            prtrHpct = _calcPCT(Globals.prtrHorzPCT(Printer1LB.SelectedIndex), xres, dpi, 12.5)
+            prtrVpct = _calcPCT(Globals.prtrVertPCT(Printer1LB.SelectedIndex), xres, dpi, 12.5)
+            'prtrVpct = Globals.prtrHorzPCT(Printer1LB.SelectedIndex)
+            'prtrVpct = Globals.prtrVertPCT(Printer1LB.SelectedIndex)
             prtrHoff = Globals.prtrHorzOFF(Printer1LB.SelectedIndex)
             prtrVoff = Globals.prtrVertOFF(Printer1LB.SelectedIndex)
+
 
             ' ------------- #20,#21, #22,#23, #24, #25
 
@@ -554,7 +558,6 @@ Public Class Form3
             tr = "0"
             If cbTimingRun.Checked Then tr = "1"
 
-
             ' -------- write  lines of text out to the file ------------
 
             Call _writeconfigfile(fconfig, BkFgFldr, psize, xres, yres, dpi, bk, fg, noprt, profil, bkCnt, bkRatio, _
@@ -567,6 +570,7 @@ Public Class Form3
 
         Return  ' causes confusion when the remote rewrites the print machine's config, let the  print machine handle it.
 
+#If 0 Then
         ' ====================== the second target config file ============================
 
         ' Only if the paths are valid, will we write out the text files
@@ -663,9 +667,32 @@ Public Class Form3
 
             End If
 
-        End If
+            End If
+
+#End If
 
     End Sub
+
+    Private Function _calcPCT(defPCT As Integer, res As Integer, dpi As Integer, trgpct As Double) As Integer
+        Dim db As Double
+
+        ' if it is, calculate the reduced percent size
+        If Globals.fForm3.cbAddBoarder.Checked Then
+
+            If dpi > 0 Then         ' avoid divid by zero
+                db = ((dpi * trgpct) / 100) * 2  ' #lines = dpi * pct # of inches on this side * 2 to add to each side
+                trgpct = ((res - db) / res) * 100 ' lower count / full count = pct
+            End If
+        Else
+            ' pass the default if add boarder is not checked
+            trgpct = defPCT
+
+        End If
+
+        Return trgpct
+
+    End Function
+
 
     Private Sub _writeconfigfile( _
         ByRef fconfig As String, _
