@@ -435,7 +435,6 @@ Public Class Form3
         Dim prtrVpct As Integer
         Dim prtrHoff As Integer
         Dim prtrVoff As Integer
-        Dim pct As Integer
         Dim F1 As String
         Dim F1s As String
         Dim F2 As String
@@ -676,14 +675,17 @@ Public Class Form3
     Private Function _calcPCT(defPCT As Integer, res As Integer, dpi As Integer, trgpct As Double) As Integer
         Dim db As Double
 
-        ' if it is, calculate the reduced percent size
+        ' if boarder is selected, reduce the default by the target pct * 2, ie, both sides..
         If Globals.fForm3.cbAddBoarder.Checked Then
 
-            If dpi > 0 Then         ' avoid divid by zero
-                db = ((dpi * trgpct) / 100) * 2  ' #lines = dpi * pct # of inches on this side * 2 to add to each side
-                trgpct = ((res - db) / res) * 100 ' lower count / full count = pct
+            If dpi > 0 Then                         ' avoid divide by zero
+                db = ((dpi * trgpct) / 100) * 2     ' #lines = dpi * pct # of inches on this side * 2 to add to each side
+                trgpct = ((res - db) / res) * 100   ' trgpct = reduced line count / full count * 100
+                trgpct = (defPCT * trgpct) / 100    ' trgpct = orig pct * trgpct / 100 comes up with the adjusted pct
             End If
+
         Else
+
             ' pass the default if add boarder is not checked
             trgpct = defPCT
 

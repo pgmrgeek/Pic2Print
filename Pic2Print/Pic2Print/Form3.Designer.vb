@@ -1213,7 +1213,9 @@ Partial Class Form3
         Me.lblAddBorder.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblAddBorder.Location = New System.Drawing.Point(669, 280)
         Me.lblAddBorder.Name = "lblAddBorder"
+        Me.lblAddBorder.Size = New System.Drawing.Size(157, 13)
         Me.lblAddBorder.TabIndex = 126
+        Me.lblAddBorder.Text = "Check this if using photo folders"
         '
         'cbAddBoarder
         '
@@ -1222,7 +1224,9 @@ Partial Class Form3
         Me.cbAddBoarder.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "cbAddaBoarder", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.cbAddBoarder.Location = New System.Drawing.Point(666, 295)
         Me.cbAddBoarder.Name = "cbAddBoarder"
+        Me.cbAddBoarder.Size = New System.Drawing.Size(180, 17)
         Me.cbAddBoarder.TabIndex = 127
+        Me.cbAddBoarder.Text = "Add 1/8"" border around the print"
         Me.cbAddBoarder.UseVisualStyleBackColor = True
         '
         'Form3
