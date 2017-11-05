@@ -2128,36 +2128,52 @@ Public Class Pic2Print
 
                         ' if there is a message body file, included that text.
 
-                        If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.txt") Then
-                            ' we have disabled plain text emails for now. HTML email are now used to send formatted pages and pictures
-                            If 0 Then
+                        ' we have disabled plain text emails for now. HTML email are now used to send formatted pages and pictures
+                        If 0 Then
+
+                            cmdln = cmdln & " -disposition ""attachment"" -mime-type ""image/jpeg"" "
+                            cmdln = cmdln & " -content-id ""event_pic"" -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
+
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.txt") Then
                                 cmdln = cmdln & " -attach c:\onsite\software\emailbody.txt,text/plain,i"
-                            Else
-                                cmdln = cmdln & " -attach c:\onsite\software\emailbody.html,text/html,i"
-                                cmdln = cmdln & " -disposition inline"
-                                If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img01.jpg") Then
-                                    cmdln = cmdln & " -content-id ""img_01"" -cs ""none"" -attach ""c:\onsite\software\email_img01.jpg"" "
-                                End If
-                                If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img02.jpg") Then
-                                    cmdln = cmdln & " -content-id ""img_02"" -cs ""none"" -attach ""c:\onsite\software\email_img02.jpg"" "
-                                End If
-                                If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img03.jpg") Then
-                                    cmdln = cmdln & " -content-id ""img_03"" -cs ""none"" -attach ""c:\onsite\software\email_img03.jpg"" "
-                                End If
-                                If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img04.jpg") Then
-                                    cmdln = cmdln & " -content-id ""img_04"" -cs ""none"" -attach ""c:\onsite\software\email_img04.jpg"" "
-                                End If
-                                If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img05.jpg") Then
-                                    cmdln = cmdln & " -content-id ""img_05"" -cs ""none"" -attach ""c:\onsite\software\email_img05.jpg"" "
-                                End If
                             End If
+
+                        Else
+
+                            cmdln = cmdln & " -disposition ""inline"" -mime-type ""image/jpeg"" "
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img01.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_01"" -attach ""c:\onsite\software\email_img01.jpg"" "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img02.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_02"" -attach ""c:\onsite\software\email_img02.jpg"" "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img03.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_03"" -attach ""c:\onsite\software\email_img03.jpg"" "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img04.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_04"" -attach ""c:\onsite\software\email_img04.jpg"" "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img05.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_05"" -attach ""c:\onsite\software\email_img05.jpg"" "
+                            End If
+
                         End If
 
-                        cmdln = cmdln & " -content-id ""event_pic"" -cs ""none"" -attach " & fname & " -v -log " & "c:\onsite\software\email.log"
+                        ' attach the user's image
+                        cmdln = cmdln & " -disposition ""attachment"" -mime-type ""image/jpeg"" "
+                        'cmdln = cmdln & " -content-id ""event_pic"" -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
+                        cmdln = cmdln & "  -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
+
+                        ' attach a body if it exists
+                        If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.html") Then
+                            cmdln = cmdln & " -attach c:\onsite\software\emailbody.html,text/html,i"
+                        End If
+
+                        ' report what we are executing 
+                        'Globals.fDebug.txtPrintLn("len=" & cmdln.Length & " cmd=" & cmdln)
 
                         ' execute the mailer with this commandline we just built
                         Dim pgm As String = "c:\onsite\software\mailsend.exe"
-                        'Globals.fDebug.txtPrintLn("email: " & pgm & vbCrLf & cmdln)
 
                         Dim compiler As New Process()
                         compiler.StartInfo.FileName = pgm
@@ -2206,7 +2222,7 @@ Public Class Pic2Print
 
                         ttl = 120        ' reload ttl down counter for next file
 
-                        End If
+                    End If
 
                 Else
 
@@ -4477,7 +4493,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.08"    ' Version string
+    Public Shared Version As String = "Version 14.09"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
