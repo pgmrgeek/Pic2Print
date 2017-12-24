@@ -1740,6 +1740,8 @@ Public Class Pic2Print
         Dim permit As Boolean
         Dim srcp As String = Globals.tmpPrint1_Folder & "printed\"
         Dim trgp As String = Globals.fForm4.SyncFolderPath1.Text
+        Dim tmp As String
+        Dim subdir As String = "" ' subfolder that holds smaller dup images for txt msgs
 
         ' special case .GIFs due to the photoshop CS2 bug of truncating file names
         gifnam = Microsoft.VisualBasic.Mid(fnam, srcp.Length + 1, 6) & "*.gif"
@@ -1763,12 +1765,23 @@ Public Class Pic2Print
 
                     If ((email1 <> "") Or (phone1 <> "")) Then
 
+                        ' build the email address if its a phone # for txtmsgs. If it is, add the subdir to the txtmsg subfolder
+                        BuildUserEmails(email1, phone1, sel, fnam, subdir)
+
                         Globals.fDebug.txtPrintLn("email queued for first printer -" & email1)
 
-                        ReBuildUserEmails(email1, phone1, sel)
-                        EmailSendRequest(email1, fnam, Globals.tmpSubject)          ' the jpg
+                        ' Okay, the txt msg email overrides the file selection to make sure this works (some txt
+                        ' msg carriers can't handle large jpgs, so we have to switch to the subdir "txtmsg" for a small image
+
+                        If (subdir <> "") Then
+                            tmp = fnam.Substring(srcp.Length, fnam.Length - srcp.Length)
+                            fnam = srcp & subdir & tmp
+                        End If
+
+                        ' email a .jpg AND a .gif if it exists
+                        EmailSendRequest(email1, phone1, fnam, Globals.tmpSubject)          ' the jpg
                         If gifnam <> "" Then
-                            EmailSendRequest(email1, srcp & gifnam, Globals.tmpSubject)        ' the .GIF
+                            EmailSendRequest(email1, phone1, srcp & gifnam, Globals.tmpSubject)        ' the .GIF
                         End If
 
                     End If
@@ -1778,9 +1791,9 @@ Public Class Pic2Print
                 ' if there is a facebook/client email recipient, send email to them as well..
 
                 If Globals.tmpEmailRecipient <> "" Then
-                    EmailSendRequest(Globals.tmpEmailRecipient, fnam, Globals.tmpSubject)   ' the jpg
+                    EmailSendRequest(Globals.tmpEmailRecipient, phone1, fnam, Globals.tmpSubject)   ' the jpg
                     If gifnam <> "" Then
-                        EmailSendRequest(Globals.tmpEmailRecipient, srcp & gifnam, Globals.tmpSubject) ' the .GIF
+                        EmailSendRequest(Globals.tmpEmailRecipient, phone1, srcp & gifnam, Globals.tmpSubject) ' the .GIF
                     End If
 
                 End If
@@ -1849,8 +1862,12 @@ Public Class Pic2Print
 
     End Function
 
-    Public Sub ReBuildUserEmails(ByRef email As String, ByRef phone As String, ByVal sel As Integer)
+    Public Sub BuildUserEmails(ByRef email As String, ByRef phone As String, ByVal sel As Integer, ByRef fnam As String, ByRef subdir As String)
         Dim i As Integer
+
+        ' "Build" only if adding a txt msg email address, separated by a comma.
+
+        subdir = "" ' only load if this is a jpg going to a txt msg..
 
         ' extract the digits from the user's text in case there are spaces, brackets or dashes
 
@@ -1874,6 +1891,11 @@ Public Class Pic2Print
                 ' problem with this, it most likely will select a wrong carrier and the txt msg will be sent to the wrong place.
             End If
             email = email & Globals.carrierDomain(sel)
+
+            ' if the file is a jpg being txtmsg'd, we get the reduced image from the subfolder, not the large image
+            If (fnam.Contains(".jpg") Or fnam.Contains(".jpeg")) Then
+                subdir = "txtmsg\"
+            End If
 
         End If
 
@@ -2067,8 +2089,10 @@ Public Class Pic2Print
         Dim cmdln As String
         Dim fname As String
         Dim recip As String
-        Dim ttl = 120        ' time to live for waiting on incoming files to the print folder
+        Dim ttl As Integer = 120        ' time to live for waiting on incoming files to the print folder
+        Dim reminder As Integer = 10    ' every ten seconds give a reminder debug msg why we are not sending emails
         Dim n As Integer
+        Dim istxt As String             ' phone # or a null string
 
         ' we loop forever basically monitoring the FIFO
 
@@ -2086,6 +2110,7 @@ Public Class Pic2Print
 
                     fname = Globals.EmailToFile(Globals.EmailFifoOut)
                     recip = Globals.EmailToAddr(Globals.EmailFifoOut)
+                    istxt = Globals.EmailIsTxtmsg(Globals.EmailFifoOut)
 
                     'fname = Strings.LCase(fname)            ' lower case works in windows..
 
@@ -2110,12 +2135,40 @@ Public Class Pic2Print
 
                             ttl = 120    ' reload ttl down counter
 
+                        Else
+                            reminder -= 1
+                            If (reminder <= 0) Then
+                                Globals.fDebug.txtPrintLn("still waiting for image to email-" & fname & " for " & recip)
+                                reminder = 10
+                            End If
+
                         End If
 
                     Else
 
                         ' we know what file to send.  Wait 10 seconds for it to appear in the printed folder
-
+                        '
+                        ' mailsend -smtp ??? -domain ??? -port ?? -user ??? -pass ??? -f ??? -t ??? -auth-plain -v -log ??? '-sub ??? 
+                        '
+                        ' if image = gif then
+                        '   -attach c:\onsite\printed\00043_p1_m2_bk1_n001_f01_de.gif,image/gif,a 
+                        ' else
+                        '   -attach c:\onsite\printed\00043_p1_m2_bk1_n001_f01_de.jpg,image/jpg,a 
+                        ' endif
+                        '
+                        ' if txtmsg
+                        '   -attach c:\onsite\software\emailbody.txt,text/plain,i 
+                        ' else
+                        '   -attach c:\onsite\software\emailbody.html,text/html,i 
+                        '   -content-id "img_01" -attach c:\onsite\software\email_img01.jpg,image/jpg,i 
+                        '   -content-id "img_02" -attach c:\onsite\software\email_img02.jpg,image/jpg,i 
+                        '   -content-id "img_03" -attach c:\onsite\software\email_img03.jpg,image/jpg,i 
+                        '   -content-id "img_04" -attach c:\onsite\software\email_img04.jpg,image/jpg,i 
+                        '   -content-id "img_05" -attach c:\onsite\software\email_img05.jpg,image/jpg,i 
+                        ' endif
+                        '
+                        ' standard set of parameters
+                        '
                         cmdln = " -smtp " & Globals.tmpServerURL & _
                                 " -domain " & Globals.tmpServerURL & _
                                 " -port " & Globals.tmpServerPort & _
@@ -2123,54 +2176,43 @@ Public Class Pic2Print
                                 " -pass " & Globals.tmpPassword & _
                                 " -f " & Globals.tmpAcctEmailAddr & _
                                 " -t " & recip & _
-                                " -sub """ & Globals.EmailToCaption(Globals.EmailFifoOut) & """" & _
-                                " -auth-plain"
+                                " -auth-plain -v -log c:\onsite\software\email.log " & _
+                                " -sub " & """" & Globals.EmailToCaption(Globals.EmailFifoOut) & """"
 
-                        ' if there is a message body file, included that text.
+                        ' attach the primary image, and append the prope image type
 
-                        ' we have disabled plain text emails for now. HTML email are now used to send formatted pages and pictures
-                        If 0 Then
-
-                            cmdln = cmdln & " -disposition ""attachment"" -mime-type ""image/jpeg"" "
-                            cmdln = cmdln & " -content-id ""event_pic"" -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
-
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.txt") Then
-                                cmdln = cmdln & " -attach c:\onsite\software\emailbody.txt,text/plain,i"
-                            End If
-
+                        cmdln = cmdln & " -attach " & fname
+                        If fname.Contains(".gif") Then
+                            cmdln = cmdln & ",image/gif,a "
                         Else
-
-                            cmdln = cmdln & " -disposition ""inline"" -mime-type ""image/jpeg"" "
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img01.jpg") Then
-                                cmdln = cmdln & " -content-id ""img_01"" -attach ""c:\onsite\software\email_img01.jpg"" "
-                            End If
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img02.jpg") Then
-                                cmdln = cmdln & " -content-id ""img_02"" -attach ""c:\onsite\software\email_img02.jpg"" "
-                            End If
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img03.jpg") Then
-                                cmdln = cmdln & " -content-id ""img_03"" -attach ""c:\onsite\software\email_img03.jpg"" "
-                            End If
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img04.jpg") Then
-                                cmdln = cmdln & " -content-id ""img_04"" -attach ""c:\onsite\software\email_img04.jpg"" "
-                            End If
-                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img05.jpg") Then
-                                cmdln = cmdln & " -content-id ""img_05"" -attach ""c:\onsite\software\email_img05.jpg"" "
-                            End If
-
+                            cmdln = cmdln & ",image/jpg,a "
                         End If
 
-                        ' attach the user's image
-                        cmdln = cmdln & " -disposition ""attachment"" -mime-type ""image/jpeg"" "
-                        'cmdln = cmdln & " -content-id ""event_pic"" -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
-                        cmdln = cmdln & "  -attach """ & fname & """ -v -log " & "c:\onsite\software\email.log"
+                        ' if a text msg, we have to send the smaller alternate message body
 
-                        ' attach a body if it exists
-                        If My.Computer.FileSystem.FileExists("c:\onsite\software\emailbody.html") Then
+                        If (istxt <> "") Then
+                            cmdln = cmdln & " -attach c:\onsite\software\emailbody.txt,text/plain,i"
+                        Else
                             cmdln = cmdln & " -attach c:\onsite\software\emailbody.html,text/html,i"
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img01.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_01"" -attach c:\onsite\software\email_img01.jpg,image/jpg,i "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img02.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_02"" -attach c:\onsite\software\email_img02.jpg,image/jpg,i "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img03.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_03"" -attach c:\onsite\software\email_img03.jpg,image/jpg,i "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img04.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_04"" -attach c:\onsite\software\email_img04.jpg,image/jpg,i "
+                            End If
+                            If My.Computer.FileSystem.FileExists("c:\onsite\software\email_img05.jpg") Then
+                                cmdln = cmdln & " -content-id ""img_05"" -attach c:\onsite\software\email_img05.jpg,image/jpg,i "
+                            End If
                         End If
 
                         ' report what we are executing 
-                        'Globals.fDebug.txtPrintLn("len=" & cmdln.Length & " cmd=" & cmdln)
+                        Globals.fDebug.txtPrintLn("len=" & cmdln.Length & " cmd=" & cmdln)
 
                         ' execute the mailer with this commandline we just built
                         Dim pgm As String = "c:\onsite\software\mailsend.exe"
@@ -2226,8 +2268,8 @@ Public Class Pic2Print
 
                 Else
 
-                        ' no emails in fifo, keep the ttl downcounter loaded
-                        ttl = 120
+                    ' no emails in fifo, keep the ttl downcounter loaded
+                    ttl = 120
 
                 End If
 
@@ -2260,7 +2302,7 @@ Public Class Pic2Print
 
     End Sub
 
-    Public Sub EmailSendRequest(ByRef email As String, ByRef fname As String, ByRef caption As String)
+    Public Sub EmailSendRequest(ByRef email As String, ByRef txtmsg As Boolean, ByRef fname As String, ByRef caption As String)
         Static lastEmail As String = ""
         Static lastFname As String = ""
         Dim tempFname As String
@@ -2303,6 +2345,11 @@ Public Class Pic2Print
             Globals.EmailToAddr(Globals.EmailFifoIn) = email
             Globals.EmailToFile(Globals.EmailFifoIn) = fname
             Globals.EmailToCaption(Globals.EmailFifoIn) = caption
+            If (txtmsg) Then
+                Globals.EmailIsTxtmsg(Globals.EmailFifoIn) = "TRUE"
+            Else
+                Globals.EmailIsTxtmsg(Globals.EmailFifoIn) = ""
+            End If
 
             Globals.EmailFifoIn += 1
             If Globals.EmailFifoIn = Globals.EmailFifoMax Then
@@ -4493,7 +4540,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.09"    ' Version string
+    Public Shared Version As String = "Version 14.10"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
@@ -4582,6 +4629,7 @@ Public Class Globals
     Public Shared EmailToAddr(512) As String
     Public Shared EmailToFile(512) As String
     Public Shared EmailToCaption(512) As String
+    Public Shared EmailIsTxtmsg(512) As String                  ' is a txtmsg, use alternate message body
 
     ' Array of printer info read from the CSV file
     Public Shared prtrMax As Int16 = 0
