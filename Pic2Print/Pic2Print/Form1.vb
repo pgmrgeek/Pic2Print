@@ -2302,7 +2302,7 @@ Public Class Pic2Print
 
     End Sub
 
-    Public Sub EmailSendRequest(ByRef email As String, ByRef txtmsg As Boolean, ByRef fname As String, ByRef caption As String)
+    Public Sub EmailSendRequest(ByRef email As String, ByRef txtmsg As String, ByRef fname As String, ByRef caption As String)
         Static lastEmail As String = ""
         Static lastFname As String = ""
         Dim tempFname As String
@@ -2345,7 +2345,7 @@ Public Class Pic2Print
             Globals.EmailToAddr(Globals.EmailFifoIn) = email
             Globals.EmailToFile(Globals.EmailFifoIn) = fname
             Globals.EmailToCaption(Globals.EmailFifoIn) = caption
-            If (txtmsg) Then
+            If (txtmsg <> "") Then
                 Globals.EmailIsTxtmsg(Globals.EmailFifoIn) = "TRUE"
             Else
                 Globals.EmailIsTxtmsg(Globals.EmailFifoIn) = ""
@@ -4540,7 +4540,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.10"    ' Version string
+    Public Shared Version As String = "Version 14.10.01"    ' Version string
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
