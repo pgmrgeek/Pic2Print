@@ -360,7 +360,7 @@ Public Class Form3
             'LoadBalancingMaxP.Enabled = True
 
             Globals.fPic2Print.PrinterSelect2.Enabled = True
-            Globals.fPic2Print.PrinterSelect2.BackColor = Color.LightGreen
+            Globals.fPic2Print.PrinterSelect2.BackColor = Color.LimeGreen
             Printer2PrintTimeLabel.ForeColor = Color.Black
             Printer2PaperCountLabel.ForeColor = Color.Black
             LoadBalancing.ForeColor = Color.Black

@@ -333,8 +333,6 @@ Partial Class Preview
         Me.DataBindings.Add(New System.Windows.Forms.Binding("ClientSize", Global.WindowsApplication1.My.MySettings.Default, "img_size", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.Location = Global.WindowsApplication1.My.MySettings.Default.Thumbnail_Location
         Me.Name = "Preview"
-        Me.ShowInTaskbar = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Preview"
         Me.gbOptions.ResumeLayout(False)
         Me.gbOptions.PerformLayout()

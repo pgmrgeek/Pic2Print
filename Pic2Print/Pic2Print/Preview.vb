@@ -50,16 +50,16 @@ Public Class Preview
 
         ' relocate the objects in the form
 
-        Call Form2_Resized()
+        Call Preview_Resized()
 
     End Sub
 
 
-    Private Sub ThumbnailForm_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
-
-        Call Form2_Resized()
-
-    End Sub
+    'Private Sub ThumbnailForm_Resize(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Resize
+    '
+    '   Call Preview_Resized()
+    '
+    'End Sub
 
     Private Sub preview_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
 
@@ -74,15 +74,15 @@ Public Class Preview
 
     End Sub
 
-    Private Sub Form2_ResizeEnd(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.ResizeEnd
+    Private Sub Form2_Resize(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Resize
 
         ' relocate the objects in the form
 
-        Call Form2_Resized()
+        Call Preview_Resized()
 
     End Sub
 
-    Private Sub Form2_Resized()
+    Private Sub Preview_Resized()
         Dim p As Point
         Dim x As Integer
         Dim y As Integer

@@ -255,8 +255,8 @@ Public Class Pic2Print
 
         ' setup the background colors on the printer controls as green, ready to go..
 
-        PrinterSelect1.BackColor = Color.LightGreen
-        PrinterSelect2.BackColor = Color.LightGreen
+        PrinterSelect1.BackColor = Color.LimeGreen
+        PrinterSelect2.BackColor = Color.LimeGreen
 
         ' setup printer #2 radio button if the printer #1 saved state is false & the 2nd printer is enabled
         If PrinterSelect1.Checked = False Then
@@ -1026,7 +1026,7 @@ Public Class Pic2Print
             ' Save the selection, turn on the hightlight.
 
             Globals.BackgroundSelected = bk
-            lbl.BackColor = Color.LightGreen
+            lbl.BackColor = Color.LimeGreen
             lbl.BorderStyle = BorderStyle.Fixed3D
 
         End If
@@ -2411,7 +2411,7 @@ Public Class Pic2Print
         If Globals.Printer1DownCount > 0 Then
             Globals.Printer1DownCount -= 1
             If Globals.Printer1DownCount = 0 Then
-                Globals.fPic2Print.PrinterSelect1.BackColor = Color.LightGreen
+                Globals.fPic2Print.PrinterSelect1.BackColor = Color.LimeGreen
             End If
         End If
 
@@ -2419,7 +2419,7 @@ Public Class Pic2Print
         If Globals.Printer2DownCount > 0 Then
             Globals.Printer2DownCount -= 1
             If Globals.Printer2DownCount = 0 Then
-                Globals.fPic2Print.PrinterSelect2.BackColor = Color.LightGreen
+                Globals.fPic2Print.PrinterSelect2.BackColor = Color.LimeGreen
             End If
         End If
 
@@ -2440,7 +2440,7 @@ Public Class Pic2Print
 
         ' if the refresh button turns green, and the auto track button is clicked, call the delegate to update the list
 
-        If Globals.fPic2Print.New_Files.BackColor = Color.LightGreen Then
+        If Globals.fPic2Print.New_Files.BackColor = Color.LimeGreen Then
             If Globals.fPic2Print.cbAutoFollow.Checked Then
                 lastautofollow += 1
                 If lastautofollow = 0 Then
@@ -2793,13 +2793,13 @@ Public Class Pic2Print
 
         'Globals.fDebug.txtPrintLn("DEBUG ONLY - RESTORE THIS IF STATEMENT!")
         'If ((mode = PRT_PRINT) And (Globals.fForm3.NoPrint.Checked = False)) Then
-        If (mode = PRT_PRINT) Then
+        If ((mode = PRT_PRINT) Or (mode = PRT_REPRINT)) Then
 
             ' Decrement the selected printer downcounters 
             If printer = 1 Then
 
                 '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
-                If InStr(nam, "_m1", ) > 0 Then
+                If (mode = PRT_PRINT) Then
                     ProcessSeconds = _calculateSeconds(Globals.Printer1DownCount, Globals.fForm3.Printer1ProfileTimeSeconds.Text, Globals.prtr1PrinterSeconds, Globals.prtr1PrinterStartupSecs)
                     Globals.Printer1DownCount += ProcessSeconds + (Globals.prtr1PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
                     'Globals.fDebug.txtPrintLn("Print1 downcount:" & Globals.Printer1DownCount)
@@ -2820,7 +2820,7 @@ Public Class Pic2Print
 
                 '  Add in the seconds for this processing time & print time.  Turn the button yellow for the duration
                 '  if this is an acutal print (vs load), then add in the seconds for this processing time & print time.  Turn the button yellow for the duration
-                If InStr(nam, "_m1") > 0 Then
+                If (mode = PRT_PRINT) Then
                     ProcessSeconds = _calculateSeconds(Globals.Printer2DownCount, Globals.fForm3.Printer2ProfileTimeSeconds.Text, Globals.prtr2PrinterSeconds, Globals.prtr2PrinterStartupSecs)
                     Globals.Printer2DownCount += ProcessSeconds + (Globals.prtr2PrinterSeconds * count) + 1 ' adding 1 for copy time & kiosk kickoff
                     'Globals.fDebug.txtPrintLn("Print2 downcount:" & Globals.Printer2DownCount)
@@ -2843,7 +2843,7 @@ Public Class Pic2Print
 
         ' in either case of printer1 & printer2, increment the total global print count, ignore gifs
 
-        If InStr(nam, "_m1") > 0 Then 'If mode = PRT_PRINT Then
+        If ((mode = PRT_PRINT) Or (mode = PRT_REPRINT)) Then 'If mode = PRT_PRINT Then
 
             ' the total printed count on the main panel
             Globals.TotalPrinted += count
@@ -3088,53 +3088,55 @@ Public Class Pic2Print
                 PrinterPath = Globals.tmpPrint2_Folder
             End If
 
-            ' build the whole file name: printcnt+mode+background #+counter
-            'trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
+                ' build the whole file name: printcnt+mode+background #+counter
+                'trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
+
+                ' change the mode decoration with the reprint mode #
+                If trgf.Contains("_m1_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+                If trgf.Contains("_m2_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+
+                ' change the print count
+                If trgf.Contains("_p2_") Then trgf = trgf.Replace("_p2_", "_p1_")
+                If trgf.Contains("_p3_") Then trgf = trgf.Replace("_p3_", "_p1_")
+                If trgf.Contains("_p4_") Then trgf = trgf.Replace("_p4_", "_p1_")
+                If trgf.Contains("_p5_") Then trgf = trgf.Replace("_p5_", "_p1_")
+                If trgf.Contains("_p6_") Then trgf = trgf.Replace("_p6_", "_p1_")
+                If trgf.Contains("_p7_") Then trgf = trgf.Replace("_p7_", "_p1_")
+                If trgf.Contains("_p8_") Then trgf = trgf.Replace("_p8_", "_p1_")
+                If trgf.Contains("_p9_") Then trgf = trgf.Replace("_p9_", "_p1_")
+                If trgf.Contains("_p10_") Then trgf = trgf.Replace("_p10_", "_p1_")
+
+                ' replace spaces with underscores
+
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
 
-            ' change the mode decoration with the reprint mode #
-            If trgf.Contains("_m1_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
-            If trgf.Contains("_m2_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
-
-            ' change the print count
-            If trgf.Contains("_p2_") Then trgf = trgf.Replace("_p2_", "_p1_")
-            If trgf.Contains("_p3_") Then trgf = trgf.Replace("_p3_", "_p1_")
-            If trgf.Contains("_p4_") Then trgf = trgf.Replace("_p4_", "_p1_")
-            If trgf.Contains("_p5_") Then trgf = trgf.Replace("_p5_", "_p1_")
-            If trgf.Contains("_p6_") Then trgf = trgf.Replace("_p6_", "_p1_")
-            If trgf.Contains("_p7_") Then trgf = trgf.Replace("_p7_", "_p1_")
-            If trgf.Contains("_p8_") Then trgf = trgf.Replace("_p8_", "_p1_")
-            If trgf.Contains("_p9_") Then trgf = trgf.Replace("_p9_", "_p1_")
-            If trgf.Contains("_p10_") Then trgf = trgf.Replace("_p10_", "_p1_")
-
-            ' replace spaces with underscores
             trgtxt = trgtxt.Replace(" ", "_")
             trgf = trgf.Replace(" ", "_")
 
-            ' send the file name to debug 
-            Globals.fDebug.txtPrintLn("CopyReprintToPrintDir:" & trgf & " to " & PrinterPath)
+                ' send the file name to debug 
+                Globals.fDebug.txtPrintLn("CopyReprintToPrintDir:" & trgf & " to " & PrinterPath)
 
-            If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & srcf & ".txt") Then
+            If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & "printed\" & srcf & ".txt") Then
 
                 ' copy the gumball text file to the proper folder
                 My.Computer.FileSystem.CopyFile(
-                    Globals.tmpPrint1_Folder & srcf & ".txt",
+                    Globals.tmpPrint1_Folder & "printed\" & srcf & ".txt",
                     PrinterPath & trgtxt,
                     Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
                     Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
             End If
 
-            ' copy it to the proper folder
-            My.Computer.FileSystem.CopyFile(
-                Globals.tmpPrint1_Folder & "printed\" & srcf & ".jpg",
-                PrinterPath & trgf,
-                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+                ' copy it to the proper folder
+                My.Computer.FileSystem.CopyFile(
+                    Globals.tmpPrint1_Folder & "printed\" & srcf & ".jpg",
+                    PrinterPath & trgf,
+                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                    Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
 
-        End If
+            End If
 
-        Return
+        IncrementPrintCounts(trgf, PRT_REPRINT, 1, Globals.ToPrinter)
 
     End Sub
 
@@ -3678,7 +3680,7 @@ Public Class Pic2Print
 
             ' first create a local static variable holding our local copy
 
-            Globals.PicBoxCounts(idx).BackColor = Color.LightGreen
+            Globals.PicBoxCounts(idx).BackColor = Color.LimeGreen
 
             ' call the drawing function to give us a copy of the image with a rectangle draw overtop
             ' This takes the incoming image and draws a rectangle to show how the image will print
@@ -3766,8 +3768,8 @@ Public Class Pic2Print
 
             ' just load it the straight forward way.
 
-            Globals.fPic2Print.New_Files.BackColor = Color.LightGreen
-            'Globals.fPreview.btnRefresh.BackColor = Color.LightGreen
+            Globals.fPic2Print.New_Files.BackColor = Color.LimeGreen
+            'Globals.fPreview.btnRefresh.BackColor = color.limegreen
 
         End If
 
@@ -3778,8 +3780,8 @@ Public Class Pic2Print
         If e.ChangeType = IO.WatcherChangeTypes.Created Then
 
             'txt_folderactivity.Text &= "File " & e.FullPath & " has been created" & vbCrLf
-            Globals.fPic2Print.New_Files.BackColor = Color.LightGreen
-            'Globals.fPreview.btnRefresh.BackColor = Color.LightGreen
+            Globals.fPic2Print.New_Files.BackColor = Color.LimeGreen
+            'Globals.fPreview.btnRefresh.BackColor = color.limegreen
 
         End If
 
@@ -4540,7 +4542,10 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.10.01"    ' Version string
+    Public Shared Version As String = "Version 14.10.02"    ' Version string
+    ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
+    '            normalize the resize of the preview window to work like the postview window.
+    '            drag the top left corner of each to see the difference..
 
     ' the form instances
     Public Shared fPic2Print As New Pic2Print
