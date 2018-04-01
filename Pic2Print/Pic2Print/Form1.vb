@@ -126,6 +126,9 @@ Public Class Pic2Print
                 Me.Location = New Point(0, 0)
 
             End If
+            If argument = "/R" Then
+                My.Settings.Reset() ' if the big R, reset all the saved prior settings
+            End If
             If argument = "/d" Then
                 Globals.cmdLineDebug = True
             End If
@@ -3088,25 +3091,25 @@ Public Class Pic2Print
                 PrinterPath = Globals.tmpPrint2_Folder
             End If
 
-                ' build the whole file name: printcnt+mode+background #+counter
-                'trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
+            ' build the whole file name: printcnt+mode+background #+counter
+            'trgf = sPrefix & "-" & srcf & "_p" & count & "_m" & mode & "_bk" & bkgd & "_n" & Globals.tmpMachineName
 
-                ' change the mode decoration with the reprint mode #
-                If trgf.Contains("_m1_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
-                If trgf.Contains("_m2_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+            ' change the mode decoration with the reprint mode #
+            If trgf.Contains("_m1_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
+            If trgf.Contains("_m2_") Then trgf = trgf.Replace("_m1", "_m" & PRT_REPRINT & "_")
 
-                ' change the print count
-                If trgf.Contains("_p2_") Then trgf = trgf.Replace("_p2_", "_p1_")
-                If trgf.Contains("_p3_") Then trgf = trgf.Replace("_p3_", "_p1_")
-                If trgf.Contains("_p4_") Then trgf = trgf.Replace("_p4_", "_p1_")
-                If trgf.Contains("_p5_") Then trgf = trgf.Replace("_p5_", "_p1_")
-                If trgf.Contains("_p6_") Then trgf = trgf.Replace("_p6_", "_p1_")
-                If trgf.Contains("_p7_") Then trgf = trgf.Replace("_p7_", "_p1_")
-                If trgf.Contains("_p8_") Then trgf = trgf.Replace("_p8_", "_p1_")
-                If trgf.Contains("_p9_") Then trgf = trgf.Replace("_p9_", "_p1_")
-                If trgf.Contains("_p10_") Then trgf = trgf.Replace("_p10_", "_p1_")
+            ' change the print count
+            If trgf.Contains("_p2_") Then trgf = trgf.Replace("_p2_", "_p1_")
+            If trgf.Contains("_p3_") Then trgf = trgf.Replace("_p3_", "_p1_")
+            If trgf.Contains("_p4_") Then trgf = trgf.Replace("_p4_", "_p1_")
+            If trgf.Contains("_p5_") Then trgf = trgf.Replace("_p5_", "_p1_")
+            If trgf.Contains("_p6_") Then trgf = trgf.Replace("_p6_", "_p1_")
+            If trgf.Contains("_p7_") Then trgf = trgf.Replace("_p7_", "_p1_")
+            If trgf.Contains("_p8_") Then trgf = trgf.Replace("_p8_", "_p1_")
+            If trgf.Contains("_p9_") Then trgf = trgf.Replace("_p9_", "_p1_")
+            If trgf.Contains("_p10_") Then trgf = trgf.Replace("_p10_", "_p1_")
 
-                ' replace spaces with underscores
+            ' replace spaces with underscores
 
             trgtxt = trgf & ".txt"
             trgf = trgf & ".jpg"
@@ -3114,8 +3117,8 @@ Public Class Pic2Print
             trgtxt = trgtxt.Replace(" ", "_")
             trgf = trgf.Replace(" ", "_")
 
-                ' send the file name to debug 
-                Globals.fDebug.txtPrintLn("CopyReprintToPrintDir:" & trgf & " to " & PrinterPath)
+            ' send the file name to debug 
+            Globals.fDebug.txtPrintLn("CopyReprintToPrintDir:" & trgf & " to " & PrinterPath)
 
             If My.Computer.FileSystem.FileExists(Globals.tmpPrint1_Folder & "printed\" & srcf & ".txt") Then
 
@@ -3127,14 +3130,14 @@ Public Class Pic2Print
                     Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
             End If
 
-                ' copy it to the proper folder
-                My.Computer.FileSystem.CopyFile(
-                    Globals.tmpPrint1_Folder & "printed\" & srcf & ".jpg",
-                    PrinterPath & trgf,
-                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
-                    Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
+            ' copy it to the proper folder
+            My.Computer.FileSystem.CopyFile(
+                Globals.tmpPrint1_Folder & "printed\" & srcf & ".jpg",
+                PrinterPath & trgf,
+                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing)
 
-            End If
+        End If
 
         IncrementPrintCounts(trgf, PRT_REPRINT, 1, Globals.ToPrinter)
 
@@ -4542,7 +4545,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.10.02"    ' Version string
+    Public Shared Version As String = "Version 14.10.03"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..

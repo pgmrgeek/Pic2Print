@@ -538,12 +538,12 @@ Partial Class Form3
         '
         'prtrSelect1
         '
-        Me.prtrSelect1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Printer2Select", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.prtrSelect1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Printer1Select", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.prtrSelect1.Location = New System.Drawing.Point(212, 20)
         Me.prtrSelect1.Name = "prtrSelect1"
         Me.prtrSelect1.Size = New System.Drawing.Size(21, 20)
         Me.prtrSelect1.TabIndex = 2
-        Me.prtrSelect1.Text = Global.WindowsApplication1.My.MySettings.Default.Printer2Select
+        Me.prtrSelect1.Text = Global.WindowsApplication1.My.MySettings.Default.Printer1Select
         '
         'Printer1LB
         '
