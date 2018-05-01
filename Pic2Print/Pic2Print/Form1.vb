@@ -2054,7 +2054,7 @@ Public Class Pic2Print
         Dim fnam As String = Globals.tmpPrint1_Folder & fName
         Dim fnamtxt As String = Globals.tmpPrint1_Folder & fNameTxt
 
-        ' move this file out of the print folder to the 'orig' folder
+        ' move this file out of the kiosk folder to the 'orig' folder
         If My.Computer.FileSystem.FileExists(trgnam) Then
             My.Computer.FileSystem.DeleteFile(trgnam)
         End If
@@ -4545,7 +4545,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.10.03"    ' Version string
+    Public Shared Version As String = "Version 14.10.05"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..
