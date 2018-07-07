@@ -348,6 +348,9 @@ Public Class Pic2Print
         ioReader.SetDelimiters(",")
 
         Globals.prtrMax = 0
+        Globals.fForm3.Printer1LB.Items.Clear()
+        Globals.fForm3.Printer2LB.Items.Clear()
+
         While Not ioReader.EndOfData
 
             Dim arrCurrentRow As String() = ioReader.ReadFields()
@@ -372,7 +375,9 @@ Public Class Pic2Print
                     Globals.prtrVertPCT(Globals.prtrMax) = 100
                     Globals.prtrHorzOFF(Globals.prtrMax) = 0
                     Globals.prtrVertOFF(Globals.prtrMax) = 0
-                    Globals.prtrStartupSecs(Globals.prtrMax) = 2
+                    Globals.prtrStartupSecs(Globals.prtrMax) = 5
+                    Globals.prtrbestXres(Globals.prtrMax) = Globals.prtrXres(Globals.prtrMax)
+                    Globals.prtrbestYres(Globals.prtrMax) = Globals.prtrYres(Globals.prtrMax)
 
                     ' version 10 change.  Added 4 fields to the printer file. Use defaults on older files..
 
@@ -387,6 +392,15 @@ Public Class Pic2Print
                     ' version 11.10 added 1 field for printer startup seconds
                     If sz > 12 Then
                         Globals.prtrStartupSecs(Globals.prtrMax) = arrCurrentRow(12)
+                    End If
+
+                    ' version 15.00 added 4 fields - bestfitX bestfitX, unused, unused
+                    If sz > 13 Then
+                        Globals.prtrbestXres(Globals.prtrMax) = arrCurrentRow(13)
+                        Globals.prtrbestYres(Globals.prtrMax) = arrCurrentRow(14)
+                    Else
+                        Globals.prtrbestXres(Globals.prtrMax) = Globals.prtrXres(Globals.prtrMax)
+                        Globals.prtrbestYres(Globals.prtrMax) = Globals.prtrYres(Globals.prtrMax)
                     End If
 
                     Globals.fForm3.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
@@ -417,6 +431,9 @@ Public Class Pic2Print
         ioReader.TextFieldType = FileIO.FieldType.Delimited
         ioReader.SetDelimiters(",")
 
+        Globals.fForm3.cbFilter1.Items.Clear()
+        Globals.fForm3.cbFilter2.Items.Clear()
+        Globals.fForm3.cbFilter3.Items.Clear()
 
         While Not ioReader.EndOfData
 
@@ -4545,7 +4562,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 14.10.05"    ' Version string
+    Public Shared Version As String = "Version 15.00.00"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..
@@ -4656,6 +4673,9 @@ Public Class Globals
     Public Shared prtrVertPCT(128) As Int16
     Public Shared prtrHorzOFF(128) As Int16
     Public Shared prtrVertOFF(128) As Int16
+    Public Shared prtrbestXres(128) As Int16
+    Public Shared prtrbestYres(128) As Int16
+
     Public Shared prtr1PrinterSeconds As Int16
     Public Shared prtr1PrinterStartupSecs As Int16
     Public Shared prtr2PrinterSeconds As Int16

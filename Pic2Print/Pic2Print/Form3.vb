@@ -81,7 +81,24 @@ Public Class Form3
         Globals.Form3Loading = False
 
     End Sub
+    '
+    ' When 'Show CFG' is clicked, reload the  printer def file, filters and carrier files
+    Private Sub Form3_IsVisible(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.VisibleChanged
 
+        ' if this is going visible, the reload the printer, filter and carrier files
+        If Me.Visible = True Then
+            Call Globals.fPic2Print.ReadPrinterFile()
+            Globals.fForm3.Printer1LB.SelectedIndex = prtrSelect1.Text
+            Globals.fForm3.Printer2LB.SelectedIndex = prtrSelect1.Text
+
+            Call Globals.fPic2Print.ReadFilterFile()
+            Globals.fForm3.cbFilter1.SelectedIndex = Globals.fForm3.tbFilter1.Text
+            Globals.fForm3.cbFilter2.SelectedIndex = Globals.fForm3.tbFilter2.Text
+            Globals.fForm3.cbFilter3.SelectedIndex = Globals.fForm3.tbFilter3.Text
+
+            'Call Globals.fPic2Print.ReadCarrierFile()
+        End If
+    End Sub
 
     Private Sub CreateFamilyFontList()
 
@@ -457,8 +474,15 @@ Public Class Form3
             ' ------------ #2/#3/#4/#5 print sizes ----------
 
             psize = Globals.prtrSize(Printer1LB.SelectedIndex)
-            xres = Globals.prtrXres(Printer1LB.SelectedIndex)
-            yres = Globals.prtrYres(Printer1LB.SelectedIndex)
+
+            If Not Globals.fForm3.cbBestFitSize.Checked Then
+                xres = Globals.prtrXres(Printer1LB.SelectedIndex)
+                yres = Globals.prtrYres(Printer1LB.SelectedIndex)
+            Else
+                xres = Globals.prtrbestXres(Printer1LB.SelectedIndex)
+                yres = Globals.prtrbestYres(Printer1LB.SelectedIndex)
+            End If
+
             dpi = Globals.prtrDPI(Printer1LB.SelectedIndex)
 
             ' ------------- #6/#7/#8 background/foreground/no print flag --------
@@ -565,9 +589,9 @@ Public Class Form3
 
         End If
 
-        '=========================== SKIP THIS SECOND WRITE - TOO MANY CONFLICTING WRITES ====================
+            '=========================== SKIP THIS SECOND WRITE - TOO MANY CONFLICTING WRITES ====================
 
-        Return  ' causes confusion when the remote rewrites the print machine's config, let the  print machine handle it.
+            Return  ' causes confusion when the remote rewrites the print machine's config, let the  print machine handle it.
 
 #If 0 Then
         ' ====================== the second target config file ============================
@@ -673,23 +697,24 @@ Public Class Form3
     End Sub
 
     Private Function _calcPCT(defPCT As Integer, res As Integer, dpi As Integer, trgpct As Double) As Integer
-        Dim db As Double
+        'Dim db As Double
 
         ' if boarder is selected, reduce the default by the target pct * 2, ie, both sides..
-        If Globals.fForm3.cbAddBoarder.Checked Then
 
-            If dpi > 0 Then                         ' avoid divide by zero
-                db = ((dpi * trgpct) / 100) * 2     ' #lines = dpi * pct # of inches on this side * 2 to add to each side
-                trgpct = ((res - db) / res) * 100   ' trgpct = reduced line count / full count * 100
-                trgpct = (defPCT * trgpct) / 100    ' trgpct = orig pct * trgpct / 100 comes up with the adjusted pct
-            End If
+        'If Globals.fForm3.cbAddBoarder.Checked Then
+        '
+        'If dpi > 0 Then                         ' avoid divide by zero
+        ' db = ((dpi * trgpct) / 100) * 2     ' #lines = dpi * pct # of inches on this side * 2 to add to each side
+        ' trgpct = ((res - db) / res) * 100   ' trgpct = reduced line count / full count * 100
+        ' trgpct = (defPCT * trgpct) / 100    ' trgpct = orig pct * trgpct / 100 comes up with the adjusted pct
+        ' End If
 
-        Else
+        ' Else
 
-            ' pass the default if add boarder is not checked
-            trgpct = defPCT
+        ' pass the default if add boarder is not checked
+        trgpct = defPCT
 
-        End If
+        ' End If
 
         Return trgpct
 

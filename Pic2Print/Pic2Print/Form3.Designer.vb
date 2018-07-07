@@ -127,7 +127,7 @@ Partial Class Form3
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.lblFilterSelection = New System.Windows.Forms.Label()
         Me.lblAddBorder = New System.Windows.Forms.Label()
-        Me.cbAddBoarder = New System.Windows.Forms.CheckBox()
+        Me.cbBestFitSize = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.Print1GroupBox.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -1213,21 +1213,21 @@ Partial Class Form3
         Me.lblAddBorder.ForeColor = System.Drawing.SystemColors.ControlDark
         Me.lblAddBorder.Location = New System.Drawing.Point(669, 280)
         Me.lblAddBorder.Name = "lblAddBorder"
-        Me.lblAddBorder.Size = New System.Drawing.Size(157, 13)
+        Me.lblAddBorder.Size = New System.Drawing.Size(148, 13)
         Me.lblAddBorder.TabIndex = 126
-        Me.lblAddBorder.Text = "Check this if using photo folders"
+        Me.lblAddBorder.Text = "Check this to save bleed crop"
         '
-        'cbAddBoarder
+        'cbBestFitSize
         '
-        Me.cbAddBoarder.AutoSize = True
-        Me.cbAddBoarder.Checked = Global.WindowsApplication1.My.MySettings.Default.cbAddaBoarder
-        Me.cbAddBoarder.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "cbAddaBoarder", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbAddBoarder.Location = New System.Drawing.Point(666, 295)
-        Me.cbAddBoarder.Name = "cbAddBoarder"
-        Me.cbAddBoarder.Size = New System.Drawing.Size(180, 17)
-        Me.cbAddBoarder.TabIndex = 127
-        Me.cbAddBoarder.Text = "Add 1/8"" border around the print"
-        Me.cbAddBoarder.UseVisualStyleBackColor = True
+        Me.cbBestFitSize.AutoSize = True
+        Me.cbBestFitSize.Checked = Global.WindowsApplication1.My.MySettings.Default.cbAddaBoarder
+        Me.cbBestFitSize.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "cbAddaBoarder", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbBestFitSize.Location = New System.Drawing.Point(666, 295)
+        Me.cbBestFitSize.Name = "cbBestFitSize"
+        Me.cbBestFitSize.Size = New System.Drawing.Size(201, 17)
+        Me.cbBestFitSize.TabIndex = 127
+        Me.cbBestFitSize.Text = "Use Best-Fit print size for no cropping"
+        Me.cbBestFitSize.UseVisualStyleBackColor = True
         '
         'Form3
         '
@@ -1236,7 +1236,7 @@ Partial Class Form3
         Me.AutoScroll = True
         Me.ClientSize = New System.Drawing.Size(1211, 555)
         Me.ControlBox = False
-        Me.Controls.Add(Me.cbAddBoarder)
+        Me.Controls.Add(Me.cbBestFitSize)
         Me.Controls.Add(Me.lblAddBorder)
         Me.Controls.Add(Me.lblFilterSelection)
         Me.Controls.Add(Me.GroupBox5)
@@ -1438,5 +1438,5 @@ Partial Class Form3
     Friend WithEvents lblFilterSelection As System.Windows.Forms.Label
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents lblAddBorder As System.Windows.Forms.Label
-    Friend WithEvents cbAddBoarder As System.Windows.Forms.CheckBox
+    Friend WithEvents cbBestFitSize As System.Windows.Forms.CheckBox
 End Class
