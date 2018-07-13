@@ -275,10 +275,15 @@
         _ImageCacheAllocFlag(idx) = 2
 
         ' we use this approach to lock the files while in use to avoid UAEs DSC-CRASH
-        _ImageCachePtr(idx) = Image.FromFile(srcImg)
-        'Globals.fDebug.txtPrintLn("FetchPicture: Loaded " & fnam & " from file.")
-        'return freshly loaded image
-        Return _ImageCachePtr(idx)
+        Try
+            _ImageCachePtr(idx) = Image.FromFile(srcImg)
+            'Globals.fDebug.txtPrintLn("FetchPicture: Loaded " & fnam & " from file.")
+            'return freshly loaded image
+            Return _ImageCachePtr(idx)
+        Catch ex As Exception
+            Globals.fDebug.TxtPrint("Image.FromFile exception:," & ex.ToString)
+            Return Nothing
+        End Try
 
     End Function
 

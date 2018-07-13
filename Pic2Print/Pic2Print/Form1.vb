@@ -1685,67 +1685,75 @@ Public Class Pic2Print
             ' state = 0, stop, state = 1, idle, state = 2, run
             If Globals.PrintProcessRun = 2 Then
 
-                Dim files As New List(Of FileInfo)(New DirectoryInfo(folder).GetFiles("*.*"))
+                If Globals.fPostView.Visible Then
 
-                ' sort by date/time stamp, not file name 
-                'If Globals.tmpSortByDate Then
-                'files.Sort(New FileInfoComparer)
-                'End If
+                    Dim files As New List(Of FileInfo)(New DirectoryInfo(folder).GetFiles("*.*"))
 
-                ' continually scan for the list of printed files and register the found file names
-                found = True
-                newFile = False
-                For Each fi As FileInfo In files
+                    ' spread out the time from getting the list and trying to read files. The file
+                    ' system may have to catch up on flushing the file state to disk
 
-                    ' find all jpg and gif files, see if they're on file
-                    If ((fi.Extension = ".jpg") Or (fi.Extension = ".jpeg") Or (fi.Extension = ".gif")) Then
+                    Thread.Sleep(1000)
 
-                        ' skip any reprinted images, they're redundant
+                    ' sort by date/time stamp, not file name 
+                    'If Globals.tmpSortByDate Then
+                    'files.Sort(New FileInfoComparer)
+                    'End If
 
-                        If fi.Name.Contains("_m4_") = False Then
+                    ' continually scan for the list of printed files and register the found file names
+                    found = True
+                    newFile = False
+                    For Each fi As FileInfo In files
 
-                            found = Globals.PrintCache.matchFound(fi.Name)
+                        ' find all jpg and gif files, see if they're on file
+                        If ((fi.Extension = ".jpg") Or (fi.Extension = ".jpeg") Or (fi.Extension = ".gif")) Then
 
-                            ' if not found, register this file
+                            ' skip any reprinted images, they're redundant
 
-                            If found = False Then
+                            If fi.Name.Contains("_m4_") = False Then
 
-                                ' was not found, so save this as a new file in the list
-                                idx = Globals.PrintCache.newItem()
-                                Globals.PrintCache.fileName(idx) = fi.Name
+                                found = Globals.PrintCache.matchFound(fi.Name)
 
-                                ' possibly load the email address & phone #
-                                If LoadPrintedTxtFile(folder & fi.Name, email1, phone1, sel, optin, permit) = True Then
-                                    Globals.PrintCache.emailAddr(idx) = email1
-                                    Globals.PrintCache.phoneNumber(idx) = phone1
-                                    Globals.PrintCache.carrierSelector(idx) = sel
-                                    Globals.PrintCache.OptIn(idx) = optin
-                                    Globals.PrintCache.permit(idx) = permit
+                                ' if not found, register this file
+
+                                If found = False Then
+
+                                    ' was not found, so save this as a new file in the list
+                                    idx = Globals.PrintCache.newItem()
+                                    Globals.PrintCache.fileName(idx) = fi.Name
+
+                                    ' possibly load the email address & phone #
+                                    If LoadPrintedTxtFile(folder & fi.Name, email1, phone1, sel, optin, permit) = True Then
+                                        Globals.PrintCache.emailAddr(idx) = email1
+                                        Globals.PrintCache.phoneNumber(idx) = phone1
+                                        Globals.PrintCache.carrierSelector(idx) = sel
+                                        Globals.PrintCache.OptIn(idx) = optin
+                                        Globals.PrintCache.permit(idx) = permit
+                                    End If
+
+                                    ' let the post view form know there are updates available
+                                    newFile = True
+
                                 End If
-
-                                ' let the post view form know there are updates available
-                                newFile = True
 
                             End If
 
                         End If
 
+                    Next
+
+                    ' if we've loaded new images, refresh the visuals
+
+                    If newFile Then
+                        Globals.fPostView.chkAutoScrolltoNewImages()
                     End If
 
-                Next
-
-                ' if we've loaded new images, refresh the visuals
-
-                If newFile Then
-                    Globals.fPostView.chkAutoScrolltoNewImages()
                 End If
-
-                waitTime = 3000  ' after the first pass, we can do this slowly
-
             End If
 
             ' sleep for three seconds before looking for more .JPGs
             Thread.Sleep(waitTime)
+
+            waitTime = 3000  ' after the first pass, we can do this slowly
 
         Loop
 
@@ -3884,6 +3892,7 @@ Public Class Pic2Print
         Dim srcImg As String
         Dim str As String
         Dim fnam As String
+        Dim img As Image
 
         ' idx is the filename index from the left edge of the screen
         idx = Globals.ScreenBase + i
@@ -3893,7 +3902,11 @@ Public Class Pic2Print
             srcImg = Globals.tmpIncoming_Folder & Globals.ImageCache.fileName(idx)
 
             ' load the image from the cache
-            pb.Image = Globals.ImageCache.FetchPicture(Globals.ImageCache.fileName(idx))
+            img = Globals.ImageCache.FetchPicture(Globals.ImageCache.fileName(idx))
+            If IsDBNull(img) Then
+                img = My.Resources.out_of_memory
+            End If
+            pb.Image = img
 
             ' Get the PropertyItems property from image
             OrientImage(pb.Image)
@@ -4129,6 +4142,8 @@ Public Class Pic2Print
                 If img.Height >= img.Width Then
                     orient = 2
                 End If
+            Else
+                img = My.Resources.out_of_memory
             End If
 
             If orient = 1 Then
@@ -4562,7 +4577,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 15.00.00"    ' Version string
+    Public Shared Version As String = "Version 15.03.00"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..

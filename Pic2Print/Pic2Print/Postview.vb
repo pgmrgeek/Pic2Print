@@ -271,6 +271,9 @@ Public Class PostView
             ' draw all four images
             If screenBase < Globals.PrintCache.maxIndex Then
                 img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase))
+                If IsDBNull(img) Then
+                    img = My.Resources.out_of_memory
+                End If
             Else
                 img = My.Resources.blank
             End If
@@ -278,6 +281,9 @@ Public Class PostView
 
             If screenBase + 1 < Globals.PrintCache.maxIndex Then
                 img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 1))
+                If IsDBNull(img) Then
+                    img = My.Resources.out_of_memory
+                End If
             Else
                 img = My.Resources.blank
             End If
@@ -285,6 +291,9 @@ Public Class PostView
 
             If screenBase + 2 < Globals.PrintCache.maxIndex Then
                 img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 2))
+                If IsDBNull(img) Then
+                    img = My.Resources.out_of_memory
+                End If
             Else
                 img = My.Resources.blank
             End If
@@ -292,6 +301,9 @@ Public Class PostView
 
             If screenBase + 3 < Globals.PrintCache.maxIndex Then
                 img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(screenBase + 3))
+                If IsDBNull(img) Then
+                    img = My.Resources.out_of_memory
+                End If
             Else
                 img = My.Resources.blank
             End If
@@ -301,6 +313,9 @@ Public Class PostView
 
         i = screenBase + ThumbSelect
         If i < Globals.PrintCache.maxIndex Then
+            If IsDBNull(img) Then
+                img = My.Resources.out_of_memory
+            End If
             img = Globals.PrintCache.FetchPicture(Globals.PrintCache.fileName(i))
             lbl_Frame.Text = "Frame #" & Globals.PrintCache.fileName(i).Substring(0, 5)
         Else
