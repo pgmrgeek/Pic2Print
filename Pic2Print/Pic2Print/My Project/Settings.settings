@@ -143,9 +143,6 @@
     <Setting Name="Prev_Location" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
-    <Setting Name="Printer1Select" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="Printer2Select" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
@@ -223,6 +220,12 @@
     </Setting>
     <Setting Name="cbAddaBoarder" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ExpertMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Printer1Select" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

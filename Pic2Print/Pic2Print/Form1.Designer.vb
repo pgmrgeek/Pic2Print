@@ -783,9 +783,9 @@ Partial Class Pic2Print
         Me.cbAutoToggle.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "cbAutoViewTracking", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.cbAutoToggle.Location = New System.Drawing.Point(93, 78)
         Me.cbAutoToggle.Name = "cbAutoToggle"
-        Me.cbAutoToggle.Size = New System.Drawing.Size(71, 17)
+        Me.cbAutoToggle.Size = New System.Drawing.Size(108, 17)
         Me.cbAutoToggle.TabIndex = 62
-        Me.cbAutoToggle.Text = "AutoView"
+        Me.cbAutoToggle.Text = "AutoSwitchViews"
         Me.cbAutoToggle.UseVisualStyleBackColor = True
         '
         'TrigDialog

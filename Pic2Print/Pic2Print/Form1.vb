@@ -1,6 +1,7 @@
 ﻿Imports System
 Imports System.IO
 Imports System.Threading
+Imports System.Drawing.Printing
 
 '
 '====================================================================
@@ -83,6 +84,7 @@ Public Class Pic2Print
     '
     Private Sub Pic2Print_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim fForm3 As New Form3
+        Dim fForm5 As New Form5
         Dim fForm4 As New Form4
         Dim fPreview As New Preview
         Dim fDebug As New debug
@@ -95,6 +97,7 @@ Public Class Pic2Print
         Globals.fPic2Print = Me
         Globals.fPostView = fpostview
         Globals.fForm3 = fForm3
+        Globals.fform5 = fForm5
         Globals.fForm4 = fForm4
         Globals.fDebug = fDebug
         Globals.fPreview = fPreview
@@ -174,17 +177,17 @@ Public Class Pic2Print
         Globals.PicBoxCounts(5) = PictureBox6Count
         Globals.PicBoxCounts(6) = PictureBox7Count
 
+        ' FORM3: move control data to globals for threads
+        Globals.tmpEmailCloudEnabled = Globals.fForm3.EmailCloudEnabled.Checked
+        Globals.tmpIncoming_Folder = "c:\onsite\capture\" ' Globals.fForm3.Image_Folder.Text
+        Globals.tmpPrint1_Folder = "c:\onsite\" ' Globals.fForm3.Print_Folder_1.Text
+        Globals.tmpPrint2_Folder = Globals.fForm3.Print_Folder_2.Text
+
         ' make sure all the paths are valid from the database
         Call ValidatePaths(-1, False)
 
-        ' FORM3: move control data to globals for threads
-        Globals.tmpEmailCloudEnabled = Globals.fForm3.EmailCloudEnabled.Checked
-        Globals.tmpIncoming_Folder = Globals.fForm3.Image_Folder.Text
-        Globals.tmpPrint1_Folder = Globals.fForm3.Print_Folder_1.Text
-        Globals.tmpPrint2_Folder = Globals.fForm3.Print_Folder_2.Text
-
         Globals.ImageCache.filePath = Globals.tmpIncoming_Folder
-        Globals.PrintCache.filePath = Globals.tmpPrint1_Folder
+        Globals.PrintCache.filePath = Globals.tmpPrint1_Folder + "printed\"
 
         ' make the multiple background pictureboxes disappear if not enabled
         If Globals.fForm3.MultipleBackgrounds.Checked = False Then
@@ -193,31 +196,18 @@ Public Class Pic2Print
         End If
 
         ' read all the possible printers into the combobox
-
         ' Globals.fDebug.TxtPrint("Loading CSV files")
 
         Call ReadPrinterFile()
         Call ReadFilterFile()
         Call ReadCarrierFile()
-
-        'Globals.fDebug.TxtPrint("..done" & vbCrLf)
-
-        ' read in all the possible layouts, and all the add-on packs
-
-        If Globals.fForm3.tbBKFG.Text = "" Then
-            Globals.fForm3.tbBKFG.Text = "0"
-        End If
         Call ReadBKFGFile()
 
-        ' if the source path is valid, load the file names/counts only. Images come later..
-
-        Globals.ImageCache.filePath = Globals.tmpIncoming_Folder
-        Globals.PrintCache.filePath = Globals.tmpPrint1_Folder & "printed\"
+        'Globals.fDebug.TxtPrint("..done" & vbCrLf)
 
         If Globals.PathsValidated And 1 Then
             Call ResetFilesArray()
             Call AddFilesToArray()
-
         End If
 
         ' load the background images just in case they're called upon
@@ -235,10 +225,6 @@ Public Class Pic2Print
         Globals.PrintProcessor = New Threading.Thread(AddressOf PrintProcessorThread)
         Globals.PrintedFolderProcessor = New Threading.Thread(AddressOf PrintedFolderThread)
         Globals.EmailProcessor = New Threading.Thread(AddressOf EmailProcessorThread)
-
-        ' pop up the config window on start
-
-        'fForm3.Show()
 
         ' show the GIF button as disabled. enabled when 3 images are loaded
         Globals.MaxGifLayersNeeded = Globals.fForm3.txtLayersPerGIF.Text
@@ -291,13 +277,125 @@ Public Class Pic2Print
         ' highlight the first image 
         Call SetPictureBoxFocus(PictureBox1, 0)
 
-        ' pop up the config window on start
+        ' normalize both forms, then pop up the config window on start
 
-        fForm3.Show()
+        Globals.fForm3.Show()   ' forces form3 load call
+        Globals.fForm3.Hide()
+        CopyForm3ToForm5()
+
+        ShowConfigPanel(True)
 
         'Globals.fDebug.TxtPrint("Form1 Load done" & vbCrLf)
 
     End Sub
+
+    Public Sub ShowConfigPanel(ByRef show As Boolean)
+
+        ' if in expert mode, show the HUGE form3
+        If My.Settings.ExpertMode Then
+            If show Then
+                ' show the form
+                Globals.fForm3.Show()
+                Globals.fForm3.BringToFront()
+            Else
+                ' show the form
+                Globals.fForm3.Hide()
+            End If
+            ' in either case, form5 goes away
+            If Globals.fform5.Visible Then
+                Globals.fform5.Hide()
+            End If
+
+            ' in simple mode, show the small form5
+        Else
+            If show Then
+                Globals.fform5.Show()
+                Globals.fform5.BringToFront()
+            Else
+                Globals.fform5.Hide()
+            End If
+            ' in either case, form3 goes away
+            If Globals.fForm3.Visible Then
+                Globals.fForm3.Hide()
+            End If
+        End If
+
+
+    End Sub
+
+    Public Sub ToggleConfigPanel(ByRef exprtmd As Boolean)
+
+        ' this is the mode we are entering
+        My.Settings.ExpertMode = exprtmd
+
+        ' display the correct form/config pannel
+        If exprtmd Then
+            CopyForm5ToForm3()
+            ShowConfigPanel(True)
+        Else
+            CopyForm3ToForm5()
+            ShowConfigPanel(True)
+        End If
+
+    End Sub
+
+    Public Sub CopyForm5ToForm3()
+        '
+        ' copy the common data between form3 (Expert) to form5 (simple)
+        '
+        Globals.fForm3.txtAutoPrintCnt.Text = Globals.fform5.txtAutoPrintCnt.Text
+        Globals.fForm3.cbDateQualified.Checked = Globals.fform5.cbDateQualified.Checked
+
+        Globals.fForm3.cbPrintNoDates.Checked = Globals.fform5.cbPrintNoDates.Checked
+
+        Globals.fForm3.Printer1LB.SelectedIndex = Globals.fform5.Printer1LB.SelectedIndex
+
+        Globals.fForm3.ComboBoxBKFG.SelectedIndex = Globals.fform5.ComboBoxBKFG.SelectedIndex
+
+        Globals.fForm3.cbFilter1.SelectedIndex = Globals.fform5.cbFilter1.SelectedIndex
+        'Globals.fForm3.tbFilter1.Text = Globals.fform5.tbFilter1.Text
+
+        Globals.fForm3.cbFilter2.SelectedIndex = Globals.fform5.cbFilter2.SelectedIndex
+        'Globals.fForm3.tbFilter2.Text = Globals.fform5.tbFilter2.Text
+
+        Globals.fForm3.cbFilter3.SelectedIndex = Globals.fform5.cbFilter3.SelectedIndex
+        'Globals.fForm3.tbFilter3.Text = Globals.fform5.tbFilter3.Text
+
+        My.Settings.txtboxFilter1 = Globals.fform5.cbFilter1.SelectedIndex
+        My.Settings.txtboxFilter2 = Globals.fform5.cbFilter2.SelectedIndex
+        My.Settings.txtboxFilter3 = Globals.fform5.cbFilter3.SelectedIndex
+
+        Globals.fForm3.ckSavePSD.Checked = Globals.fform5.ckSavePSD.Checked
+
+    End Sub
+
+    Public Sub CopyForm3ToForm5()
+        '
+        ' copy the common data between form3 (Expert) to form5 (simple)
+        '
+        Globals.fform5.txtAutoPrintCnt.Text = Globals.fForm3.txtAutoPrintCnt.Text
+        Globals.fform5.cbDateQualified.Checked = Globals.fForm3.cbDateQualified.Checked
+
+        Globals.fform5.cbPrintNoDates.Checked = Globals.fForm3.cbPrintNoDates.Checked
+
+        Globals.fform5.Printer1LB.SelectedIndex = Globals.fForm3.Printer1LB.SelectedIndex
+        Globals.fform5.Printer1LB.SelectedIndex = Globals.fForm3.Printer1LB.SelectedIndex
+
+        Globals.fform5.ComboBoxBKFG.SelectedIndex = Globals.fForm3.ComboBoxBKFG.SelectedIndex
+
+        Globals.fform5.cbFilter1.SelectedIndex = Globals.fForm3.cbFilter1.SelectedIndex
+        'Globals.fform5.tbFilter1.Text = Globals.fForm3.tbFilter1.Text
+
+        Globals.fform5.cbFilter2.SelectedIndex = Globals.fForm3.cbFilter2.SelectedIndex
+        'Globals.fform5.tbFilter2.Text = Globals.fForm3.tbFilter2.Text
+
+        Globals.fform5.cbFilter3.SelectedIndex = Globals.fForm3.cbFilter3.SelectedIndex
+        'Globals.fform5.tbFilter3.Text = Globals.fForm3.tbFilter3.Text
+
+        Globals.fform5.ckSavePSD.Checked = Globals.fForm3.ckSavePSD.Checked
+
+    End Sub
+
 
     Private Sub Scanforlastprintedjpg()
         Dim s As String
@@ -350,6 +448,7 @@ Public Class Pic2Print
         Globals.prtrMax = 0
         Globals.fForm3.Printer1LB.Items.Clear()
         Globals.fForm3.Printer2LB.Items.Clear()
+        Globals.fform5.Printer1LB.Items.Clear()
 
         While Not ioReader.EndOfData
 
@@ -405,6 +504,7 @@ Public Class Pic2Print
 
                     Globals.fForm3.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
                     Globals.fForm3.Printer2LB.Items.Add(Globals.prtrName(Globals.prtrMax))
+                    Globals.fform5.Printer1LB.Items.Add(Globals.prtrName(Globals.prtrMax))
 
                     Globals.prtrMax += 1
 
@@ -434,6 +534,9 @@ Public Class Pic2Print
         Globals.fForm3.cbFilter1.Items.Clear()
         Globals.fForm3.cbFilter2.Items.Clear()
         Globals.fForm3.cbFilter3.Items.Clear()
+        Globals.fform5.cbFilter1.Items.Clear()
+        Globals.fform5.cbFilter2.Items.Clear()
+        Globals.fform5.cbFilter3.Items.Clear()
 
         While Not ioReader.EndOfData
 
@@ -455,6 +558,10 @@ Public Class Pic2Print
                     Globals.fForm3.cbFilter1.Items.Add(Globals.FilterName(max))
                     Globals.fForm3.cbFilter2.Items.Add(Globals.FilterName(max))
                     Globals.fForm3.cbFilter3.Items.Add(Globals.FilterName(max))
+
+                    Globals.fform5.cbFilter1.Items.Add(Globals.FilterName(max))
+                    Globals.fform5.cbFilter2.Items.Add(Globals.FilterName(max))
+                    Globals.fform5.cbFilter3.Items.Add(Globals.FilterName(max))
 
                     max += 1
                     If max = 64 Then
@@ -533,6 +640,7 @@ Public Class Pic2Print
 
         Globals.BkFgMax = 0
         Globals.fForm3.ComboBoxBKFG.Items.Clear()
+        Globals.fform5.ComboBoxBKFG.Items.Clear()
 
         ' scan for all bkg/fg .csv files.  Special case the first - bkfglayouts.000.csv"
 
@@ -585,6 +693,7 @@ Public Class Pic2Print
                         'MessageBox.Show("ratio = " & Globals.BkFgRatio(Globals.BkFgMax))
 
                         Globals.fForm3.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
+                        Globals.fform5.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
                         Globals.BkFgMax += 1
 
                     End If
@@ -616,6 +725,7 @@ Public Class Pic2Print
                 Globals.BkFgGIFDelay(Globals.BkFgMax) = 0
 
                 Globals.fForm3.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
+                Globals.fform5.ComboBoxBKFG.Items.Add(Globals.BkFgName(Globals.BkFgMax))
                 Globals.BkFgMax += 1
             End If
 
@@ -647,6 +757,8 @@ Public Class Pic2Print
 
         'Stop the Timer.
         Globals.alarm.Change(Timeout.Infinite, Timeout.Infinite)
+
+        'Dim i As Integer = My.Settings.Printer1Select
 
         ' kill the background threads
         Globals.EmailProcessRun = 0
@@ -935,7 +1047,7 @@ Public Class Pic2Print
         ' validate a bunch of conditions so we dont print until ready
 
         ' if the dialogs are open, the paths might change on us. 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before attempting to print.")
             Return False
@@ -980,7 +1092,7 @@ Public Class Pic2Print
 
     Private Function OrientationGood() As Boolean
 
-        Dim bits = Globals.BkFgRatio(Globals.fForm3.tbBKFG.Text)
+        Dim bits = Globals.BkFgRatio(My.Settings.bkFgSelection)
 
         ' if vertical, return True if supported.
         If Globals.PicBoxes(Globals.PictureBoxSelected).Image.Height > Globals.PicBoxes(Globals.PictureBoxSelected).Image.Width Then
@@ -1061,7 +1173,7 @@ Public Class Pic2Print
         Dim fil As String
         Dim exe As String
 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -1153,7 +1265,7 @@ Public Class Pic2Print
     '----====< New Files load  button >====----
     Private Sub New_Files_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles New_Files.Click
 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -1180,7 +1292,7 @@ Public Class Pic2Print
             If sema = 0 Then
 
                 ' don't do this if dialogs are open. try again on next tick
-                If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+                If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
                     Return
                 End If
 
@@ -1264,7 +1376,7 @@ Public Class Pic2Print
     Public Sub ShowForm1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviewButton.Click
 
         ' Dont execute if form3 & 4 are open!
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -1309,8 +1421,7 @@ Public Class Pic2Print
         End If
 
         ' show the config form
-        Globals.fForm3.Show()
-        Globals.fForm3.BringToFront()
+        ShowConfigPanel(True)
 
     End Sub
 
@@ -1438,8 +1549,8 @@ Public Class Pic2Print
                             ' its either going to be a print or a GIF
 
                             mode = PRT_PRINT
-                            If ((Globals.prtrSize(Globals.prtr2Selector) >= 9) And _
-                                (Globals.prtrSize(Globals.prtr2Selector) <= 13)) Then mode = PRT_GIF
+                            If ((Globals.prtrSize(My.Settings.Printer2Select) >= 9) And _
+                                (Globals.prtrSize(My.Settings.Printer2Select) <= 13)) Then mode = PRT_GIF
 
                             ' Give the file time to settle into Windows file system.  Nikon s/w might still have exclusive hold on it.
                             ' The file might not be accessable yet (nikon software, dropbox, thunderbird email attachment 
@@ -2686,7 +2797,7 @@ Public Class Pic2Print
         Dim phone As String = ""
         Dim lidx As Integer
         Dim bkgd As Integer = Globals.BackgroundSelected
-        Dim layoutidx = Globals.fForm3.tbBKFG.Text
+        Dim layoutidx = My.Settings.bkFgSelection ' Globals.fForm3.tbBKFG.Text
         'Static prefix As Integer = 10
 
         ' overload the interface, a -1 means set the prefix
@@ -3976,9 +4087,9 @@ Public Class Pic2Print
 
             ' image folder and printer #1 folder are required
             Call _checkthispath("Incoming Image Folder:", _
-                                Globals.fForm3.Image_Folder.Text, "c:\onsite\Capture\", 1, verbose)
+                                Globals.tmpIncoming_Folder, "c:\onsite\Capture\", 1, verbose)
             Call _checkthispath("Printer Destination Folder #1", _
-                                Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
+                                Globals.tmpPrint1_Folder, "c:\onsite\", 2, verbose)
 
             ' print #2 is variable.  we might ignore it..
             If Globals.fForm3.Print2Enabled.Checked = True Then
@@ -4044,12 +4155,12 @@ Public Class Pic2Print
 
         If i = 1 Then
             Return _checkthispath("Incoming Image Folder:", _
-                                  Globals.fForm3.Image_Folder.Text, "c:\onsite\capture\", 1, verbose)
+                                  Globals.tmpIncoming_Folder, "c:\onsite\capture\", 1, verbose)
         End If
 
         If i = 2 Then
             Return _checkthispath("Printer Destination Folder #1:", _
-                                  Globals.fForm3.Print_Folder_1.Text, "c:\onsite\", 2, verbose)
+                                  Globals.tmpPrint1_Folder, "c:\onsite\", 2, verbose)
         End If
 
         If i = 4 Then
@@ -4093,7 +4204,7 @@ Public Class Pic2Print
 
         ' don't let both printer paths point to the same place, causes problems
 
-        If Globals.fForm3.Print_Folder_1.Text = Globals.fForm3.Print_Folder_2.Text Then
+        If Globals.tmpPrint1_Folder = Globals.fForm3.Print_Folder_2.Text Then
             MsgBox("WARNING! - Printer Path #1 and" & vbCrLf & _
                     "Printer Path #2 are the same. This" & vbCrLf & _
                     "can cause unexpected problems.")
@@ -4104,6 +4215,11 @@ Public Class Pic2Print
 
     Public Function _checkthispath(ByRef srcNam As String, ByRef srcStr As String, ByRef defStr As String, ByVal mask As Int16, ByVal verbose As Boolean) As Boolean
         Dim ret As Boolean = True
+
+        ' if src is null, use default
+        If srcStr = "" Or (srcStr = Nothing) Then
+            srcStr = defStr
+        End If
 
         Globals.PathsValidated = Globals.PathsValidated And (Not mask)    ' clears this validated bit
         If IO.Directory.Exists(srcStr) Then
@@ -4175,7 +4291,7 @@ Public Class Pic2Print
 
         ' build the path to the selected background folder
 
-        idx = Globals.fForm3.tbBKFG.Text
+        idx = My.Settings.bkFgSelection ' Globals.fForm3.tbBKFG.Text
         fname = Globals.tmpPrint1_Folder & "backgrounds\" & Globals.BkFgFolder(idx) & "\" & fn
         ' MsgBox("BkFg name = " & fname)
 
@@ -4230,6 +4346,27 @@ Public Class Pic2Print
 
         ' user is requesting us to quit.  First make sure email is done
 
+        If Globals.fForm3.Visible Or Globals.fform5.Visible Then
+
+            ' Define a title for the message box. 
+            Dim title = "Config Panel is open"
+
+            ' Add the title to the display.
+            ' MsgBox(msg, , title)
+
+            ' Now define a style for the message box. In this example, the 
+            ' message box will have Yes and No buttons, the default will be 
+            ' the No button, and a Critical Message icon will be present. 
+            Dim style = MsgBoxStyle.OkOnly
+
+            ' Display the message box and save the response, Yes or No. 
+            Dim response = MsgBox("Config Panel is open!" & vbCrLf & _
+                                  " " & vbCrLf & _
+                                  "Please close before exiting." & vbCrLf, style, title)
+            Return
+        End If
+
+
         If Globals.EmailSendActive Or (Globals.EmailFifoCount > 0) Then
 
             ' Define a title for the message box. 
@@ -4268,9 +4405,8 @@ Public Class Pic2Print
 
     Private Sub PostViewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PostViewButton.Click
 
-
         ' Dont execute if form3 & 4 are open!
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -4294,7 +4430,7 @@ Public Class Pic2Print
     Private Sub SendEmails_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SendEmails.Click
         Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -4361,7 +4497,7 @@ Public Class Pic2Print
     Private Sub SaveEmailAddrs_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveEmailAddrs.Click
         Dim idx As Int16 = Globals.ScreenBase + Globals.PictureBoxSelected
         Dim txtAddr As String
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "click OKAY before continuing.")
             Return
@@ -4438,7 +4574,7 @@ Public Class Pic2Print
     Private Sub TrigDialog_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TrigDialog.Click
 
         ' if the dialogs are open, the paths might change on us. 
-        If Globals.fForm3.Visible Or Globals.fForm4.Visible Then
+        If Globals.fForm3.Visible Or Globals.fForm4.Visible Or Globals.fform5.Visible Then
             MessageBox.Show("Finish the configuration setup then " & vbCrLf & _
                              "open the trigger dialog.")
             Return
@@ -4458,7 +4594,7 @@ Public Class Pic2Print
     ' Ths shows the crop lines of the printed image.  This gives the photographer a visual clue before printing.
     '
     Private Sub DrawPaperCrop(ByRef src As Image, ByRef trg As Image)
-        Dim prtsiz = Globals.prtrSize(Globals.fForm3.prtrSelect1.Text)
+        Dim prtsiz = Globals.prtrSize(My.Settings.Printer1Select)
         Dim vert As Boolean = False
         'Dim img As Image
         Dim ratio As Single
@@ -4560,8 +4696,12 @@ Public Class Pic2Print
 
     End Sub
 
-
     Private Sub cbAutoToggle_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbAutoToggle.CheckedChanged
+        ' this checkbox control toggling between the preview window and post view window.  
+        ' the idea is to setup both preview and postview windows as overlapping windows, then check this box. As images
+        ' land in the preview, that window will move to the top.  When images land in the printed/postview window, that
+        ' window will move to the top.  This way, the windows track the current activity.  Users see the original window, maybe with
+        ' the greenscreen image, then the postview window with the processed image.
     End Sub
 
     Private Sub pbPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pbPreview.Click
@@ -4571,13 +4711,14 @@ Public Class Pic2Print
     Private Sub cbAutoFollow_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles cbAutoFollow.CheckedChanged
 
     End Sub
+
 End Class
 
 ' ============================================= DATA =================================================
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 15.03.00"    ' Version string
+    Public Shared Version As String = "Version 16.01.00"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..
@@ -4586,6 +4727,7 @@ Public Class Globals
     Public Shared fPic2Print As New Pic2Print
     Public Shared fForm3 As New Form3
     Public Shared fForm4 As New Form4
+    Public Shared fform5 As New Form5
     Public Shared fPostView As New PostView
     Public Shared fPostViewHasLoaded As Boolean = False
     Public Shared fPreViewHasLoaded As Boolean = False
@@ -4673,8 +4815,8 @@ Public Class Globals
 
     ' Array of printer info read from the CSV file
     Public Shared prtrMax As Int16 = 0
-    Public Shared prtr1Selector As Integer
-    Public Shared prtr2Selector As Integer
+    'Public Shared prtr1Selector As Integer
+    'Public Shared prtr2Selector As Integer
     Public Shared prtrName(128) As String
     Public Shared prtrProf(128) As String
     Public Shared prtrSize(128) As Int16

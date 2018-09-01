@@ -621,18 +621,6 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property Printer1Select() As String
-            Get
-                Return CType(Me("Printer1Select"),String)
-            End Get
-            Set
-                Me("Printer1Select") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
         Public Property Printer2Select() As String
             Get
                 Return CType(Me("Printer2Select"),String)
@@ -939,6 +927,30 @@ Namespace My
             End Get
             Set
                 Me("cbAddaBoarder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ExpertMode() As Boolean
+            Get
+                Return CType(Me("ExpertMode"),Boolean)
+            End Get
+            Set
+                Me("ExpertMode") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property Printer1Select() As String
+            Get
+                Return CType(Me("Printer1Select"),String)
+            End Get
+            Set
+                Me("Printer1Select") = value
             End Set
         End Property
     End Class
