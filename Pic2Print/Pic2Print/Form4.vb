@@ -54,7 +54,7 @@ Public Class Form4
                 Else
 
                     ' the sync folder can't equal the print folders
-                    If (SyncFolderPath1.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath1.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                    If (SyncFolderPath1.Text = Globals.tmpPrint1_Folder) Or (SyncFolderPath1.Text = Globals.fForm3.Print_Folder_2.Text) Then
                         MessageBox.Show("Warning! Sync Folder #1 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
                         Return
                     End If
@@ -73,7 +73,7 @@ Public Class Form4
                 Else
 
                     ' the sync folder can't equal the print folders
-                    If (syncPostPath.Text = Globals.fForm3.Print_Folder_1.Text) Or (syncPostPath.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                    If (syncPostPath.Text = Globals.tmpPrint1_Folder) Or (syncPostPath.Text = Globals.fForm3.Print_Folder_2.Text) Then
                         MessageBox.Show("Warning! PostView Sync Folder and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
                         Return
                     End If
@@ -92,7 +92,7 @@ Public Class Form4
                 Else
 
                     ' the sync folder can't equal the print folders
-                    If (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                    If (SyncFolderPath2.Text = Globals.tmpPrint1_Folder) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
                         MessageBox.Show("Warning! Sync Folder #1 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
                         Return
                     End If
@@ -110,7 +110,7 @@ Public Class Form4
                 Else
 
                     ' the sync folder can't equal the print folders
-                    If (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_1.Text) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
+                    If (SyncFolderPath2.Text = Globals.tmpPrint1_Folder) Or (SyncFolderPath2.Text = Globals.fForm3.Print_Folder_2.Text) Then
                         MessageBox.Show("Warning! Sync Folder #2 and Print Folders" & vbCrLf & "cannot be the same or infinite" & vbCrLf & "looping file operations occur.")
                         Return
                     End If

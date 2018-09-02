@@ -770,3 +770,4 @@ C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Release\Pic2Print.exe
 C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Release\Pic2Print.xml
 C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Release\Pic2Print.pdb
 C:\Users\User\Documents\GitHub\Pic2Print\Pic2Print\Pic2Print\obj\x86\Release\WindowsApplication1.UserTrigger.resources
+C:\Users\User\Documents\GitHub\Pic2Print\Pic2Print\Pic2Print\obj\x86\Release\WindowsApplication1.Form5.resources

@@ -1,6 +1,8 @@
 ﻿Imports System
 Imports System.IO
 Imports System.Text
+Imports System.Drawing.Printing
+
 '
 '================================================================================================
 '
@@ -10,6 +12,11 @@ Imports System.Text
 '
 '
 Public Class Form3
+
+    Dim print1CountUpdated As Boolean = False
+    Dim print2CountUpdated As Boolean = False
+
+    'Private Property tbFilter1 As Object
 
     Private Sub Form3_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim i As Integer
@@ -22,13 +29,13 @@ Public Class Form3
             ' move the form.
             SetDesktopLocation(20, 20)
 
-            Call ConfigResetToDefaults()
-
         End If
 
         ' makes the version string visible in the dialog box
 
         VersionBox.Text = Globals.Version
+
+        'Call LoadPrinterNames()
 
         ' grays out printer2 if not checked
         Call Print2Status()
@@ -37,40 +44,42 @@ Public Class Form3
         Call _KioskDates()
 
         ' pick up the selected printers, fonts, and layer set, from application storage
-        If prtrSelect1.Text = "" Then prtrSelect1.Text = "0"
-        If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
-        If tbBKFG.Text = "" Then tbBKFG.Text = "0"
-        If txtFontListIndex.Text = "" Then txtFontListIndex.Text = "0"
-        If tbFilter1.Text = "" Then tbFilter1.Text = "0"
-        If tbFilter2.Text = "" Then tbFilter2.Text = "0"
-        If tbFilter3.Text = "" Then tbFilter3.Text = "0"
+        'If prtrSelect1.Text = "" Then prtrSelect1.Text = "0"
+        'If prtrSelect2.Text = "" Then prtrSelect2.Text = "0"
+        'If tbBKFG.Text = "" Then tbBKFG.Text = "0"
+        'If txtFontListIndex.Text = "" Then txtFontListIndex.Text = "0"
+        'If tbFilter1.Text = "" Then tbFilter1.Text = "0"
+        'If tbFilter2.Text = "" Then tbFilter2.Text = "0"
+        'If tbFilter3.Text = "" Then tbFilter3.Text = "0"
 
-        i = tbBKFG.Text
+        i = My.Settings.bkFgSelection 'tbBKFG.Text
         If i >= ComboBoxBKFG.Items.Count Then i = 0
         ComboBoxBKFG.SelectedIndex = i
 
-        i = prtrSelect1.Text
+        'Globals.prtr1Selector = My.Settings.Printer1Select
+        i = My.Settings.Printer1Select
         If i >= Printer1LB.Items.Count Then i = 0
         Printer1LB.SelectedIndex = i
 
-        i = prtrSelect2.Text
+        'Globals.prtr2Selector = My.Settings.Printer2Select
+        i = My.Settings.Printer2Select
         If i >= Printer2LB.Items.Count Then i = 0
         Printer2LB.SelectedIndex = i
 
-        i = tbFilter1.Text
+        i = My.Settings.txtboxFilter1
         If i >= cbFilter1.Items.Count Then i = 0
         cbFilter1.SelectedIndex = i
 
-        i = tbFilter2.Text
+        i = My.Settings.txtboxFilter2
         If i >= cbFilter2.Items.Count Then i = 0
         cbFilter2.SelectedIndex = i
 
-        i = tbFilter3.Text
+        i = My.Settings.txtboxFilter3
         If i >= cbFilter3.Items.Count Then i = 0
         cbFilter3.SelectedIndex = i
 
         Call CreateFamilyFontList()
-        i = txtFontListIndex.Text
+        i = My.Settings.txtFontIndex
         If i >= cbFontList.Items.Count Then i = 0
         cbFontList.SelectedIndex = i
 
@@ -88,16 +97,30 @@ Public Class Form3
         ' if this is going visible, the reload the printer, filter and carrier files
         If Me.Visible = True Then
             Call Globals.fPic2Print.ReadPrinterFile()
-            Globals.fForm3.Printer1LB.SelectedIndex = prtrSelect1.Text
-            Globals.fForm3.Printer2LB.SelectedIndex = prtrSelect1.Text
+            Globals.fForm3.Printer1LB.SelectedIndex = My.Settings.Printer1Select ' Globals.prtr1Selector
+            Globals.fForm3.Printer2LB.SelectedIndex = My.Settings.Printer2Select ' Globals.prtr2Selector
 
             Call Globals.fPic2Print.ReadFilterFile()
-            Globals.fForm3.cbFilter1.SelectedIndex = Globals.fForm3.tbFilter1.Text
-            Globals.fForm3.cbFilter2.SelectedIndex = Globals.fForm3.tbFilter2.Text
-            Globals.fForm3.cbFilter3.SelectedIndex = Globals.fForm3.tbFilter3.Text
+            Globals.fForm3.cbFilter1.SelectedIndex = My.Settings.txtboxFilter1
+            Globals.fForm3.cbFilter2.SelectedIndex = My.Settings.txtboxFilter2
+            Globals.fForm3.cbFilter3.SelectedIndex = My.Settings.txtboxFilter3
 
             'Call Globals.fPic2Print.ReadCarrierFile()
         End If
+    End Sub
+
+
+    Private Sub LoadPrinterNames()
+        Dim pkInstalledPrinters As String
+
+        ' Find all printers installed
+        For Each pkInstalledPrinters In PrinterSettings.InstalledPrinters
+            'cboInstalledPrinters.Items.Add(pkInstalledPrinters)
+            ' MsgBox(pkInstalledPrinters)
+        Next pkInstalledPrinters
+
+        ' Set the combo to the first printer in the list
+        'cboInstalledPrinters.SelectedIndex = 0
     End Sub
 
     Private Sub CreateFamilyFontList()
@@ -114,18 +137,8 @@ Public Class Form3
 
     End Sub
 
-
     Private Sub Form3_Closing(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.FormClosing
         Call form3IsClosing()
-    End Sub
-
-    Public Sub ConfigResetToDefaults()
-
-        ' reset the paths to our defaults
-        Image_Folder.Text = "c:\onsite\capture\"
-        Print_Folder_1.Text = "c:\onsite\"
-        'Print_Folder_2.Text = "c:\onsite\"
-
     End Sub
 
     Private Sub LoadBalancing_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LoadBalancing.CheckedChanged
@@ -159,6 +172,12 @@ Public Class Form3
     ' "Okay" button
     '
     Private Sub OKay_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OKay.Click
+        
+        Call IsConfigCorrect()
+
+    End Sub
+
+    Public Sub IsConfigCorrect()
         Dim i As Integer
 
         ' if no email or cloud paths, clear the validated bits 
@@ -282,20 +301,22 @@ Public Class Form3
         Else
             MessageBox.Show("errors, can't close yet..")
         End If
-
     End Sub
 
-    Private Sub form3IsClosing()
+    Public Sub form3IsClosing()
         Dim i As Integer
 
         ' FORM3: move control data to globals for threads
         Globals.tmpEmailCloudEnabled = EmailCloudEnabled.Checked
-        Globals.tmpIncoming_Folder = Image_Folder.Text
-        Globals.tmpPrint1_Folder = Print_Folder_1.Text
+        'Globals.tmpIncoming_Folder = Image_Folder.Text
+        'Globals.tmpPrint1_Folder = Print_Folder_1.Text
         Globals.tmpPrint2_Folder = Print_Folder_2.Text
         Globals.tmpAutoPrints = txtAutoPrintCnt.Text
-        Globals.prtr1Selector = prtrSelect1.Text
-        Globals.prtr2Selector = prtrSelect2.Text
+        'My.Settings.Printer1Select = Printer1LB.SelectedIndex
+        'Globals.prtr1Selector = Printer1LB.SelectedIndex
+        My.Settings.Printer1Select = Printer1LB.SelectedIndex
+        My.Settings.Printer2Select = Printer2LB.SelectedIndex
+        'Globals.prtr2Selector = Printer2LB.SelectedIndex
         Globals.tmpMachineName = txtMachineName.Text
 
         If SortByDate.Checked Then
@@ -384,7 +405,7 @@ Public Class Form3
             'LoadBalancingMaxP.ForeColor = Color.Black
 
             Printer2LB.Enabled = True
-            prtrSelect2.Enabled = True
+            'prtrSelect2.Enabled = True
 
             ' printer #2 is checked, enable the radio button on the operator panel
 
@@ -406,7 +427,7 @@ Public Class Form3
             Globals.fPic2Print.PrinterSelect1.Checked = True
 
             Printer2LB.Enabled = False
-            prtrSelect2.Enabled = False
+            'prtrSelect2.Enabled = False
             Printer2PrintTimeLabel.ForeColor = Color.DarkGray
             Printer2PaperCountLabel.ForeColor = Color.DarkGray
             LoadBalancing.ForeColor = Color.DarkGray
@@ -465,11 +486,11 @@ Public Class Form3
         ' Only if the paths are valid, will we write out the text files
         If Globals.PathsValidated And 2 Then
 
-            fconfig = Print_Folder_1.Text & "config.txt"
+            fconfig = Globals.tmpPrint1_Folder & "config.txt"
 
             ' ----------- #1 bkfg folder  -----------
             ' pass the bk/fg folder name in the config file
-            BkFgFldr = Globals.BkFgFolder(tbBKFG.Text)
+            BkFgFldr = Globals.BkFgFolder(My.Settings.bkFgSelection)
 
             ' ------------ #2/#3/#4/#5 print sizes ----------
 
@@ -529,12 +550,12 @@ Public Class Form3
 
             ' ------------ #11 ratio flag fields passed in ---------------
 
-            bkRatio = Globals.BkFgRatio(tbBKFG.Text)
+            bkRatio = Globals.BkFgRatio(My.Settings.bkFgSelection)
 
             ' ----------- #12 bkfg action set that the custom action is located in  -----------
 
             ' pass the bk/fg action set name in the config file
-            actionset = Globals.BkFgSetName(tbBKFG.Text)
+            actionset = Globals.BkFgSetName(My.Settings.bkFgSelection) 'tbBKFG.Text)
 
             ' ----------- #13 Save layered PSD files -------------
 
@@ -569,12 +590,12 @@ Public Class Form3
 
             ' ------------- #20,#21, #22,#23, #24, #25
 
-            F1 = Globals.FilterActionName(tbFilter1.Text)
-            F1s = Globals.FilterSetName(tbFilter1.Text)
-            F2 = Globals.FilterActionName(tbFilter2.Text)
-            F2s = Globals.FilterSetName(tbFilter2.Text)
-            F3 = Globals.FilterActionName(tbFilter3.Text)
-            F3s = Globals.FilterSetName(tbFilter3.Text)
+            F1 = Globals.FilterActionName(My.Settings.txtboxFilter1)
+            F1s = Globals.FilterSetName(My.Settings.txtboxFilter1)
+            F2 = Globals.FilterActionName(My.Settings.txtboxFilter2)
+            F2s = Globals.FilterSetName(My.Settings.txtboxFilter2)
+            F3 = Globals.FilterActionName(My.Settings.txtboxFilter3)
+            F3s = Globals.FilterSetName(My.Settings.txtboxFilter3)
 
             ' ------------- #26 timing run
 
@@ -900,23 +921,23 @@ Public Class Form3
         print2CountUpdated = True
     End Sub
 
-    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFolderDialog1.Click
-        Dim str As String
-        FolderBrowserDialog1.SelectedPath = Image_Folder.Text
-        If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
-            str = FolderBrowserDialog1.SelectedPath
-            Image_Folder.Text = str
-        End If
-    End Sub
+    'Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    '    Dim str As String
+    '      FolderBrowserDialog1.SelectedPath = Globals.tmpIncoming_Folder
+    '      If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
+    '          str = FolderBrowserDialog1.SelectedPath
+    '          Globals.tmpIncoming_Folder = str
+    '      End If
+    ' End Sub
 
-    Private Sub btnFolderDialog2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFolderDialog2.Click
-        Dim str As String
-        FolderBrowserDialog1.SelectedPath = Print_Folder_1.Text
-        If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
-            str = FolderBrowserDialog1.SelectedPath
-            Print_Folder_1.Text = str
-        End If
-    End Sub
+    '  Private Sub btnFolderDialog2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFolderDialog2.Click
+    '    Dim str As String
+    '      FolderBrowserDialog1.SelectedPath = Globals.tmpPrint1_Folder ' Print_Folder_1.Text
+    '     If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
+    '         str = FolderBrowserDialog1.SelectedPath
+    '         Globals.tmpPrint1_Folder = str
+    '     End If
+    ' End Sub
 
     Private Sub btnFolderDialog3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFolderDialog3.Click
         Dim str As String
@@ -928,12 +949,14 @@ Public Class Form3
     End Sub
 
     Private Sub Printer1LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer1LB.SelectedIndexChanged
-        prtrSelect1.Text = Printer1LB.SelectedIndex
+        'Globals.prtr1Selector = Printer1LB.SelectedIndex
+        My.Settings.Printer1Select = Printer1LB.SelectedIndex
         Globals.prtr1PrinterSeconds = Globals.prtrSeconds(Printer1LB.SelectedIndex)
     End Sub
 
     Private Sub Printer2LB_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Printer2LB.SelectedIndexChanged
-        prtrSelect2.Text = Printer2LB.SelectedIndex
+        'Globals.prtr2Selector = Printer2LB.SelectedIndex
+        My.Settings.Printer2Select = Printer2LB.SelectedIndex
         Globals.prtr2PrinterSeconds = Globals.prtrSeconds(Printer2LB.SelectedIndex)
     End Sub
 
@@ -941,7 +964,7 @@ Public Class Form3
 
         If Globals.Form3Loading = False Then
 
-            tbBKFG.Text = ComboBoxBKFG.SelectedIndex
+            My.Settings.bkFgSelection = ComboBoxBKFG.SelectedIndex
             txtLayersPerGIF.Text = Globals.BkFgGifLayers(ComboBoxBKFG.SelectedIndex)
             txtLayersPerCust.Text = Globals.BkFgCustLayers(ComboBoxBKFG.SelectedIndex)
 
@@ -996,7 +1019,7 @@ Public Class Form3
 
         ' make sure the first printer's paper selection is supported by the layout
 
-        If ((Globals.BkFgRatio(tbBKFG.Text) And Globals.prtrRatio(prtrSelect1.Text)) = 0) Then
+        If ((Globals.BkFgRatio(My.Settings.bkFgSelection) And Globals.prtrRatio(My.Settings.Printer1Select)) = 0) Then
             MessageBox.Show( _
                 "Warning - Printer #1 print size doesn't support" & _
                 vbCrLf & "the selected layout. Double check" & _
@@ -1007,7 +1030,7 @@ Public Class Form3
         ' make sure the second printer's paper selection is supported by the layout
 
         If Print2Enabled.Checked Then
-            If ((Globals.BkFgRatio(tbBKFG.Text) And Globals.prtrRatio(prtrSelect2.Text)) = 0) Then
+            If ((Globals.BkFgRatio(My.Settings.bkFgSelection) And Globals.prtrRatio(My.Settings.Printer2Select)) = 0) Then
                 MessageBox.Show( _
                     "Warning - Printer #2 print size doesn't support" & _
                     vbCrLf & "the selected layout. Double check" & _
@@ -1063,30 +1086,27 @@ Public Class Form3
 
     Private Sub cbFontList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFontList.SelectedIndexChanged
         Dim nam As String = cbFontList.SelectedItem
-        txtFontListIndex.Text = cbFontList.SelectedIndex
+        My.Settings.txtFontIndex = cbFontList.SelectedIndex
         lblTestFont.Font = New Font(nam, 10)
         Call cbFontListColor()
     End Sub
 
     Private Sub cbFilter1_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter1.SelectedIndexChanged
-        tbFilter1.Text = cbFilter1.SelectedIndex
+        My.Settings.txtboxFilter1 = Globals.fForm3.cbFilter1.SelectedIndex
     End Sub
 
     Private Sub cbFilter2_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter2.SelectedIndexChanged
-        tbFilter2.Text = cbFilter2.SelectedIndex
+        My.Settings.txtboxFilter2 = Globals.fForm3.cbFilter2.SelectedIndex
     End Sub
 
     Private Sub cbFilter3_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbFilter3.SelectedIndexChanged
-        tbFilter3.Text = cbFilter3.SelectedIndex
+        My.Settings.txtboxFilter3 = Globals.fForm3.cbFilter3.SelectedIndex
     End Sub
 
     Private Sub cbFontListColor()
         Dim rgbVal As Integer = txtRGBString.Text
         lblTestFont.ForeColor = Color.FromArgb(rgbVal)
     End Sub
-
-    Dim print1CountUpdated As Boolean = False
-    Dim print2CountUpdated As Boolean = False
 
     Private Sub cbDateQualified_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbDateQualified.CheckedChanged
         Call _KioskDates()
@@ -1102,6 +1122,14 @@ Public Class Form3
             dtEarliestDate.Enabled = True
             cbPrintNoDates.Enabled = True
         End If
+    End Sub
+
+
+    Private Sub ExpertButton_Click(sender As System.Object, e As System.EventArgs) Handles ExpertButton.Click
+
+        ' switch to the simple mode form
+        Globals.fPic2Print.ToggleConfigPanel(False)
+
     End Sub
 
 End Class

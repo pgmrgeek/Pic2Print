@@ -767,3 +767,4 @@ C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Debug\WindowsApplication1.Pos
 C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Debug\WindowsApplication1.SendEmails.resources
 C:\Code\Pic2Print\Pic2Print.8.06\Pic2Print\obj\x86\Debug\Pic2Print.vbproj.GenerateResource.Cache
 C:\Users\User\Documents\GitHub\Pic2Print\Pic2Print\Pic2Print\obj\x86\Debug\WindowsApplication1.UserTrigger.resources
+C:\Users\User\Documents\GitHub\Pic2Print\Pic2Print\Pic2Print\obj\x86\Debug\WindowsApplication1.Form5.resources

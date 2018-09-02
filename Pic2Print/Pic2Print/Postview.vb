@@ -263,7 +263,7 @@ Public Class PostView
     End Sub
 
     Public Sub postLoadThumbs(ByVal doAll As Boolean)
-        Dim img As Image
+        Dim img As Image = Nothing
         Dim i As Integer
 
         If doAll = True Then
