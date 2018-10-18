@@ -1156,7 +1156,7 @@ Partial Class Form3
         Me.Name = "Form3"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Configuration Panel"
+        Me.Text = "Expert Mode Configuration Panel"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.Print1GroupBox.ResumeLayout(False)

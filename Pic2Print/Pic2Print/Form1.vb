@@ -4718,7 +4718,7 @@ End Class
 
 Public Class Globals
 
-    Public Shared Version As String = "Version 16.01.00"    ' Version string
+    Public Shared Version As String = "Version 16.01.03"    ' Version string
     ' 14.10.02 - darkened the green highlights.  fixed POSTVIEW reprint count on the printer. Tried to 
     '            normalize the resize of the preview window to work like the postview window.
     '            drag the top left corner of each to see the difference..

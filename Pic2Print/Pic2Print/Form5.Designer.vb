@@ -28,14 +28,20 @@ Partial Class Form5
         Me.gbDateQuals = New System.Windows.Forms.GroupBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label19 = New System.Windows.Forms.Label()
+        Me.cbPrintNoDates = New System.Windows.Forms.CheckBox()
         Me.lblImageNewer = New System.Windows.Forms.Label()
+        Me.cbDateQualified = New System.Windows.Forms.CheckBox()
+        Me.dtEarliestDate = New System.Windows.Forms.DateTimePicker()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.lblAutoPrintCount = New System.Windows.Forms.Label()
+        Me.txtAutoPrintCnt = New System.Windows.Forms.TextBox()
         Me.Printer1Info = New System.Windows.Forms.GroupBox()
         Me.lblPprCnt = New System.Windows.Forms.Label()
         Me.lblPrtrHlp = New System.Windows.Forms.Label()
+        Me.Printer1PaperCount = New System.Windows.Forms.TextBox()
         Me.Printer1LB = New System.Windows.Forms.ComboBox()
         Me.GroupBoxBKFG = New System.Windows.Forms.GroupBox()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.ComboBoxBKFG = New System.Windows.Forms.ComboBox()
         Me.lblFilterSelection = New System.Windows.Forms.Label()
         Me.FilterDescription = New System.Windows.Forms.Label()
@@ -54,12 +60,6 @@ Partial Class Form5
         Me.tbIncomingHlp = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.ckSavePSD = New System.Windows.Forms.CheckBox()
-        Me.Printer1PaperCount = New System.Windows.Forms.TextBox()
-        Me.cbPrintNoDates = New System.Windows.Forms.CheckBox()
-        Me.cbDateQualified = New System.Windows.Forms.CheckBox()
-        Me.dtEarliestDate = New System.Windows.Forms.DateTimePicker()
-        Me.txtAutoPrintCnt = New System.Windows.Forms.TextBox()
-        Me.Label4 = New System.Windows.Forms.Label()
         Me.gbDateQuals.SuspendLayout()
         Me.Printer1Info.SuspendLayout()
         Me.GroupBoxBKFG.SuspendLayout()
@@ -140,6 +140,18 @@ Partial Class Form5
         Me.Label19.TabIndex = 121
         Me.Label19.Text = "Check this to print only today's images"
         '
+        'cbPrintNoDates
+        '
+        Me.cbPrintNoDates.AutoSize = True
+        Me.cbPrintNoDates.Checked = Global.WindowsApplication1.My.MySettings.Default.KioskPrintAnyway
+        Me.cbPrintNoDates.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KioskPrintAnyway", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbPrintNoDates.Location = New System.Drawing.Point(35, 178)
+        Me.cbPrintNoDates.Name = "cbPrintNoDates"
+        Me.cbPrintNoDates.Size = New System.Drawing.Size(163, 17)
+        Me.cbPrintNoDates.TabIndex = 123
+        Me.cbPrintNoDates.Text = "Print anyway if no date found"
+        Me.cbPrintNoDates.UseVisualStyleBackColor = True
+        '
         'lblImageNewer
         '
         Me.lblImageNewer.AutoSize = True
@@ -149,6 +161,28 @@ Partial Class Form5
         Me.lblImageNewer.Size = New System.Drawing.Size(132, 13)
         Me.lblImageNewer.TabIndex = 122
         Me.lblImageNewer.Text = "Image must be newer than"
+        '
+        'cbDateQualified
+        '
+        Me.cbDateQualified.AutoSize = True
+        Me.cbDateQualified.Checked = Global.WindowsApplication1.My.MySettings.Default.KIOSKdateQual
+        Me.cbDateQualified.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KIOSKdateQual", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.cbDateQualified.Location = New System.Drawing.Point(16, 111)
+        Me.cbDateQualified.Name = "cbDateQualified"
+        Me.cbDateQualified.Size = New System.Drawing.Size(168, 17)
+        Me.cbDateQualified.TabIndex = 119
+        Me.cbDateQualified.Text = "KIOSK will date qualify images"
+        Me.cbDateQualified.UseVisualStyleBackColor = True
+        '
+        'dtEarliestDate
+        '
+        Me.dtEarliestDate.Checked = False
+        Me.dtEarliestDate.DataBindings.Add(New System.Windows.Forms.Binding("Value", Global.WindowsApplication1.My.MySettings.Default, "dtEarliestDateSelected", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.dtEarliestDate.Location = New System.Drawing.Point(35, 152)
+        Me.dtEarliestDate.Name = "dtEarliestDate"
+        Me.dtEarliestDate.Size = New System.Drawing.Size(215, 20)
+        Me.dtEarliestDate.TabIndex = 0
+        Me.dtEarliestDate.Value = Global.WindowsApplication1.My.MySettings.Default.dtEarliestDateSelected
         '
         'Label13
         '
@@ -168,6 +202,16 @@ Partial Class Form5
         Me.lblAutoPrintCount.Size = New System.Drawing.Size(179, 13)
         Me.lblAutoPrintCount.TabIndex = 96
         Me.lblAutoPrintCount.Text = "# of Prints per image in KIOSK mode"
+        '
+        'txtAutoPrintCnt
+        '
+        Me.txtAutoPrintCnt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtAutoPrtCnt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(14, 70)
+        Me.txtAutoPrintCnt.Name = "txtAutoPrintCnt"
+        Me.txtAutoPrintCnt.Size = New System.Drawing.Size(27, 20)
+        Me.txtAutoPrintCnt.TabIndex = 97
+        Me.txtAutoPrintCnt.Text = Global.WindowsApplication1.My.MySettings.Default.txtAutoPrtCnt
+        Me.txtAutoPrintCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Printer1Info
         '
@@ -202,6 +246,15 @@ Partial Class Form5
         Me.lblPrtrHlp.TabIndex = 7
         Me.lblPrtrHlp.Text = "Select the Printer && Print Size"
         '
+        'Printer1PaperCount
+        '
+        Me.Printer1PaperCount.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1Sheets", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.Printer1PaperCount.Location = New System.Drawing.Point(235, 33)
+        Me.Printer1PaperCount.Name = "Printer1PaperCount"
+        Me.Printer1PaperCount.Size = New System.Drawing.Size(42, 20)
+        Me.Printer1PaperCount.TabIndex = 6
+        Me.Printer1PaperCount.Text = Global.WindowsApplication1.My.MySettings.Default.Print1Sheets
+        '
         'Printer1LB
         '
         Me.Printer1LB.FormattingEnabled = True
@@ -220,6 +273,16 @@ Partial Class Form5
         Me.GroupBoxBKFG.TabIndex = 123
         Me.GroupBoxBKFG.TabStop = False
         Me.GroupBoxBKFG.Text = "Layout Selection"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlDark
+        Me.Label4.Location = New System.Drawing.Point(12, 17)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(165, 13)
+        Me.Label4.TabIndex = 8
+        Me.Label4.Text = "Select the layout you wish to print"
         '
         'ComboBoxBKFG
         '
@@ -398,74 +461,12 @@ Partial Class Form5
         Me.ckSavePSD.Text = "Also save a layered .PSD version"
         Me.ckSavePSD.UseVisualStyleBackColor = True
         '
-        'Printer1PaperCount
-        '
-        Me.Printer1PaperCount.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "Print1Sheets", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.Printer1PaperCount.Location = New System.Drawing.Point(235, 33)
-        Me.Printer1PaperCount.Name = "Printer1PaperCount"
-        Me.Printer1PaperCount.Size = New System.Drawing.Size(42, 20)
-        Me.Printer1PaperCount.TabIndex = 6
-        Me.Printer1PaperCount.Text = Global.WindowsApplication1.My.MySettings.Default.Print1Sheets
-        '
-        'cbPrintNoDates
-        '
-        Me.cbPrintNoDates.AutoSize = True
-        Me.cbPrintNoDates.Checked = Global.WindowsApplication1.My.MySettings.Default.KioskPrintAnyway
-        Me.cbPrintNoDates.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KioskPrintAnyway", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbPrintNoDates.Location = New System.Drawing.Point(35, 178)
-        Me.cbPrintNoDates.Name = "cbPrintNoDates"
-        Me.cbPrintNoDates.Size = New System.Drawing.Size(163, 17)
-        Me.cbPrintNoDates.TabIndex = 123
-        Me.cbPrintNoDates.Text = "Print anyway if no date found"
-        Me.cbPrintNoDates.UseVisualStyleBackColor = True
-        '
-        'cbDateQualified
-        '
-        Me.cbDateQualified.AutoSize = True
-        Me.cbDateQualified.Checked = Global.WindowsApplication1.My.MySettings.Default.KIOSKdateQual
-        Me.cbDateQualified.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.WindowsApplication1.My.MySettings.Default, "KIOSKdateQual", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.cbDateQualified.Location = New System.Drawing.Point(16, 111)
-        Me.cbDateQualified.Name = "cbDateQualified"
-        Me.cbDateQualified.Size = New System.Drawing.Size(168, 17)
-        Me.cbDateQualified.TabIndex = 119
-        Me.cbDateQualified.Text = "KIOSK will date qualify images"
-        Me.cbDateQualified.UseVisualStyleBackColor = True
-        '
-        'dtEarliestDate
-        '
-        Me.dtEarliestDate.Checked = False
-        Me.dtEarliestDate.DataBindings.Add(New System.Windows.Forms.Binding("Value", Global.WindowsApplication1.My.MySettings.Default, "dtEarliestDateSelected", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.dtEarliestDate.Location = New System.Drawing.Point(35, 152)
-        Me.dtEarliestDate.Name = "dtEarliestDate"
-        Me.dtEarliestDate.Size = New System.Drawing.Size(215, 20)
-        Me.dtEarliestDate.TabIndex = 0
-        Me.dtEarliestDate.Value = Global.WindowsApplication1.My.MySettings.Default.dtEarliestDateSelected
-        '
-        'txtAutoPrintCnt
-        '
-        Me.txtAutoPrintCnt.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.WindowsApplication1.My.MySettings.Default, "txtAutoPrtCnt", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.txtAutoPrintCnt.Location = New System.Drawing.Point(14, 70)
-        Me.txtAutoPrintCnt.Name = "txtAutoPrintCnt"
-        Me.txtAutoPrintCnt.Size = New System.Drawing.Size(27, 20)
-        Me.txtAutoPrintCnt.TabIndex = 97
-        Me.txtAutoPrintCnt.Text = Global.WindowsApplication1.My.MySettings.Default.txtAutoPrtCnt
-        Me.txtAutoPrintCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlDark
-        Me.Label4.Location = New System.Drawing.Point(12, 17)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(165, 13)
-        Me.Label4.TabIndex = 8
-        Me.Label4.Text = "Select the layout you wish to print"
-        '
         'Form5
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(691, 519)
+        Me.ControlBox = False
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.tbIncomingHlp)
         Me.Controls.Add(Me.grpOperatorMd)
@@ -486,7 +487,7 @@ Partial Class Form5
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label8)
         Me.Name = "Form5"
-        Me.Text = "Form5"
+        Me.Text = "Easy Mode Config Panel"
         Me.gbDateQuals.ResumeLayout(False)
         Me.gbDateQuals.PerformLayout()
         Me.Printer1Info.ResumeLayout(False)
